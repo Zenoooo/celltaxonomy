@@ -1,0 +1,146 @@
+CL:0000038	Erythroid progenitor cell
+CL:0000049	Common myeloid progenitor
+CL:0000050	Megakaryocyte-erythroid progenitor cell
+CL:0000051	Common lymphoid progenitor
+CL:0000056	Myoblast
+CL:0000057	Fibroblast
+CL:0000062	Osteoblast
+CL:0000064	Ciliated cell
+CL:0000065	Ependymal cell
+CL:0000066	Epithelial cell
+CL:0000067	Ciliated epithelial cell
+CL:0000068	Duct epithelial cell
+CL:0000084	T cell
+CL:0000091	Kupffer cell
+CL:0000097	Mast cell
+CL:0000099	Interneuron
+CL:0000115	Endothelial cell
+CL:0000121	Purkinje cell
+CL:0000125	Glial cell
+CL:0000127	Astrocyte
+CL:0000128	Oligodendrocyte
+CL:0000129	Microglial cell
+CL:0000134	Mesenchymal stem cell
+CL:0000136	Fat cell
+CL:0000138	Chondrocyte
+CL:0000148	Melanocyte
+CL:0000151	Secretory cell
+CL:0000158	Club cell
+CL:0000160	Goblet cell
+CL:0000163	Endocrine cell
+CL:0000164	Enteroendocrine cell
+CL:0000165	Neuroendocrine cell
+CL:0000169	Type B pancreatic cell
+CL:0000171	Pancreatic a cell
+CL:0000173	Pancreatic d cell
+CL:0000175	Luteal cell
+CL:0000178	Leydig cell
+CL:0000182	Hepatocyte
+CL:0000185	Myoepithelial cell
+CL:0000186	Myofibroblast cell
+CL:0000192	Smooth muscle cell
+CL:0000207	Olfactory receptor cell
+CL:0000210	Photoreceptor cell
+CL:0000216	Sertoli cell
+CL:0000233	Platelet
+CL:0000235	Macrophage
+CL:0000236	B cell
+CL:0000312	Keratinocyte
+CL:0000317	Sebum secreting cell
+CL:0000351	Trophoblast cell
+CL:0000359	Vascular associated smooth muscle cell
+CL:0000451	Dendritic cell
+CL:0000453	Langerhans cell
+CL:0000499	Stromal cell
+CL:0000501	Granulosa cell
+CL:0000510	Paneth cell
+CL:0000516	Perineuronal satellite cell
+CL:0000540	Neuron
+CL:0000542	Lymphocyte
+CL:0000548.18	Ventral otocyst
+CL:0000548.3	Kideny cell
+CL:0000548.4	Arterial cell
+CL:0000556	Megakaryocyte
+CL:0000557	Granulocyte monocyte progenitor cell
+CL:0000573	Retinal cone cell
+CL:0000576	Monocyte
+CL:0000583	Alveolar macrophage
+CL:0000584	Enterocyte
+CL:0000586	Germ cell
+CL:0000617	Gabaergic neuron
+CL:0000622	Acinar cell
+CL:0000623	Natural killer cell
+CL:0000624	CD4+, alpha-beta T cell
+CL:0000625	CD8+, alpha-beta T cell
+CL:0000644	Bergmann glial cell
+CL:0000646	Basal cell
+CL:0000650	Mesangial cell
+CL:0000652	Pinealocyte
+CL:0000653	Glomerular visceral epithelial cell
+CL:0000669	Pericyte cell
+CL:0000679	Glutamatergic neuron
+CL:0000681	Radial glial cell
+CL:0000695	Cajal-retzius cell
+CL:0000731	Urothelial cell
+CL:0000740	Retinal ganglion cell
+CL:0000746	Cardiac muscle cell
+CL:0000763	Myeloid cell
+CL:0000764	Erythroid lineage cell
+CL:0000767	Basophil
+CL:0000775	Neutrophil
+CL:0000784	Plasmacytoid dendritic cell
+CL:0000786	Plasma cell
+CL:0000813	Memory T cell
+CL:0000814	Mature NK T cell
+CL:0000815	Regulatory T cell
+CL:0000850	Serotonergic neuron
+CL:0000874	Splenic red pulp macrophage
+CL:0000879	Meningeal macrophage
+CL:0000903	Natural T-regulatory cell
+CL:0000910	Cytotoxic T cell
+CL:0000936	Early lymphoid progenitor
+CL:0000980	Plasmablast
+CL:0001056	Dendritic cell, human
+CL:0001065	Innate lymphoid cell
+CL:0002062	Type I pneumocyte
+CL:0002063	Type II pneumocyte
+CL:0002079	Pancreatic ductal cell
+CL:0002085	Tanycyte
+CL:0002167	Olfactory epithelial cell
+CL:0002204	Brush cell
+CL:0002293	Epithelial cell of thymus
+CL:0002305	Epithelial cell of distal tubule
+CL:0002306	Epithelial cell of proximal tubule
+CL:0002322	Embryonic stem cell
+CL:0002325	Mammary alveolar cell
+CL:0002326	Luminal epithelial cell of mammary gland
+CL:0002327	Mammary gland epithelial cell
+CL:0002340	Luminal cell of prostate epithelium
+CL:0002357	Fetal derived definitive erythrocyte
+CL:0002410	Pancreatic stellate cell
+CL:0002453	Oligodendrocyte precursor cell
+CL:0002481	Peritubular myoid cell
+CL:0002559	Hair follicle cell
+CL:0002573	Schwann cell
+CL:0002620	Skin fibroblast
+CL:0002672	Retinal progenitor cell
+CL:0005006	Ionocyte
+CL:0005009	Renal principal cell
+CL:0005010	Renal intercalated cell
+CL:0005026	Hepatoblast
+CL:0007011	Enteric neuron
+CL:0008029	Inhibitory neuron
+CL:0008030	Excitatory neuron
+CL:0008034	Mural cell
+CL:0011020	Neural progenitor cell
+CL:0011026	Progenitor cell
+CL:0011107	Muller cell
+CL:0011110	Histaminergic neuron
+CL:1000488	Cholangiocyte
+CL:1000601	Ureteral cell
+CL:1000849	Kidney distal convoluted tubule epithelial cell
+CL:1000909	Loop of Henle
+CL:1001431	Kidney collecting duct principal cell
+CL:1001432	Kidney collecting duct intercalated cell
+CL:1001596	Salivary gland glandular cell
+CL:2000002	Decidua cell

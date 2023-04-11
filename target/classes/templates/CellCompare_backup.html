@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Cell compare - Cell Taxonomy - CNCB-NGDC</title>
+    <script src="/celltaxonomy/static/js/jquery.min.js"></script>
+    <link rel="icon" href="/celltaxonomy/static/img/CellTaxonomy v3.png">
+
+    <link rel="stylesheet" href="/celltaxonomy/static/css/bootstrap.min.css" >
+    <link rel="stylesheet" href="/celltaxonomy/static/css/dataTables.bootstrap.min.css" >
+    <link rel="stylesheet" href="/celltaxonomy/static/css/ionicons.min.css">
+
+    <script src="/celltaxonomy/static/js/bootstrap.min.js"></script>
+
+    <script src="/celltaxonomy/static/js/plotly-latest.min.js"></script>
+    <script type="text/javascript" src="/celltaxonomy/static/js/headerfooter-full.js"></script>
+    <script src="/celltaxonomy/static/js/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet"  href="/celltaxonomy/static/css/buttons.bootstrap.min.css">
+    <script src="/celltaxonomy/static/js/dataTables.buttons.min.js"></script>
+    <script src="/celltaxonomy/static/js/buttons.bootstrap.min.js"></script>
+
+    <link href="/celltaxonomy/static/css/select2.min.css" rel="stylesheet" />
+    <script src="/celltaxonomy/static/js/select2.min.js"></script>
+
+    <script src="/celltaxonomy/static/js/dataTables.bootstrap.min.js"></script>
+    <link href="/celltaxonomy/static/css/bow.ui.min.css" rel="stylesheet">
+
+    <script type="text/javascript" src="/celltaxonomy/static/js/echarts.min.js"></script>
+    <script src="/celltaxonomy/static/js/highcharts.js"></script>
+    <script src="/celltaxonomy/static/js/venn.js"></script>
+    <link href=" /celltaxonomy/static/css/dataTables.colVis.css" rel="stylesheet">
+
+    <script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-core.min.js"></script>
+    <script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-venn.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/celltaxonomy/static/css/my/my.css">
+
+    <style>
+
+        .buttons li{
+            display: inline-block;
+        }
+
+
+        @media (max-width: 1024px) {
+
+        }
+
+        /* 中等屏幕（桌面显示器，大于等于 992px） */
+        @media screen and (max-width: 1400px) and (min-width: 1024px) {
+            .selects li select, .selects2 li select{
+                width: 100px;
+            }
+        }
+        @media screen and (min-width: 1400px) {
+            .selects li select, .selects2 li select{
+                width: 180px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav th:replace="common/topbar::topbar"></nav>
+    <div class="container" style="background: #f4f7f6">
+        <div class="row">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/celltaxonomy">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">CellCompare</li>
+                </ol>
+            </nav>
+            <div style="padding: 5px 5%;background: transparent">
+                <span style="font-size: 30px;font-weight: 700;margin: 30px 0;color: rgb(115,129,159);">CellCompare: </span>
+                <span style="font-size: 30px;color: rgb(115,129,159);">comparison of marker composition between two cell types</span>
+            </div>
+            <div class="col-lg-12 col-sm-12" style="margin-top: 20px;padding: 0 5%;display: flex;justify-content: space-between">
+                <div class="mypanel-body col-lg-3" style="list-style: none;height: 300px;padding-top: 20px">
+                    <h4 style="margin-left: 10px;">Guide</h4>
+                    <ul class="selects" style="padding: 10px; margin:0">
+                        <li style="margin-bottom: 20px">
+                            Step1: select the two cell types to compare
+                        </li>
+                        <li style="margin-bottom: 20px">
+                            Step2: Select additional filters of species, tissue or condition (optional)
+                        </li>
+                        <li>
+                            Step3: Click “Compare” button to compare cell types in Cell Taxonomy
+                        </li>
+                    </ul>
+                </div>
+                <div class="mypanel-body col-lg-4 col-sm-4" style="height:300px;padding-top: 20px">
+                    <div>
+                        <h4 style="margin-left: 20px;font-size: 14px;">
+                            Select cell types to compare
+                        </h4>
+                        <ul class="selects2" >
+                            <li style="display: inline-block;">
+                                <label>Cell type A</label>
+                                <select id="cellA"></select>
+                            </li>
+                            <li style="display: inline-block;">
+                                <span style="line-height: 40px;">VS.</span>
+                            </li>
+                            <li style="display: inline-block;">
+                                <label>Cell type B</label>
+                                <select id="cellB"></select>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <label for="input2" style="margin-left: 20px;font-size: 14px;font-weight: 700;">
+                            <input type="radio" name="additional" id="input2" checked>
+                            Additional filters
+                        </label>
+                        <ul class="selects" >
+                            <li style="display: inline-block">
+                                <label>Species</label>
+                                <select id="species"></select>
+                            </li>
+                            <li style="display: inline-block">
+                                <label>Tissue name</label>
+                                <select id="tissue"></select>
+                            </li>
+                            <li style="display: inline-block">
+                                <label>Condition</label>
+                                <select id="condition"></select>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+                <div class="mypanel-body col-lg-4 col-sm-4" style="height: 300px">
+                    <div id="venn"></div>
+                </div>
+            </div>
+            <div>
+                <ul class="buttons" style="float: right;padding:0 5%;margin-top: 10px;margin-bottom: 5px">
+                    <li>
+                        <button class="btn" style="background: rgb(84,123,182);color:white;" id="example"><i class="icon ion-clipboard"></i> Example</button>
+                    </li>
+                    <li>
+                        <button class="btn" id="reset" style="background: rgb(60,141,188);color:white;"><i class="icon ion-refresh"></i> Reset</button>
+                    </li>
+                    <li>
+                        <button class="btn" style="background: rgb(0,166,90);color:white;" id="compare"><i class="icon ion-shuffle"></i> Compare</button>
+                    </li>
+
+                </ul>
+            </div>
+
+            <div class="col-lg-12 col-sm-12" id="results" style="border-top: 1px solid #9aa0a9;padding: 10px 5%;display: flex;justify-content: space-between">
+
+                        <div class="mypanel-body col-lg-3" style="padding:20px">
+                            <div style="margin-bottom: 20px">
+                                <span> Specific markers of </span>
+                                <a target="_blank" id="cellAname" style="pointer-events: none;color: black">Cell type A </a>
+                            </div>
+
+                            <table id="tableA" class="table table-striped table-hover" style="width: 100%;">
+                                <thead>
+                                <tr>
+                                    <th>Marker name</th>
+                                    <th>#Publication</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="mypanel-body col-lg-4" style="padding:20px">
+                            <div style="margin-bottom: 20px">
+                                <span>Common markers</span>
+                            </div>
+                            <table id="common" class="table table-striped table-hover" style="width: 100%;">
+                                <thead>
+                                <tr>
+                                    <th>Marker name</th>
+                                    <th>#Publication</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="mypanel-body col-lg-4" style="padding:20px">
+                            <div style="margin-bottom: 20px">
+                                <span>Specific markers of</span>
+                                <a target="_blank"  id="cellBname" style="pointer-events: none;color: black">Cell type B </a>
+                            </div>
+                            <table id="tableB" class="table table-striped table-hover" style="width: 100%;">
+                                <thead>
+                                <tr>
+                                    <th>Marker name</th>
+                                    <th>#Publication</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function getoptions(url,title,id){
+            $("#"+id).select2({
+                ajax: {
+                    url: "/celltaxonomy"+url,
+                    dataType: 'json',
+                    type: "post",
+                    data:function(params){
+                        var query={
+                            term:params.term,
+                            title:title,
+                            species:$("#species").val(),
+                            tissue:$("#tissue").val(),
+                            condition:$("#condition").val(),
+                            cellA:$("#cellA").val(),
+                            cellB:$("#cellB").val()
+                        }
+                        return query
+                    },
+                    processResults: function (data) {
+                        var res = data.map(function (item) {
+                            return {id: item[title],text:item[title]};
+                        });
+
+                        return {
+                            results: res
+                        };
+                    }
+                }
+
+
+            });
+        }
+        function getcelltypes(url,value,title,id){
+            $("#"+id).select2({
+                ajax: {
+                    url: "/celltaxonomy"+url,
+                    dataType: 'json',
+                    type: "post",
+                    data:function(params){
+                        var query={
+                            term:params.term,
+                            title:title,
+                            species:$("#species").val(),
+                            tissue:$("#tissue").val(),
+                            condition:$("#condition").val()
+                        }
+                        return query
+                    },
+                    processResults: function (data) {
+                        var res = data.map(function (item) {
+                            return {id: item[value],text:item[title]};
+                        });
+                        return {
+                            results: res
+                        };
+                    }
+                }
+
+
+            });
+        }
+        function getvenn(cellA,cellB,valueA,valueB,valuecommon){
+            Highcharts.chart('venn', {
+                series: [{
+                    type: 'venn',
+                    name: 'Number of markers',
+                    data: [{
+                        sets: [cellA],
+                        value: valueA,
+                        color:"#78B1C9"
+                    }, {
+                        sets: [cellB],
+                        value: valueB,
+                        color:"#5F9884"
+                    }, {
+                        sets: [cellA, cellB],
+                        value: valuecommon,
+                        color:"#6CA5A7",
+                        dataLabels: {
+                            enabled:false
+                        }
+                    }],
+                }],
+                title: {
+                    text: 'Number of markers',
+                    style:{
+                        fontFamily:'Arial',
+                        fontSize:'16px'
+                    }
+                },
+                credits: {
+                    enabled: false
+                },
+                chart:{
+                    reflow:true,
+                    height:'300px'
+                }
+
+            });
+        }
+        getoptions("/tool/species_list","Species","species");
+        getoptions("/tool/tissue_list","Tissue_Standard","tissue");
+        getoptions("/tool/disease_list","Disease_Type","condition");
+        getcelltypes("/tool/celltype_list","CT_ID","Cell_standard","cellA");
+        getcelltypes("/tool/celltype_list","CT_ID","Cell_standard","cellB");
+
+        $("#species").change(function(){
+
+            getoptions("/tool/tissue_list","Tissue_Standard","tissue");
+            getoptions("/tool/disease_list","Disease_Type","condition");
+
+            getcelltypes("/tool/celltype_list","CT_ID","Cell_standard","cellA");
+            getcelltypes("/tool/celltype_list","CT_ID","Cell_standard","cellB");
+        })
+        $("#tissue").change(function(){
+            getoptions("/tool/species_list","Species","species");
+
+            getoptions("/tool/disease_list","Disease_Type","condition");
+            getcelltypes("/tool/celltype_list","CT_ID","Cell_standard","cellA");
+            getcelltypes("/tool/celltype_list","CT_ID","Cell_standard","cellB");
+        })
+        $("#condition").change(function(){
+            getcelltypes("/tool/celltype_list","CT_ID","Cell_standard","cellA");
+            getcelltypes("/tool/celltype_list","CT_ID","Cell_standard","cellB");
+        })
+        $("#reset").click(function(){
+            $("#cellA").val(null).trigger('change')
+            $("#cellB").val(null).trigger('change')
+            $("#species").val(null).trigger('change')
+            $("#tissue").val(null).trigger('change')
+            $("#condition").val(null).trigger('change')
+
+            $("#input2").removeAttr("checked")
+            $("#species").attr("disabled",true)
+            $("#tissue").attr("disabled",true)
+            $("#condition").attr("disabled",true)
+
+            $("#cellAname").css("pointer-events","auto")
+            $("#cellAname").css("color","black")
+            $("#cellBname").css("pointer-events","auto")
+            $("#cellBname").css("color","black")
+            getoptions("/tool/species_list","Species","species");
+            getoptions("/tool/tissue_list","Tissue_Standard","tissue");
+            getoptions("/tool/disease_list","Disease_Type","condition");
+            getcelltypes("/tool/celltype_list","CT_ID","Cell_standard","cellA");
+            getcelltypes("/tool/celltype_list","CT_ID","Cell_standard","cellB");
+        })
+        function unpack(rows, key) {
+            return rows.map(function(row) { return row[key]; });
+        }
+        $("#compare").click(function (){
+            if($("#cellA").val()==null || $("#cellB").val()==null) {
+                alert("Please chooose cell types!")
+
+            }
+            else{
+
+                $("#cellAname").text($("#cellA").select2("data")[0].text);
+                $("#cellAname").attr("href", "/celltaxonomy/celltype/" + $("#cellA").val())
+                $("#cellAname").css("color", "#2C75C9")
+                $("#cellAname").css("pointer-events", "auto")
+                $("#cellBname").text($("#cellB").select2("data")[0].text);
+                $("#cellBname").attr("href", "/celltaxonomy/celltype/" + $("#cellB").val())
+                $("#cellBname").css("color", "#2C75C9")
+                $("#cellBname").css("pointer-events", "auto")
+                $.ajax({
+                    url: '/celltaxonomy/tool/compare',
+                    type: 'post',
+                    data: {
+                        "cellA": $("#cellA").val(),
+                        "cellB": $("#cellB").val(),
+                        "species": $("#species").val(),
+                        "tissue": $("#tissue").val(),
+                        "condition": $("#condition").val()
+                    },
+                    success: function (results) {
+                        var cellA = results["cellA"];
+                        var cellB = results["cellB"];
+
+                        var cellAlist = unpack(cellA, "Gene_ENTREZID2")
+                        var cellBlist = unpack(cellB, "Gene_ENTREZID2")
+                        var common = [];
+
+                        var commonlist = cellAlist.filter(function (v) {
+                            return cellBlist.indexOf(v) > -1
+                        })
+                        for (var i = 0; i < results["common"].length; i++) {
+                            if ($.inArray(results["common"][i].Gene_ENTREZID2, commonlist) >= 0) {
+                                common.push(results["common"][i])
+                            }
+                        }
+
+                        getvenn($("#cellAname").text(), $("#cellBname").text(), cellA.length, cellB.length, common.length)
+                        var cellAlists = cellAlist.filter(function (v) {
+                            return cellBlist.indexOf(v) == -1
+                        })
+                        var cellBlists = cellBlist.filter(function (v) {
+                            return cellAlist.indexOf(v) == -1
+                        })
+                        cellA = eval(cellA).filter(function (v) {
+                            return cellAlists.indexOf(v.Gene_ENTREZID2) > -1
+                        })
+                        cellB = eval(cellB).filter(function (v) {
+                            return cellBlists.indexOf(v.Gene_ENTREZID2) > -1
+                        })
+
+
+                        $("#tableA").DataTable({
+                            data: cellA,
+                            columns: [
+                                {
+                                    data: "Cell_Marker",
+                                    render: function (data, type, row) {
+                                        return "<a target='_blank' href='/celltaxonomy/marker/" + row.Gene_ENTREZID2 + "'>" + row.Cell_Marker + "</a>"
+                                    }
+                                },
+                                {data: "counts"}
+                            ],
+                            dom: '<"row"<"col-lg-12"l>>t<"row"<"col-lg-12"p>>',
+
+                            order: [1, "desc"],
+                            destroy: true
+                        })
+                        $("#tableB").DataTable({
+                            data: cellB,
+                            columns: [
+                                {
+                                    data: "Cell_Marker",
+                                    render: function (data, type, row) {
+                                        return "<a target='_blank' href='/celltaxonomy/marker/" + row.Gene_ENTREZID2 + "'>" + row.Cell_Marker + "</a>"
+                                    }
+                                },
+                                {data: "counts"}
+                            ],
+                            dom: '<"row"<"col-lg-12"l>>t<"row"<"col-lg-12"p>>',
+                            order: [1, "desc"],
+                            destroy: true
+                        })
+                        $("#common").DataTable({
+                            data: common,
+                            columns: [
+                                {
+                                    data: "Cell_Marker",
+                                    render: function (data, type, row) {
+                                        return "<a target='_blank' href='/celltaxonomy/marker/" + row.Gene_ENTREZID2 + "'>" + row.Cell_Marker + "</a>"
+                                    }
+                                },
+                                {data: "counts"}
+                            ],
+                            dom: '<"row"<"col-lg-12"l>>t<"row"<"col-lg-12"p>>',
+                            order: [1, "desc"],
+                            destroy: true
+                        })
+                    }
+
+                })
+            }
+
+        })
+        $("#example").click(function(){
+            $("#input2").click()
+            $("#species").removeAttr("disabled")
+            $("#tissue").removeAttr("disabled")
+            $("#condition").removeAttr("disabled")
+            var species = new Option("Homo sapiens", "Homo sapiens", true, true);
+            $("#species").empty()
+            $("#species").append(species).trigger('change')
+            var tissue = new Option("Kidney", "Kidney", true, true);
+            $("#tissue").empty()
+            $("#tissue").append(tissue).trigger('change')
+            var condition = new Option("Physiological", "Physiological", true, true);
+            $("#condition").empty()
+            $("#condition").append(condition).trigger('change')
+            var cellA = new Option("T cell", "CT:00000110", true, true);
+            $("#cellA").empty()
+            $("#cellA").append(cellA).trigger('change')
+            var cellB = new Option("Classical monocyte", "CT:00000867", true, true);
+            $("#cellB").empty()
+            $("#cellB").append(cellB).trigger('change')
+        })
+        $("input[type=radio][name=additional]").change(function(){
+            $("#species").removeAttr("disabled")
+            $("#tissue").removeAttr("disabled")
+            $("#condition").removeAttr("disabled")
+        })
+        $(document).ready(function(){
+            $("#example").click()
+            $("#compare").click()
+        })
+    </script>
+
+</body>
+</html>

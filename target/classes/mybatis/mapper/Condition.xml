@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.ct.Mapper.ConditionMapper">
+<!--    <select id="getCondition" resultType="HashMap">-->
+<!--        select * from condition_page-->
+<!--        <where>-->
+<!--            <if test="tissue.size()>0">-->
+<!--                and Tissue_standard in-->
+<!--                <foreach collection="tissue" item="name" index="index" open="(" close=")" separator=",">-->
+<!--                    #{name}-->
+<!--                </foreach>-->
+<!--            </if>-->
+<!--            <if test="condition.size()>0">-->
+<!--                and Conditions in-->
+<!--                <foreach collection="condition" item="name" index="index" open="(" close=")" separator=",">-->
+<!--                    #{name}-->
+<!--                </foreach>-->
+<!--            </if>-->
+<!--            <if test="celltype.size()>0">-->
+<!--                and Cell_standard in-->
+<!--                <foreach collection="celltype" item="name" index="index" open="(" close=")" separator=",">-->
+<!--                    #{name}-->
+<!--                </foreach>-->
+<!--            </if>-->
+<!--        </where>-->
+<!--    </select>-->
+    <select id="getCondition" resultType="HashMap">
+        select * from search_condition
+    </select>
+    <select id="getConditionByID" resultType="HashMap">
+        select * from search_condition where Condition_ID=#{id}
+    </select>
+    <select id="getConditionBasicByID" resultType="HashMap">
+        select distinct Species,Cell_standard,CT_ID,Tissue_standard,Tissue_UberonOntology_ID2,Additional_Information2
+        from all_search_table where Disease_Ontology_ID2=#{id}
+    </select>
+    <select id="getConditionList" resultType="HashMap">
+        select Conditions,Count(Conditions) as counts from condition_page
+        <where>
+            <if test="tissue.size()>0">
+                and Tissue_standard in
+                <foreach collection="tissue" item="name" index="index" open="(" close=")" separator=",">
+                    #{name}
+                </foreach>
+            </if>
+            <if test="celltype.size()>0">
+                and Cell_standard in
+                <foreach collection="celltype" item="name" index="index" open="(" close=")" separator=",">
+                    #{name}
+                </foreach>
+            </if>
+        </where>
+
+        group by Conditions
+        order by counts desc
+    </select>
+
+    <select id="getConditionStatistic" resultType="HashMap">
+        select distinct ${item} from all_search_table as a left join publication_for_browse as b on a.PMID=b.PMID
+        where Disease_Ontology_ID2=#{id}
+    </select>
+</mapper>

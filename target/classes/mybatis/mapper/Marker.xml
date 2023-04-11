@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.ct.Mapper.MarkerMapper">
+
+    <select id="getAllMarkers" resultType="HashMap">
+        select * from ct.marker_browse_statistics
+        <where>
+            <if test="search!=''">
+                and (
+                       Gene_ENTREZID like concat('%',#{search},'%')
+                    or Cell_Marker like concat('%',#{search},'%')
+                    or cell_num like concat('%',#{search},'%')
+                    or Tissue_num like concat('%',#{search},'%')
+                    or Disease_num like concat('%',#{search},'%')
+                    or PMID_num like concat('%',#{search},'%')
+                    or resource_num like concat('%',#{search},'%')
+
+                )
+            </if>
+        </where>
+        order by ${title} ${direction}
+    </select>
+    <select id="getMarkerIdCard" resultType="HashMap">
+        select DISTINCT Cell_Marker,Gene_Alias,Gene_Ensembl_ID,Gene_ENTREZID,Uniprot,PFAM,HomoloGene,Species from ct.marker_description_result where Gene_ENTREZID2=#{marker};
+    </select>
+    <select id="getMarkerByName" resultType="HashMap">
+        select Gene_ENTREZID2 from ct.marker_description_result where binary Cell_Marker=#{marker};
+    </select>
+    <select id="getMarkerByID" resultType="HashMap">
+        select Cell_Marker from ct.marker_description_result where Gene_ENTREZID2=#{id};
+    </select>
+    <select id="getMarkerFigureData" resultType="HashMap">
+        select * from ct.Marker_Figure where binary symbol=#{marker} and tissue=#{tissue} and value_type = #{value_type}
+    </select>
+    <select id="getCellTypeEnrichment" resultType="HashMap">
+        select * from ct.cell_taxonomy_paper_support_tissue
+        where Gene_ENTREZID2=#{marker} and Species!="All" and supported_paper_number!=0
+        <if test="tissue!=''">
+            and Tissue_standard=#{tissue}
+        </if>
+        order by supported_paper_number desc
+
+    </select>
+    <select id="getCellTissueEnrichment" resultType="HashMap">
+        select * from ct.cell_taxonomy_paper_support_tissue
+        where Gene_ENTREZID2=#{entrezid} and Species!="All"
+        order by supported_paper_number desc
+
+    </select>
+    <select id="getCTEGenelist" parameterType="String" resultType="HashMap">
+        select Cell_standard, sum(OR2) as rowsum from ct.tissue_marker_fisher_test_result_for_each_cell
+        where (Gene_ENTREZID2_x=#{marker} or Gene_ENTREZID2_x=#{entrezid}) and Species!="All"
+        group by Cell_standard
+        order by rowsum desc
+        limit 0,30
+    </select>
+    <select id="getCTEGenelistByLS" parameterType="String" resultType="HashMap">
+        select Cell_standard, sum(marker_tissue_number) as rowsum from ct.tissue_marker_fisher_test_result_for_each_cell
+        where (Gene_ENTREZID2_x=#{marker} or Gene_ENTREZID2_x=#{entrezid}) and Species!="All"
+        group by Cell_standard
+        order by rowsum desc
+        limit 0,30
+    </select>
+    <select id="getMarkerStatistic" resultType="HashMap">
+        select * from ct.marker_browse_statistics
+    </select>
+    <select id="SingleMarkerSearch" resultType="HashMap">
+        select * from ct.marker_browse_statistics
+        where Cell_Marker like concat('%',#{marker},'%') or Gene_ENTREZID like concat('%',#{marker},'%')
+    </select>
+    <select id="getMarkerTable" resultType="HashMap">
+        select * from ct.cell_marker_table as a left join search_species as b on a.Species=b.Species
+        where Gene_ENTREZID2=#{marker}
+    </select>
+    <select id="getCellMarkerDE" resultType="HashMap">
+        select * from ct.total_findmarkers_notissue where Gene_id= #{marker} and p_val_adj &lt; 0.05
+    </select>
+    <select id="getCellMarkerDEtable" resultType="HashMap">
+        select * from ct.table_boxplot_FC_genes
+         where ENTREZID=#{marker}
+    </select>
+    <select id="getSpeciesList" resultType="HashMap">
+        select a.Cell_standard as cell,COUNT(distinct Gene_ENTREZID2) as counts,PMID_num  from ct.cell_browse_statistics as a
+        inner join ct.all_search_table as b on a.Cell_standard=b.Cell_standard
+        GROUP BY cell,PMID_num
+        order by PMID_num desc
+        limit 0,100
+    </select>
+    <select id="getCMECellList" resultType="HashMap">
+        select distinct Cell_standard,cell_id from ${database}
+        where Gene = binary #{marker} and Max &gt; 0
+    </select>
+    <select id="getMarkerCellDEBar" resultType="HashMap">
+        select CT_ID, ${database} as counts from ct.total_findmarkers_count
+        where Gene_id=#{marker} and CT_ID !="-"
+
+        order by ${database} desc
+        limit 0,50
+    </select>
+    <select id="getMarkerCellDETissueList" parameterType="String" resultType="HashMap">
+        select distinct Tissue from ct.total_findmarkers
+        where markers=#{marker} and Species=#{species}
+    </select>
+    <select id="getMarkerCellTotalBar" parameterType="String" resultType="HashMap">
+        select Cell_standard,Cell_id,sum(counts) as counts from ct.total_boxplot_long_count
+        where Gene_id=#{marker} and
+        Cell_id in
+        <foreach collection="datasetlist" item="name" index="index" open="(" close=")" separator=",">
+            #{name}
+        </foreach>
+        group by Cell_standard,Cell_id
+    </select>
+    <select id="getMarkerSS" parameterType="String" resultType="HashMap">
+        select * from ct.total_cell_specificity
+        where ENTREZ_ID= #{marker} and Cell_specific_score !="-"
+    </select>
+    <select id="getRecommendCells" parameterType="String" resultType="HashMap">
+        select * from recommend_markers as a left join search_celltype as b on a.CT_ID=b.CT_ID
+        where Gene_ENTREZID2=#{id}
+        <if test="species!='All'">
+            and Species=#{species}
+        </if>
+    </select>
+    <select id="getSummaryFilter" resultType="HashMap">
+        select * from recommend_markers
+        where Gene_ENTREZID2=#{markerid}
+        and (FC_median &gt;= #{fc} or specificity_median &gt;= #{ss} or supported_paper_number &gt;= #{pc} or n_ortholog &lt;= #{tc} or DE_ratio &lt;=#{dr})
+    </select>
+    <select id="getSpeciesSimilarity" resultType="HashMap">
+        select * from ct.common_marker_table
+        where Gene_ENTREZID2=#{id} and score !=0
+    </select>
+
+    <select id="getSurfaceMarker" resultType="HashMap">
+        select distinct Species,Evidence_summary,Antibody,Subcellular_location,Protein_class from human_surface_marker
+        where Gene_ENTREZID2=#{id}
+
+    </select>
+
+
+    <select id="getMarkerStatistic2" resultType="HashMap">
+        select distinct ${item} from all_search_table as a left join publication_for_browse as b on a.PMID=b.PMID
+        where Gene_ENTREZID2=#{id}
+    </select>
+
+    <select id="getMarkerHomoStatistic" resultType="HashMap">
+        select * from homolog_result
+        where Gene_ENTREZID2=#{id}
+    </select>
+</mapper>

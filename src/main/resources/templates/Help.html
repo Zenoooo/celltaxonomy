@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+
+    <!-- ***** start - head-matter.tag  -->
+    <meta charset="utf-8">
+
+    <meta name="description" content="Cell Taxonomy.">
+
+    <title class="notranslate">Help - Cell Taxonomy - CNCB-NGDC</title>
+    <link rel="icon" href="/celltaxonomy/static/img/CellTaxonomy v3.png">
+    <script src="/celltaxonomy/static/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/celltaxonomy/static/js/doc.js"></script>
+
+    <link href="/celltaxonomy/static/css/bow.ui.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/celltaxonomy/static/css/ionicons.min.css">
+    <link rel="stylesheet" href="/celltaxonomy/static/css/bootstrap.min.css" >
+    <script src="/celltaxonomy/static/js/bootstrap.min.js"></script>
+    <link rel="stylesheet"  type="text/css"  href="/celltaxonomy/static/css/doc.css">
+
+    <script type="text/javascript" src="/celltaxonomy/static/js/headerfooter-full.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="/celltaxonomy/static/css/my/my.css">
+    <style>
+        @media screen and (max-width: 1400px) and (min-width: 1024px){
+            .help img, .help-child img,.help-child-3 img, .help-child-4 img{
+                width:750px;
+            }
+        }
+        @media screen and (min-width: 1500px){
+            .help img, .help-child img,.help-child-3 img, .help-child-4 img{
+                width:900px;
+            }
+        }
+
+
+        .help h4{
+            margin-top: 30px;
+            font-weight: 700;
+            font-size: 16px;
+            font-family: Lato,'Helvetica Neue',sans-serif;
+            line-height: 30px;
+        }
+        .help p{
+            font-size: 14px;
+            line-height: 25px;
+
+        }
+        .help-child{
+            margin-left: 50px;
+        }
+        .help-child h4{
+            font-size: 15px;
+        }
+        .help-text-children{
+            margin-left: 50px;
+        }
+
+        .third-title>a{
+            text-decoration: none;
+        }
+
+        .help-child h4{
+            font-size: 24px;
+        }
+        .help-child-3 h4{
+            font-size: 22px;
+        }
+        .help-child-4 h4{
+            font-size: 15px;
+
+        }
+
+        .nav li {
+            font-family: Lato,'Helvetica Neue',sans-serif;
+
+        }
+        #databaselogo img{
+            width: 5rem !important;
+        }
+
+
+    </style>
+
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?6b352b313257516a97fd9d0db0276208";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+</head>
+<body>
+<nav th:replace="common/topbar::topbar"></nav>
+
+    <div class="container" style="background: #f4f7f6">
+        <div class="row">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/celltaxonomy">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Help</li>
+                </ol>
+            </nav>
+            <div  class="col-lg-12" style="background: white">
+                <div class="col-lg-3" role="complementary">
+                    <div class="bs-docs-sidebar" data-spy="affix" data-offset-top="170" data-offset-bottom="0" style="width:263px;margin-top: 20px;" >
+                            <ul class="nav bs-docs-sidenav nav-stacked nav-pills" >
+                                <li><a href="#tutorial_for_cell_taxonomy">1. Tutorial for Cell Taxonomy</a></li>
+                                <li><a href="#curation_model">2. Curation model</a></li>
+
+                                <li><a href="#search">3. Search</a></li>
+<!--                                <li class="first-title">-->
+<!--                                    <a href="#Browse_page">Browse page</a>-->
+<!--                                </li>-->
+                                <li>
+                                    <a href="#cell_types">4. Cell types</a>
+                                    <ul class="nav nav-stacked">
+
+                                        <li><a href="#description_of_cell_type"><span class="css_disc"></span>4.1 Description of cell type</a></li>
+                                        <li><a href="#cell_types_summary"><span class="css_disc"></span>4.2 Summary</a></li>
+                                        <li><a href="#cell_marker"><span class="css_disc"></span>4.3 Cell marker</a></li>
+                                        <li><a href="#cell_types_cell_marker_expression_enrichment"><span class="css_disc"></span>4.4 Cell marker expression enrichment</a></li>
+                                        <li><a href="#cell_types_cell_surface_marker"><span class="css_disc"></span>4.5 Cell surface marker</a></li>
+                                        <li><a href="#cellular_comparison_across_species"><span class="css_disc"></span>4.6 Cellular comparison across species</a></li>
+                                        <li><a href="#cellular_similarity_based_on_cell_markers"><span class="css_disc"></span>4.7 Cellular similarity based on cell markers</a></li>
+                                        <li><a href="#cellular_composition_of_tissues"><span class="css_disc"></span>4.8 Cellular composition of tissues</a></li>
+                                        <li><a href="#cell_cluster_evaluation_in_scRNA-seq_studies"><span class="css_disc"></span>4.9 Cell cluster evaluation in scRNA-seq studies</a></li>
+
+                                    </ul>
+                                </li>
+
+
+                                <li>
+                                    <a href="#markers">5. Cell markers</a>
+                                    <ul class="nav nav-stacked" >
+
+                                        <li><a href="#markers_basic_information"><span class="css_disc"></span>5.1 Basic information</a></li>
+                                        <li><a href="#markers_summary"><span class="css_disc"></span>5.2 Summary</a></li>
+                                        <li><a href="#cell_type"><span class="css_disc"></span>5.3 Cell type</a></li>
+                                        <li><a href="#markers_cell_marker_expression_enrichment"><span class="css_disc"></span>5.4 Cell marker expression enrichment</a></li>
+                                        <li><a href="#markers_cell_surface_marker"><span class="css_disc"></span>5.5 Cell surface marker</a></li>
+                                        <li><a href="#markers_conserved_cell_markers_across_species"><span class="css_disc"></span>5.6 Cell marker comparison across species</a></li>
+
+                                    </ul>
+                                </li>
+
+
+                                <li>
+                                    <a href="#tissues">6. Tissues</a>
+                                    <ul class="nav nav-stacked" >
+                                        <li><a href="#tissues_summary"><span class="css_disc"></span>6.1 Summary</a></li>
+
+                                        <li><a href="#tissues_basic_information"><span class="css_disc"></span>6.2 Basic information</a></li>
+                                        <li><a href="#publication-supported_cell_types_and_markers"><span class="css_disc"></span>6.3 Publication-supported cell types and markers</a></li>
+
+                                    </ul>
+
+                                </li>
+
+                                <li>
+                                    <a  href="#species">7. Species</a>
+                                </li>
+                                <li>
+                                    <a  href="#condition">8. Conditions</a>
+                                </li>
+                                <li>
+                                    <a href="#scRNA-seq_studies">9. scRNA-seq studies</a>
+                                    <ul class="nav nav-stacked" >
+                                        <li><a href="#details_of_the_study"><span class="css_disc"></span>9.1 Details of the study</a></li>
+                                        <li><a href="#sample"><span class="css_disc"></span>9.2 Sample</a></li>
+                                        <li><a href="#metadata"><span class="css_disc"></span>9.3 Metadata</a></li>
+                                        <li><a href="#dimensional_reduction"><span class="css_disc"></span>9.4 Dimensional reduction</a></li>
+                                        <li><a href="#silhouette_coefficient"><span class="css_disc"></span>9.5 Silhouette coefficient</a></li>
+                                        <li><a href="#heterogeneity_of_cell_population"><span class="css_disc"></span>9.6 Heterogeneity of cell population</a></li>
+<!--                                        <li><a href="#marker_expression_profile"><span class="css_disc"></span>9.7 Marker expression profile</a></li>-->
+                                        <li><a href="#cell_marker_evaluation"><span class="css_disc"></span>9.7 Cell marker evaluation</a></li>
+                                        <li><a href="#cell_type_specificity"><span class="css_disc"></span>9.8 Cell type specificity</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="#publications">10. Publications</a></li>
+
+                                <li><a href="#download_page">11. Download</a></li>
+                                <li><a href="#tool">12. Tools</a></li>
+
+                                <li><a href="#contact_us">13. Contact us</a></li>
+                                <li><a href="#citation">14. How to cite</a></li>
+                            </ul>
+                        </div>
+
+                </div>
+                <div class="col-lg-9">
+                    <div class="mypanel-body"  style="background:#ffffff;padding:10px 40px">
+                        <div class="help">
+                            <h4 id="tutorial_for_cell_taxonomy" style="margin-top: 10px">1. Tutorial for Cell Taxonomy</h4>
+                            <p>
+                                Cell Taxonomy is a curated repository of 3,143 cell types and 26,613 associated cell markers encompassing 387 tissues and 257 conditions across 34 species based on 4,299 publications. Cell Taxonomy presents a well-structured taxonomy for curated cell types and incorporates 146 scRNA-seq studies containing about 3.5 million single cells to enable in-depth exploration of cell types and markers. Importantly, Cell Taxonomy provides multi-faceted cellular characterization and extensive assessment, facilitating users to select high-quality cell markers and expression profiles for cell types. Explore the taxonomy of cells now!
+                            </p>
+                        </div>
+                        <div class="help">
+                            <h4 id="curation_model">2. Curation model</h4>
+                            <p>
+                                Cell types and associated cell markers as well as tissues and conditions were collected based on integration of multiple sources and manual curation of literatures. Full texts of these publications were manually surveyed to extract essential information of cell types, species, tissues, conditions, cellular annotation, cell markers and cellular hierarchical relationships based on controlled vocabularies.
+                            </p>
+                            <div>
+                                <table class="table table-striped table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th>Data type</th>
+                                        <th>Description</th>
+                                        <th>Value</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>Species</td>
+                                        <td>Controlled vocabulary</td>
+                                        <td>Homo sapiens, Mus musculus, Danio rerio, Drosophila melanogaster, etc.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Cell standard</td>
+                                        <td>Controlled vocabulary</td>
+                                        <td>Fibroblast neural crest derived, Jurkat cell, Germ line stem cell, etc.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Cell Ontology ID</td>
+                                        <td>Cell identifier</td>
+                                        <td>CL:0000034, CL:0000235, CL:0000236, etc.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Parent cell ID</td>
+                                        <td>Parent cell identifier</td>
+                                        <td>Cell Ontology ID</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Tissue</td>
+                                        <td>Controlled vocabulary</td>
+                                        <td>Embryo, Testis, Gonad, Reproductive gland, Ovary, etc.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Tissue ID</td>
+                                        <td>Tissue identifier</td>
+                                        <td>Uber-anatomy ontology (UBERON) ID</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Condition</td>
+                                        <td>Controlled vocabulary</td>
+                                        <td>Normal, Glioblastoma, High-grade glioma, Colon cancer, Endometrial cancer, etc.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Disease ID</td>
+                                        <td>Disease identifier</td>
+                                        <td>Disease Ontology ID</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Cell marker</td>
+                                        <td>Controlled vocabulary</td>
+                                        <td>P75, CD34, HNK-1, SOX10, P75CD45, CD4, HNK1, Gfr1, Plzf, E-cad, etc.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Gene ID</td>
+                                        <td>Gene identifier</td>
+                                        <td>ENTREZ ID</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Source</td>
+                                        <td>Controlled vocabulary</td>
+                                        <td>Cell Taxonomy, CellMarker, Human Cell Landscape, Human Cell Atlas, OnClass, ScTyper sigDB, SHOGoiN, PanglaoDB, Tinyatlas, CellMatch and Invitrogen</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Reference</td>
+                                        <td>Publication in which the cell type or marker is described</td>
+                                        <td>PubMed ID</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="help">
+                            <h4 id="search">3. Search</h4>
+                            <p>
+                                Cell Taxonomy provides quick search and advanced search for cell types, genes, tissues, conditions and species by specific name, synonyms or IDs. The advanced search enables combining searching and more relevant results will be returned.
+                            </p>
+                            <img th:src="@{/static/img/help2-1.bmp}" alt="">
+                            <img th:src="@{/static/img/help3-43.bmp}" alt="">
+
+                        </div>
+                        <div class="help">
+                            <ul style="margin:0">
+                                <li style="list-style: none">
+                                    <h4 id="cell_types">4. Cell types</h4>
+                                    <p>
+                                        Cell Taxonomy works on a structured and standardized framework for cell types by literature curation and comprehensive integration. A tree structure of all curated cell types as well as detailed statistics are shown, including cell types with available cell markers and cell types without available ones. For the cell types with available cell markers, the detailed number of associated species, tissues, conditions, cell markers and publications for each curated cell type is presented in the table. For the cell types without available cell markers for now, the IDs and associated tissues are provided.
+                                    </p>
+
+                                    <img th:src="@{/static/img/help3-2.bmp}" alt="">
+                                    <ul class="help-child-3">
+                                        <li style="list-style: none">
+                                            <ul class="help-child-4">
+                                                <li >
+                                                    <h4 id="description_of_cell_type">4.1 Description of cell type</h4>
+                                                    <p>
+                                                        The basic information of the cell type including Cell Taxonomy ID, Cell Ontology ID, synonyms, description and image are shown. The source of this image is <a target="_blank" href="http://www.cellimagelibrary.org/browse/celltype">http://www.cellimagelibrary.org/browse/celltype</a>.
+                                                    </p>
+                                                    <img th:src="@{/static/img/help3-3.bmp}" alt="">
+                                                </li>
+                                                <li>
+                                                    <h4 id="cell_types_summary">4.2 Summary</h4>
+                                                    <p>
+                                                        Cell Taxonomy summarizes multi-faceted characterization for each cell type, including publication-supported cell markers, cell surface markers, cellular similarity based on markers, cell composition of tissues, cellular comparison across species, assessment metrics of cell markers and available expression profiles. In specific, Cell Taxonomy provides several assessment metrics to help users select robust cell markers, including supported publication (number of publications), expression enrichment (log2FC, highly expressed ratio, specificity score) and conservation (number of orthologs reported as cell markers for this cell type across species). The cell markers are ranked in descending order by the number of metrics meeting the thresholds. You can adjust metric thresholds to screen for personalized high-quality cell markers.
+                                                    </p>
+                                                    <img th:src="@{/static/img/help3-4-1.bmp}">
+<!--                                                    <p>-->
+<!--                                                        The available scRNA-seq studies are ranked in descending order by the number of assessment metrics of cell clusters (cell number, silhouette coefficient, ROGUE score) meeting top 25% cutoff for this cell type.-->
+<!--                                                    </p>-->
+<!--                                                    <img th:src="@{/static/img/help3-4-2.bmp}">-->
+
+                                                </li>
+
+                                                <li>
+                                                    <h4 id="cell_marker">4.3 Cell marker</h4>
+                                                    <p>
+                                                        Top publication-supported cell markers for each cell type in different species and tissues are shown. Fisher’s exact test is performed with FDR to test if cell markers are specifically associated with this cell type by publication number: *** for < 0.001, ** for [0.001, 0.01) and * for [0.01, 0.05).
+                                                    </p>
+                                                    <img th:src="@{/static/img/help3-6.bmp}" alt="">
+                                                    <p>
+                                                        The heatmap shows the number of supported publications of cell markers in different tissues for this cell type. The relevant data in the figures is presented in the table.
+                                                    </p>
+                                                    <img th:src="@{/static/img/help3-8.bmp}" alt="">
+                                                </li>
+                                                <li>
+                                                    <h4 id="cell_types_cell_marker_expression_enrichment">4.4 Cell marker expression enrichment</h4>
+                                                    <p>
+                                                        Cell Taxonomy provides expression enrichment profiles for top publication-supported cell markers including the highly expressed ratio (No. of highly expressed samples/No. of samples), differential expression fold-change between this cell type and other cell types and cell specificity score in relevant scRNA-seq studies. The detail information of cell marker expression enrichment scores in cell types (expression proportion, fold-change, p-value, FDR, cell specificity score and scRNA-seq studies) is listed in the table.
+                                                    </p>
+                                                    <img th:src="@{/static/img/help3-5-1.bmp}" alt="">
+                                                    <img th:src="@{/static/img/help3-5-2.bmp}" alt="">
+                                                    <img th:src="@{/static/img/help3-5-3.bmp}" alt="">
+
+                                                </li>
+                                                <li>
+                                                    <h4 id="cell_types_cell_surface_marker">4.5 Cell surface marker</h4>
+                                                    <p>
+                                                        The cell surface information of cell markers for each cell type is incorporated from <a target="_blank" href="http://v13.proteinatlas.org/humanproteome/secretome">Human Protein Atlas</a> by selecting genes which code for membrane proteins or membrane & secreted proteins with supported evidence at protein or transcript level.
+                                                    </p>
+                                                    <img th:src="@{/static/img/help3-7.bmp}" alt="">
+                                                </li>
+                                                <li>
+                                                    <h4 id="cellular_comparison_across_species">4.6 Cellular comparison across species</h4>
+                                                    <p>
+                                                        The cell marker composition of cell types is compared across species based on the orthologous information. The orthologous genes are downloaded and extracted from <a target="_blank" href="https://ftp.ncbi.nih.gov/pub/HomoloGene/">NCBI HomoloGene</a>. For specific cell type, the similarity of reported cell marker composition between different species is shown.
+                                                    </p>
+                                                    <img th:src="@{/static/img/help3-10-2.bmp}" alt="">
+
+                                                    <p>
+                                                        The cell markers and their orthologous genes which are also reported as cell markers for the same cell type are shown.
+                                                    </p>
+                                                    <img th:src="@{/static/img/help3-10-1.bmp}" alt="">
+
+                                                </li>
+                                                <li>
+                                                    <h4 id="cellular_similarity_based_on_cell_markers">4.7 Cellular similarity based on cell markers</h4>
+                                                    <p>
+                                                        The cell marker composition of cell types is compared with each other. The similarity score (0-1) is calculated between two cell types by the number of common markers normalized by marker set sizes. One represents the same marker sets of two cell types and zero means the two cell types share no common markers.
+                                                    </p>
+                                                    <img th:src="@{/static/img/help3-10.bmp}" alt="">
+                                                </li>
+                                                <li>
+                                                    <h4 id="cellular_composition_of_tissues">4.8 Cellular composition of tissues</h4>
+                                                    <p>
+                                                        The cell-type distribution across human and mouse tissues are shown in representative large-scale scRNA-seq studies (Tabula Sapiens Consortium and Tabula Muris Consortium).
+                                                    </p>
+                                                    <img th:src="@{/static/img/help3-11-1.bmp}" alt="">
+
+                                                </li>
+                                                <li >
+                                                    <h4 id="cell_cluster_evaluation_in_scRNA-seq_studies">4.9 Cell cluster evaluation in scRNA-seq studies</h4>
+                                                    <p>
+                                                        Cell Taxonomy conducts the quality evaluation of cell clusters to ease users to select high-quality expression profiles for single-cell assignment. In specific, Silhouette coefficient of corresponding cell cluster, average Silhouette coefficient of all clusters in one sample, ROGUE purity score of corresponding cell cluster, average ROGUE purity score of all clusters in one sample, and cell number are provided in all collected samples to measure the quality of scRNA-seq studies for this cell type. You can adjust the threshold of these five metrics (top percentiles) to screen for personalized high-quality studies.
+                                                    </p>
+                                                    <img th:src="@{/static/img/help3-12.bmp}" alt="">
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li style="list-style: none">
+                                    <h4 id="markers">5. Cell markers</h4>
+                                    <p>
+                                        Molecular features serve as the basis for accurate cell-type classification and high-quality cell markers are essential information for each cell type. Cell Taxonomy provides the detailed statistics of cell markers including the number of associated cell types, tissues, conditions, conditions, publications and orthologous genes.
+                                    </p>
+                                    <img th:src="@{/static/img/help3-13.bmp}" alt="">
+                                    <ul>
+                                        <li class="help-child-3" style="list-style: none">
+                                            <ul class="help-child-4">
+                                                <li>
+                                                    <h4 id="markers_basic_information">5.1 Basic information</h4>
+                                                    <p>
+                                                        The basic information of cell marker is provided including species, gene alias, ENTREZ ID, Ensemble ID, Uniprot, PFAM and orthologous genes.
+                                                    </p>
+                                                    <img th:src="@{/static/img/help3-14.bmp}" alt="">
+                                                </li>
+                                                <li>
+                                                    <h4 id="markers_summary">5.2 Summary</h4>
+                                                    <p>
+                                                        Multi-faceted characterization for this cell marker is summarized including publication-supported cell types, cell surface marker, conserved cell marker and cell marker expression enrichment patterns. In specific, the assessment metrics of associated cell types contain supported publication (No. of publications), expression enrichment (log2FC, highly expressed ratio, specificity score) and conservation (number of orthologs reported as cell markers for this cell type across species). The cell types are ranked in descending order by the number of metrics meeting the thresholds. You can adjust metric thresholds to screen for personalized high-quality cell types for which this gene is more likely to be a cell marker.
+                                                    </p>
+                                                    <img th:src="@{/static/img/help3-14-1.bmp}" alt="">
+                                                </li>
+                                                <li>
+                                                    <h4 id="cell_type">5.3 Cell type</h4>
+                                                    <p>
+                                                        Cell types of this cell marker in various tissues are shown with significance indicating if this cell marker is specifically associated for this cell type by fisher’s exact test with FDR: *** for < 0.001, ** for [0.001, 0.01) and * for [0.01, 0.05).
+                                                    </p>
+                                                    <img th:src="@{/static/img/help3-15.bmp}" alt="">
+                                                    <p>
+                                                        The heatmap shows the number of supported publications of cell types in different tissues for this cell marker. The relevant data in the figures is presented in the table.
+                                                    </p>
+                                                    <img th:src="@{/static/img/help3-16.bmp}" alt="">
+                                                </li>
+                                                <li>
+                                                    <h4 id="markers_cell_marker_expression_enrichment">5.4 Cell marker expression enrichment</h4>
+                                                    <p>
+                                                        The expression enrichment profiles of this cell marker in top publication-supported cell types are shown including the highly expressed ratio (No. of highly expressed samples/No. of samples), differential expression fold-change between one cell type and other cell types and cell specificity score in relevant scRNA-seq studies. The expression enrichment scores of this cell marker in cell types (No. of expressed samples, No. of highly expressed samples, highly expressed ratio, expression proportion, fold-change, p-value, FDR, cell specificity score and scRNA-seq studies) are listed in the table.
+                                                    </p>
+                                                    <img th:src="@{/static/img/help3-19-1.bmp}" alt="">
+                                                    <img th:src="@{/static/img/help3-19-2.bmp}" alt="">
+                                                    <img th:src="@{/static/img/help3-19-3.bmp}" alt="">
+
+
+                                                </li>
+                                                <li>
+                                                    <h4 id="markers_cell_surface_marker">5.5 Cell surface marker</h4>
+                                                    <p>
+                                                        The cell surface information of this cell markers is incorporated from <a target="_blank" href="http://v13.proteinatlas.org/humanproteome/secretome">Human Protein Atlas</a> by selecting genes which code for membrane proteins or membrane & secreted proteins with supported evidence at protein or transcript level.
+                                                    </p>
+                                                    <img th:src="@{/static/img/help3-20.bmp}" alt="">
+                                                </li>
+                                                <li>
+                                                    <h4 id="markers_conserved_cell_markers_across_species">5.6 Cell marker comparison across species</h4>
+                                                    <p>
+                                                        The cell markers are compared across species and their orthologous genes which are also reported as cell markers for the same cell type are shown.
+                                                    </p>
+                                                    <img th:src="@{/static/img/help3-21.bmp}" alt="">
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li style="list-style: none">
+                                    <h4 id="tissues">6. Tissues</h4>
+                                    <p>
+                                        Cell Taxonomy describes cell types and cell markers in hundreds of tissues with standard ontology IDs. The tree structure of curated tissues and detailed statistics are provided including the number of associated species, conditions, cell types, cell markers and publications.
+                                    </p>
+                                    <img th:src="@{/static/img/help3-22.bmp}" alt="">
+                                    <ul class="help-child-3">
+                                        <ul class="help-child-4">
+                                            <li>
+                                                <h4 id="tissues_summary">6.1 Summary</h4>
+                                                <p>
+                                                    For this tissue, multiple information including the number of associated cell types, conditions, species and publications as well as the mostly reported cell type is summarized.
+                                                </p>
+                                                <img th:src="@{/static/img/help3-23.bmp}" alt="">
+                                            </li>
+                                            <li>
+                                                <h4 id="tissues_basic_information">6.2 Basic information</h4>
+                                                <p>
+                                                    The curation information of species, cell types, cell markers, conditions and sources associated with this tissue is provided in detail.
+                                                </p>
+                                                <img th:src="@{/static/img/help3-24.bmp}" alt="">
+                                            </li>
+                                            <li>
+                                                <h4 id="publication-supported_cell_types_and_markers">6.3 Publication-supported cell types and markers</h4>
+                                                <p>
+                                                    The top publication-supported cell types in this tissue are displayed in the bar figure. And the heatmap shows the number of supported publications of cell markers for different cell types in this tissue.
+                                                </p>
+                                                <img th:src="@{/static/img/help3-25.bmp}" alt="">
+                                                <img th:src="@{/static/img/help3-26.bmp}" alt="">
+                                            </li>
+                                        </ul>
+                                    </ul>
+
+                                </li>
+                                <li style="list-style: none">
+                                    <h4 id="species">7. Species</h4>
+                                    <p>
+                                        Cell Taxonomy characterizes cell types in tens of species, including Homo sapiens, Mus musculus, Drosophila melanogaster, Danio rerio, Rattus norvegicus, Macaca fascicularis and so on. The detailed statistics of species including the number of associated cell types, tissues, cell markers, conditions and publications are displayed.
+                                    </p>
+                                    <img th:src="@{/static/img/help6-1.bmp}" alt="">
+                                </li>
+                                <li style="list-style: none">
+                                    <h4 id="condition">8. Conditions</h4>
+                                    <p>
+                                        Hundreds of conditions (mainly diseases) are collected in Cell Taxonomy with standard disease ontology IDs. The detailed statistics of conditions including the number of associated cell types, tissues, cell markers, species and publications are shown.
+                                    </p>
+                                    <img th:src="@{/static/img/help7-1.bmp}" alt="">
+                                </li>
+                                <li style="list-style: none">
+                                    <h4 id="scRNA-seq_studies">9. scRNA-seq studies</h4>
+                                    <p>
+                                        Cell Taxonomy analyzes 146 publicly available scRNA-seq studies containing 3.5 million cells of human and mouse to comprehensively characterize cell types and cell markers. Cells are labelled based on cell types classified in the original publications, and cell types in studies are manually annotated with standardized names in Cell Taxonomy. You can search and filter specific scRNA-seq studies that match certain criteria such as species, cell type and tissue.
+                                    </p>
+                                    <img th:src="@{/static/img/help3-27.bmp}" alt="">
+                                    <ul class="help-child-3">
+                                        <ul class="help-child-4">
+                                            <li>
+                                                <h4 id="details_of_the_study">9.1 Details of the study</h4>
+                                                <p>
+                                                    The detail information of this study is displayed including the journal, year, PMID, cell number, tissue and library.
+                                                </p>
+                                                <img th:src="@{/static/img/help3-28.bmp}" alt="">
+                                            </li>
+                                            <li>
+                                                <h4 id="sample">9.2 Sample</h4>
+                                                <p>
+                                                    The samples contained in this study are listed with the information of species, tissue, and cell number.
+                                                </p>
+                                                <img th:src="@{/static/img/help3-29.bmp}" alt="">
+                                            </li>
+                                            <li>
+                                                <h4 id="metadata">9.3 Metadata</h4>
+                                                <p>
+                                                    The cell number of cell types in tissues is displayed for each sample. And the relevant data in the figures is presented in the table.
+                                                </p>
+                                                <img th:src="@{/static/img/help3-30.bmp}" alt="">
+<!--                                                <img th:src="@{/static/img/help3-31.bmp}" alt="">-->
+                                            </li>
+                                            <li>
+                                                <h4 id="dimensional_reduction">9.4 Dimensional reduction</h4>
+                                                <p>
+                                                    The t-SNE and UMAP graph are presented for cell clusters in samples of this study. RunTSNE and RunUMAP method in R Seurat packages were used, and the original annotation of cell types in the study is used as reference for clustering results.
+                                                </p>
+                                                <img th:src="@{/static/img/help3-32.bmp}" alt="">
+                                            </li>
+                                            <li>
+                                                <h4 id="silhouette_coefficient">9.5 Silhouette coefficient</h4>
+                                                <p>
+                                                    Cell Taxonomy provides Silhouette coefficient in studies to measure the goodness of cell clusters. Silhouette coefficient ranges from -1 to 1, indicating the difference between intra-cluster distance and inter-cluster distance, where 1 means clusters are well apart from each other, 0 means clusters are indifferent, and -1 means clusters are defined in the wrong way.
+                                                </p>
+                                                <img th:src="@{/static/img/help3-32-1.bmp}" alt="">
+
+<!--                                                <img th:src="@{/static/img/help3-32-2.bmp}" alt="">-->
+                                            </li>
+                                            <li>
+                                                <h4 id="heterogeneity_of_cell_population">9.6 Heterogeneity of cell population</h4>
+                                                <p>
+                                                    An entropy-based statistic, ROGUE, is calculated to accurately quantify the purity of identified cell clusters (B Liu, 2021). A ROGUE value greater than 0.9 indicates a cell cluster with high purity.
+                                                </p>
+                                                <img th:src="@{/static/img/help3-33.bmp}" alt="">
+                                            </li>
+<!--                                            <li>-->
+<!--                                                <h4 id="marker_expression_profile">9.7 Marker expression profile</h4>-->
+<!--                                                <p>-->
+<!--                                                    The expression profiles in the original publications are displayed to enable the exploration of gene expression in various cell types (TPM for full-length sequencing and CPM for tag-based sequencing data).-->
+<!--                                                </p>-->
+<!--                                                <img th:src="@{/static/img/help3-35.bmp}" alt="">-->
+<!--                                            </li>-->
+                                            <li>
+                                                <h4 id="cell_marker_evaluation">9.7 Cell marker evaluation</h4>
+                                                <p>
+                                                    Differential expression pattern of cell markers between one cell type and other cell types is evaluated by FindMarkers in Seurat v4.0 (logFC threshold = 0.25). By selecting the cell type of your interest, you can see the top ranked cell markers for this cell type with high fold change.
+                                                </p>
+                                                <img th:src="@{/static/img/help3-36.bmp}" alt="">
+                                                <p>
+                                                    Select the gene of your interest, you can see the top ranked cell types for this gene with high fold change.
+                                                </p>
+                                                <img th:src="@{/static/img/help3-37.bmp}" alt="">
+                                            </li>
+                                            <li>
+                                                <h4 id="cell_type_specificity">9.8 Cell type specificity</h4>
+                                                <p>
+                                                    Jensen-Shannon (JS) divergence score (0-1) is calculated to quantify the cell type specificity of one marker gene (Cabili MN, 2011). The JS score greater than 0.6 indicates the higher specificity. By selecting the gene name of your interest, you can see the top ranked cell types in which the gene is specifically expressed.
+                                                </p>
+                                                <img th:src="@{/static/img/help3-38.bmp}" alt="">
+                                                <!--                                            <p>-->
+                                                <!--                                                By selecting the cell type and tissue of your interest, you can see the highly specific genes in this cell type.-->
+                                                <!--                                            </p>-->
+                                                <!--                                            <img th:src="@{/static/img/help3-39.bmp}" alt="">-->
+
+                                            </li>
+                                        </ul>
+                                    </ul>
+                                </li>
+                                <li style="list-style: none">
+                                    <h4 id="publications">10. Publications</h4>
+                                    <p>
+                                        Cell Taxonomy contains about two hundred thousand records from manual curation of about 4,300 single-cell related literatures. The publication can be filtered by published year and the detailed cell types and cell markers reported in this publication are shown.
+                                    </p>
+                                    <img th:src="@{/static/img/help3-41.bmp}" alt="">
+                                    <img th:src="@{/static/img/help3-42.bmp}" alt="">
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="help">
+                            <h4 id="download_page">11. Download</h4>
+                            <p>
+                                Cell Taxonomy provides the download service of all detail information for 3,143 cell types and 26,613 associated cell markers in 257 conditions and 387 tissues across 34 species.
+                            </p>
+                            <img th:src="@{/static/img/help3-44.bmp}" alt="" >
+
+                        </div>
+                        <div class="help">
+                            <h4 id="tool">12. Tools</h4>
+                            <p>
+                                Cell Taxonomy deploys two useful tools for further mining data in Cell Taxonomy. For example, Cell Type Predictor provides customized analysis to predict cell types by user-provided gene list (possibly identified from scRNA-seq studies). Cell Type Predictor will compare them to cell types with the curated list of cell markers in Cell Taxonomy (top ranked ones based on expression enrichment, publication and conservation) and suggest matching cell types based on similarity scores.
+                            </p>
+                            <img th:src="@{/static/img/help3-47.bmp}">
+                            <p>
+                                The tool of Cell Type Comparator facilitates comparison of two cell types based on their cell markers and will return the cell-type-shared and cell-type-specific markers.
+                            </p>
+                            <img th:src="@{/static/img/help3-46.bmp}">
+                        </div>
+                        <div class="help">
+                            <h4 id="contact_us">13. Contact us</h4>
+                            <p>
+                                If you have any questions or comments, please feel free to contact us via email (jiangs@big.ac.cn, qianqiheng2018m@big.ac.cn).
+                            </p>
+                        </div>
+                        <div class="help">
+                            <h4 id="citation">14. How to cite</h4>
+                            <p>When using the Cell Taxonomy database, please cite:</p>
+                            <p>[1] Jiang, S., Qian, Q., Zhu, T., Zong, W., Shang, Y., Jin, T., Zhang, Y., Chen, M., Wu, Z., Chu, Y. et al. (2023) Cell Taxonomy: a curated repository of cell types with multifaceted characterization. Nucleic Acids Res, 51, D853-D860.</p>
+
+                            <p>Link of OpenLB: <a target="_blank" href="https://ngdc.cncb.ac.cn/openlb/publication/OLB-PM-36161321">https://ngdc.cncb.ac.cn/openlb/publication/OLB-PM-36161321</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>

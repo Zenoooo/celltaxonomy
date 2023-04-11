@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Download - Cell Taxonomy - CNCB-NGDC</title>
+    <link rel="stylesheet" href="/celltaxonomy/static/css/demo.css" type="text/css">
+    <link rel="icon" href="/celltaxonomy/static/img/CellTaxonomy v3.png">
+
+    <link rel="stylesheet" href="/celltaxonomy/static/css/ionicons.min.css">
+
+    <link rel="stylesheet" href="/celltaxonomy/static/css/zTreeStyle/zTreeStyle.css" type="text/css">
+    <script src="/celltaxonomy/static/js/jquery.min.js"></script>
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+
+    <link rel="stylesheet" href="/celltaxonomy/static/css/bootstrap.min.css" >
+    <link rel="stylesheet" href="/celltaxonomy/static/css/dataTables.bootstrap.min.css" >
+
+    <script src="/celltaxonomy/static/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/celltaxonomy/static/js/jquery.ztree.core.min.js"></script>
+    <script type="text/javascript" src="/celltaxonomy/static/js/jquery.ztree.exhide.js"></script>
+    <script type="text/javascript" src="/celltaxonomy/static/js/fuzzysearch.js"></script>
+    <script src="/celltaxonomy/static/js/plotly-latest.min.js"></script>
+    <script type="text/javascript" src="/celltaxonomy/static/js/headerfooter-full.js"></script>
+    <script src="/celltaxonomy/static/js/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet"  href="/celltaxonomy/static/css/buttons.bootstrap.min.css">
+    <script src="/celltaxonomy/static/js/dataTables.buttons.min.js"></script>
+    <script src="/celltaxonomy/static/js/buttons.bootstrap.min.js"></script>
+
+    <script src="/celltaxonomy/static/js/dataTables.bootstrap.min.js"></script>
+    <link href="/celltaxonomy/static/css/bow.ui.min.css" rel="stylesheet">
+
+    <script type="text/javascript" src="/celltaxonomy/static/js/echarts.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="/celltaxonomy/static/css/my/my.css">
+
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?6b352b313257516a97fd9d0db0276208";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+</head>
+<body>
+<nav th:replace="common/topbar::topbar"></nav>
+    <div class="container">
+        <div class="row">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/celltaxonomy">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Download</li>
+                </ol>
+            </nav>
+            <div class="mypanel">
+                <div class="mypanel-body" style="margin: 10px 50px;padding:10px 20px">
+                    <h4 style="margin-bottom: 30px;font-size: 28px">Download</h4>
+
+                    <ul>
+                        <li style="list-style-type: disc">
+                            Cell Taxonomy's curated cell types and markers file
+                            <ul>
+                                <li>
+                                    <a href="https://download.cncb.ac.cn/celltaxonomy/Cell_Taxonomy_resource.txt" download="Cell_Taxonomy_resource.txt">Cell_Taxonomy_resource.txt</a>
+                                </li>
+<!--                                <p>Coming soon</p>-->
+                            </ul>
+                        </li>
+                        <li style="list-style-type: disc">
+                            Source code
+                            <ul>
+                                <li>
+                                    <a href="https://download.cncb.ac.cn/celltaxonomy/Code_for_download.zip" download="Source_code.zip">Source_code.zip</a>
+                                </li>
+                                <!--                                <p>Coming soon</p>-->
+                            </ul>
+                        </li>
+                    </ul>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.ct.Mapper.PublicationMapper">
+
+    <select id="getPub" resultType="HashMap">
+        select * from ct.publication_for_browse
+    </select>
+    <select id="getPubDetail" resultType="HashMap">
+        select * from ct.publication_detail_for_browse
+        where PMID=#{pmid}
+    </select>
+    <select id="getPubYear" resultType="HashMap">
+        select pubYear,Count(distinct PMID) as counts from ct.publication_for_browse group by pubYear
+    </select>
+</mapper>

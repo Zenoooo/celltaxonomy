@@ -1,0 +1,2176 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Tissue - Cell Taxonomy - CNCB-NGDC</title>
+    <link rel="icon" href="/celltaxonomy/static/img/CellTaxonomy v3.png">
+
+    <link rel="stylesheet" href="/celltaxonomy/static/css/demo.css" type="text/css">
+
+    <link rel="stylesheet" href="/celltaxonomy/static/css/ionicons.min.css">
+
+    <link rel="stylesheet" href="/celltaxonomy/static/css/zTreeStyle/zTreeStyle.css" type="text/css">
+    <script src="/celltaxonomy/static/js/jquery.min.js"></script>
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <script src="/celltaxonomy/static/js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" href="/celltaxonomy/static/css/bootstrap.min.css" >
+    <link rel="stylesheet" href="/celltaxonomy/static/css/dataTables.bootstrap.min.css" >
+
+    <script type="text/javascript" src="/celltaxonomy/static/js/jquery.ztree.core.min.js"></script>
+    <script type="text/javascript" src="/celltaxonomy/static/js/jquery.ztree.exhide.js"></script>
+    <script type="text/javascript" src="/celltaxonomy/static/js/fuzzysearch.js"></script>
+
+    <script src="/celltaxonomy/static/js/plotly-latest.min.js"></script>
+
+    <script src="/celltaxonomy/static/js/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet"  href="/celltaxonomy/static/css/buttons.bootstrap.min.css">
+    <script src="/celltaxonomy/static/js/dataTables.buttons.min.js"></script>
+    <script src="/celltaxonomy/static/js/jszip.min.js"></script>
+    <script src="/celltaxonomy/static/js/buttons.html5.min.js"></script>
+    <script src="/celltaxonomy/static/js/buttons.bootstrap.min.js"></script>
+
+    <script src="/celltaxonomy/static/js/dataTables.bootstrap.min.js"></script>
+    <link href=" /celltaxonomy/static/css/dataTables.colVis.css" rel="stylesheet">
+    <script type="text/javascript" src="/celltaxonomy/static/js/echarts.min.js"></script>
+    <script type="text/javascript" src="/celltaxonomy/static/js/ecSimpleTransform.min.js"></script>
+
+    <script type="text/javascript" src="/celltaxonomy/static/js/headerfooter-full.js"></script>
+
+    <link href="/celltaxonomy/static/css/bow.ui.min.css" rel="stylesheet">
+    <script type="text/javascript" src="/celltaxonomy/static/js/my/my.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="/celltaxonomy/static/css/my/my.css">
+
+    <style>
+        .node_name{
+            text-transform: capitalize;
+        }
+        #treeDemo{
+            width:100%
+        }
+
+        .affix{
+            top:0;
+            width:270px;
+        }
+
+        .ztree li span.button.ico_docu{
+            background-image: url("/celltaxonomy/static/img/avocado.png");
+            background-position: 50%;
+            background-size:100% 100%;
+        }
+        .ztree li span.button.ico_close{
+            background-image: url("/celltaxonomy/static/img/avocado.png");
+            background-position: 50%;
+            background-size:100% 100%;
+
+        }
+        .ztree li span.button.ico_open{
+            background-image: url("/celltaxonomy/static/img/avocado.png");
+            background-position: 50%;
+            background-size:100% 100%;
+
+        }
+
+
+
+        #treeDemo::-webkit-scrollbar,.table-region::-webkit-scrollbar,#statistic::-webkit-scrollbar{
+            /*滚动条整体样式*/
+            width : 15px;  /*高宽分别对应横竖滚动条的尺寸*/
+            height: 12px;
+        }
+        #treeDemo::-webkit-scrollbar-thumb,.table-region::-webkit-scrollbar-thumb,#statistic::-webkit-scrollbar-thumb{
+            /*滚动条里面小方块*/
+            border-radius   : 10px;
+            background-color: #2487ce;
+            background-image: -webkit-linear-gradient(
+                    45deg,
+                    rgba(255, 255, 255, 0.2) 25%,
+                    transparent 25%,
+                    transparent 50%,
+                    rgba(255, 255, 255, 0.2) 50%,
+                    rgba(255, 255, 255, 0.2) 75%,
+                    transparent 75%,
+                    transparent
+            );
+        }
+        #treeDemo::-webkit-scrollbar-track,.table-region::-webkit-scrollbar-track,#statistic::-webkit-scrollbar-track {
+            /*滚动条里面轨道*/
+            box-shadow   : 0 0 1px rgba(0, 0, 0, 0.2);
+            background   : #ededed;
+            border-radius: 10px;
+        }
+
+        .table-title{
+            font-size: 20px;
+            font-weight: 700;
+            font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",sans-serif;
+        }
+        .table-title a{
+            text-decoration: none;
+        }
+        .ytick text{
+            text-transform: capitalize;
+        }
+        .xtick text{
+            text-transform: capitalize;
+        }
+        #cell_type_cell_marker_enrichment_table_filter,#cell_type_enrichment_table_filter{
+            display: flex;
+            justify-content: flex-end;
+        }
+        .circle_svg {
+            float: left;
+            width: 40px;
+            height: 40px;
+            fill: none;
+            stroke-width: 1;
+            cursor: pointer;
+            transform: rotate(-90deg);
+        }
+        .circle:before{
+            content: attr(data-note);
+            text-align: center;
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            font-size: 14px;
+            transform: translateY(-50%);
+        }
+        .circle{
+            position:relative;
+            float: left;
+        }
+        .table>tbody>tr>td,.table>thead>tr>th{
+            vertical-align: middle;
+            background: white;
+            border-bottom: 3px solid #f4f7f6;
+        }
+
+        .table>tbody>tr>td:first-child{
+            border-bottom-left-radius: 5px;
+            border-top-left-radius: 5px;
+        }
+
+        .table>tbody>tr>td:last-child{
+            border-bottom-right-radius: 5px;
+            border-top-right-radius: 5px;
+        }
+        table.dataTable thead .sorting_desc::after,
+        table.dataTable thead .sorting_asc::after,
+        table.dataTable thead .sorting::after{
+            opacity: 0.5;
+            content: "";
+        }
+        table.dataTable thead .sorting_desc,
+        table.dataTable thead .sorting_asc,
+        table.dataTable thead .sorting{
+            font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",sans-serif;
+            font-size: 15px;
+        }
+        #statistic_table tbody tr:hover{
+            background:#f4f7f6;
+        }
+        #statistic_table tbody tr:hover td{
+            background:none;
+        }
+        table.dataTable{
+            margin-top: 5px !important;
+        }
+        .pagination>.active>a,
+        .pagination>.active>a:hover,
+        .pagination>.active>a:focus,
+        .pagination>.active>span,
+        .pagination>.active>span:focus,
+        .pagination>.active>span:hover{
+            color:black;
+            border:none !important;
+            box-shadow: none;
+            outline:none;
+            text-decoration: underline;
+            font-weight: 600;
+            background: #f4f7f6;
+        }
+        .pagination>li>a,.pagination>.disabled>a,.pagination>.disabled>a:hover{
+            background: transparent;
+        }
+        .pagination>li>a,
+        .pagination>li>a:focus,
+        .pagination>li>a:hover
+        {
+            border:none;
+            color: black;
+            box-shadow: none;
+            outline:none;
+        }
+        .pagination>li>a:focus,
+        .pagination>li>a:hover
+        {
+            background: #f4f7f6;
+        }
+
+        #statistic_table_filter{
+            background: white;
+            padding: 10px 15px 5px 15px;
+        }
+        .browse_title{
+            line-height: 30px;
+            padding-left: 5px;
+            font-size: 20px;
+            font-weight: 700;
+            font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",sans-serif;
+        }
+        #synonyms:first-letter{
+            text-transform: uppercase;
+
+        }
+        .table-title a span{
+            font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",sans-serif;
+        }
+    </style>
+
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?6b352b313257516a97fd9d0db0276208";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+</head>
+
+<body>
+<header>
+    <nav th:replace="common/topbar::topbar"></nav>
+</header>
+<!--<div style="overflow: hidden;height:150px;width: 100%;background-image: url(/celltaxonomy/static/img/B1415360227.jpeg)">-->
+<!--    <div class="col-lg-offset-1" style="display: flex;align-items: center;height: 100%;">-->
+<!--        <h1 style="text-align: left;color: white;width:100%;font-size: 76px">Cell Type Browser</h1>-->
+<!--    </div>-->
+<!--</div>-->
+<div class="container" style="background: #f4f7f6">
+
+    <div class="row">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/celltaxonomy/">Home</a></li>
+                <li class="breadcrumb-item active">Browse</li>
+                <li class="breadcrumb-item active" aria-current="page">Tissues</li>
+            </ol>
+        </nav>
+        <div class="col-lg-12 col-sm-12">
+            <div class="col-lg-2 col-sm-3" style="width:300px;margin-left: 30px;margin-right: 10px;transition:0.3s" >
+                <button id="browse_btn2"  style="padding:0;color:rgba(0,0,0,.6);align-self: center;font-size: 25px;height: 100%;display: none">
+                    <i class="ion-arrow-right-a"></i>
+                </button>
+                <div class="mypanel" data-spy="affix" data-offset-top="200">
+                    <div id="browse" class="mypanel-body">
+                        <div class="mypanel-title" >
+                            <h2>Browse tree</h2>
+                            <i class="fa fa-question-circle-o"></i>
+                        </div>
+                        <div class="mypanel-title" style="padding:20px;">
+                            <input style="border-radius: 5px" type="text" id="key" value="" class="empty" placeholder="Search"/>
+                            <ul id="treeDemo"   class="ztree" style="border:0;background: #ffffff;margin-top: 0;"></ul>
+                        </div>
+                        <div class="mypanel-title" style="display: flex;justify-content: center;height:50px">
+                            <button id="browse_btn" style="color:rgba(0,0,0,.6);align-self: center;font-size: 25px;width: 100%;display: block">
+                                <i class="ion-arrow-left-a"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-lg-9 col-sm-9" style="transition:0.3s">
+                <div class="mypanel">
+                    <div class="mypanel-body" style="background: transparent;padding: 0 0 20px 0">
+                        <div id="statistic" >
+                            <table id="statistic_table" class="table table-hover" style="width:100%;">
+                                <thead>
+                                <tr>
+                                    <th>Tissue</th>
+                                    <th>#Species</th>
+                                    <th>#Conditions</th>
+                                    <th>#Cell types</th>
+                                    <th>#Cell markers</th>
+                                    <th>#Publications</th>
+
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                </tbody>
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-lg-12 col-sm-12">
+            <div id="nav_side_bar" class="col-lg-2 col-sm-3" style="background: transparent;padding:0;display:none">
+                <ul id="nav-side">
+                    <li style="border-bottom: 1px solid #777777;pointer-events: none">
+                        <span style="font-size: 22px"  th:text="${name}"></span>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-lg-10">
+
+                <div class="mypanel">
+                    <div class="mypanel-body" style="padding: 10px 20px 20px 20px;display: none"  id="detail1">
+                        <div >
+                            <!--                            <button id="reload" class="btn btn-primary">Back</button>-->
+                            <div>
+                                <h4 id="name" style="color: #16507b;font-size: 28px;">Tissue Name</h4>
+
+                                <div style="margin-top: 20px">
+                                    <span style="font-weight: 700">Tissue ID: </span>
+
+                                    <span>
+                                        <a style="font-weight: 700;font-size: 14px;padding: 20px 0 20px 0" id="id" target="_blank">Tissue ID</a>
+                                    </span>
+                                </div>
+<!--                                <div style="margin-top: 20px">-->
+<!--                                    <span style="font-weight: 700">Synonyms: </span>-->
+
+<!--                                    <span id="synonyms">-->
+<!--                                        Synonyms-->
+<!--                                    </span>-->
+<!--                                </div>-->
+                                <div style="margin-top: 20px">
+                                    <span style="font-weight: 700">Description: </span>
+                                    <span id="description" style="font-size: 14px;">Here is the description of this tissue</span>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mypanel">
+                    <div class="mypanel-body" id="detail5" style="display:none;margin-top: 10px;padding: 10px 20px 20px 20px">
+                        <div class="table-title">
+                            <a data-toggle="collapse" data-parent="#accordion" href="#summary_region">
+                                <i class="icon ion-chevron-down"></i>
+                                <span id="summary/">Summary</span>
+                            </a>
+                        </div>
+                        <div id="summary_region" class="table-region collapse in" style="margin-top: 10px;">
+                            <ul style="margin-bottom:0">
+                                <li class="summary" id="summary1"></li>
+                                <li class="summary" id="summary2"></li>
+                            </ul>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="mypanel">
+                    <div class="mypanel-body" id="detail2" style="display:none;margin-top: 10px;padding: 10px 20px 20px 20px">
+                        <div class="table-title">
+                            <a data-toggle="collapse" data-parent="#accordion" href="#descriptions">
+                                <i class="icon ion-chevron-down"></i>
+                                <span id="basic_information/">Basic information</span>
+                            </a>
+                        </div>
+                        <div id="descriptions" class="table-region collapse in" style="margin-top: 10px;">
+                            <table id="table-description" style="width: 100%;" class="table table-striped table-hover">
+                                <thead>
+                                <tr>
+                                    <th>Species</th>
+
+                                    <th>Cell type</th>
+                                    <th>Cell Taxonomy ID</th>
+                                    <th>Cell marker</th>
+                                    <th>Condition</th>
+                                    <th>Disease ID</th>
+                                    <th>Source</th>
+                                    <th>PMID</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                </tbody>
+                                <tfoot>
+                                <tr>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="mypanel">
+                    <div class="mypanel-body" id="detail4" style="display:none;margin-top: 10px;padding: 10px 20px 20px 20px">
+                        <div>
+                            <div class="table-title" id="gene" >
+                                <a data-toggle="collapse" data-parent="#accordion" href="#heatmap">
+                                    <i class="icon ion-chevron-down"></i>
+                                    <span id="publication_supported_cell_types_and_markers/">Publication-supported cell types and markers</span>
+                                    <div class="wrapper" >
+                                        <i class="icon ion-help-circled" style="line-height: 8px"></i>
+                                        <span class="tooltiptext" style="display: block;white-space: normal">
+                                        This panel shows the top publication-supported cell types and corresponding markers in the tissue.
+                                    </span>
+                                    </div>
+                                </a>
+                            </div>
+                            <div id="heatmap" class="collapse in" >
+                                <div>
+                                    <div>
+                                        <label>Species</label>
+                                        <select id="sp_species_select" style="text-transform: capitalize;width: 200px;margin: 10px 0 0 0">
+                                            <optgroup>
+
+                                            </optgroup>
+                                            <optgroup label="----------------">
+
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div style="margin-top:20px;overflow: auto">
+                                    <div id="cell_type_enrichment_literature_sup" style="height: 300px;margin:0 auto"></div>
+                                </div>
+
+                                <div style="overflow: auto">
+                                    <div id="cell_type_cell_marker_LS_heatmap" style="height:400px;margin:0 auto">
+
+                                    </div>
+                                </div>
+
+                                <div style="margin-top: 10px">
+                                    <a data-toggle="collapse" class="details" href="#table1" style="width: 130px;text-decoration: none;display: block">
+                                        <i class="icon ion-plus-round"></i>
+                                        Show details
+                                    </a>
+                                </div>
+                                <div id="table1" class="collapse" style="margin-top:20px">
+                                    <table id="cell_type_cell_marker_enrichment_table" style="width: 100%;table-layout: fixed" class="table table-striped table-hover">
+                                        <thead>
+                                        <tr>
+                                            <th>Species</th>
+                                            <th>Cell type</th>
+                                            <th>Cell marker</th>
+                                            <th>No. of publications</th>
+
+                                            <th>ID</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <!--                                        <td></td>-->
+                                            <!--                                        <td></td>-->
+                                            <!--                                        <td></td>-->
+                                            <td></td>
+
+                                        </tr>
+                                        </tbody>
+                                        <tfoot>
+                                        <tr>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                        </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+
+
+        </div>
+
+    </div>
+</div>
+
+
+
+
+
+<script th:inline="javascript">
+    var celltype=[]
+    function sortLS(a,b){
+        return b.supported_paper_number-a.supported_paper_number
+    }
+    function sortORasc(a,b){
+        return b.OR2-a.OR2
+    }
+    function getplotly(id,results,title,xname,yname){
+        var plotwidth=$("#width").width();
+
+        results=results.sort(sortORasc)
+        results=results.slice(0,30)
+        var hover ="Log(odds ratio+1)";
+
+
+
+
+        var data = [{
+            type: 'scatter',
+            name:"",
+            x: unpack(results, yname),
+            y: unpack(results, xname),
+            mode:'markers',
+            hovertemplate:
+                '<i>'+hover+'</i>: %{y}<br>'
+
+        }];
+        var shapes=[];
+        for (i=0;i<results.length;i++){
+            var shape={
+                x0: data[0].x[i],
+                x1: data[0].x[i],
+                y0: 0,
+                y1: data[0].y[i],
+                line: {
+                    color: 'grey',
+                    width: 1
+                },
+                type: 'line',
+                xref: 'y',
+                yref: 'x'
+            }
+            shapes.push(shape);
+        }
+        var layout = {
+            xaxis: {
+                zeroline: false,
+                automargin:true,
+                categoryorder:"total descending",
+                tickmode:"linear",
+                tickvals:unpack(results, yname),
+                tickangle:-45,
+
+                tickfont:{
+                    size:12,
+                    font:{
+                        family:"Arial"
+                    }
+                }
+            },
+            yaxis:{
+                exponentformat:"e",
+                title:{
+                    text:hover,
+                    font:{
+                        family:"Arial"
+                    }
+
+                }
+            },
+            title:{
+                text:title,
+                font:{
+                    family:"Arial"
+                }
+
+            },
+            width:plotwidth/2-20,
+            height:450,
+            shapes:shapes,
+
+            hovermode:'closest'
+        };
+
+        if(data[0].x.length>20){
+            layout.xaxis.tickfont.size=11
+            layout.height=650;
+        }
+        else if(data[0].y.length>10){
+            layout.xaxis.tickfont.size=12;
+            layout.height=600;
+        }
+        Plotly.newPlot(id, data, layout);
+    }
+    function getplotlystat(id,results,title,yname){
+        var plotwidth=$("#width").width();
+        results=results.sort(sortORasc)
+        results=results.slice(0,30)
+        var data1 = {
+            type: 'scatter',
+            x: unpack(results, yname),
+            y: unpack(results, "P_value"),
+            mode:'markers',
+            name:"P value",
+            hovertemplate:
+                '<i>P value</i>: %{y:.f}<br>'
+
+        };
+        var data2 = {
+            type: 'scatter',
+            x: unpack(results, yname),
+            y: unpack(results, "FDR"),
+            mode:'markers',
+            name:"FDR",
+            hovertemplate:
+                '<i>FDR</i>: %{y:.f}<br>'
+
+        };
+        var data=[data1,data2]
+        var shapes=[];
+        for (i=0;i<results.length;i++){
+            var shape={
+                x0: data1.x[i],
+                x1: data1.x[i],
+                y0: 0,
+                y1: Math.max(data1.y[i],data2.y[i]),
+                line: {
+                    color: 'grey',
+                    width: 1
+                },
+                type: 'line',
+                xref: 'y',
+                yref: 'x'
+            }
+            shapes.push(shape);
+        }
+        var layout = {
+            xaxis: {
+                zeroline: false,
+                automargin:true,
+                categoryorder:"total descending",
+                tickmode:"linear",
+                tickvals:unpack(results, yname),
+                tickangle:-45,
+
+                tickfont:{
+                    size:12,
+                    font:{
+                        family:"Arial"
+                    }
+                }
+            },
+            yaxis:{
+                exponentformat:"e",
+                title:{
+                    text:"Significance",
+                    font:{
+                        family:"Arial"
+                    }
+                }
+            },
+            title:{
+                text:title,
+                font:{
+                    family:"Arial"
+                }
+
+            },
+            width:plotwidth/2-20,
+            height:450,
+            shapes:shapes,
+
+            hovermode:'closest'
+        };
+
+        if(data1.x.length>20){
+            layout.xaxis.tickfont.size=11
+            layout.height=650;
+        }
+        else if(data1.x.length>10){
+            layout.xaxis.tickfont.size=12;
+            layout.height=600;
+        }
+        Plotly.newPlot(id, data, layout);
+    }
+    function getbarplot(id,data,title,xtitle,ytitle,name,value){
+        var plotwidth=$("#gene").width();
+        $("#"+id).css("width","900px")
+        title=title.replace(/ [a-z][a-z] All/g,"")
+
+
+
+        data=eval(data).filter(function(e){
+            return e.Species==$("#sp_species_select").val()
+        })
+
+        var ytick;
+        data=data.sort(sortLS)
+        data=data.slice(0,30)
+
+        ytick=unpack(data,name)
+
+        var ytick_length=0
+        ytick.map(function(e){
+            if(ytick_length<e.length){
+                ytick_length=e.length
+            }
+        })
+        if(ytick_length>30){
+            $("#"+id).css('height',"500px")
+        }
+        else if(ytick_length>20){
+            $("#"+id).css('height',"450px")
+        }
+        else{
+            $("#"+id).css('height',"300px")
+
+        }
+
+        var chartDom = document.getElementById(id);
+        var myChart = echarts.init(chartDom,null,{renderer:'svg'});
+        myChart.resize()
+        var app = {};
+        celltype=ytick
+        var datas=[];
+        var a={}
+        a.name="No. of publications"
+        a.type="bar"
+        a.itemStyle={}
+        a.itemStyle.borderRadius=[5,5,0,0]
+        a.markPoint={}
+        a.markPoint.data=[]
+        a.markPoint.silent=true
+        a.markPoint.itemStyle={}
+        a.markPoint.itemStyle.color="transparent"
+        a.markPoint.label={}
+        a.markPoint.label.color="black"
+        a.markPoint.label.offset=[0,20]
+        var tempdata= new Array(ytick.length)
+        for (var j=0;j<data.length;j++){
+            tempdata[$.inArray(data[j][name],ytick)]=data[j][value]
+            if(data[j].FDR<0.001){
+                a.markPoint.data.push({coord:[data[j][name],data[j][value]*1],value:"***"})
+            }
+            else if(data[j].FDR<0.01 && data[j].FDR>0.001){
+                a.markPoint.data.push({coord:[data[j][name],data[j][value]*1],value:"**"})
+            }
+            else if(data[j].FDR<0.05 && data[j].FDR>0.01){
+                a.markPoint.data.push({coord:[data[j][name],data[j][value]*1],value:"*"})
+            }
+        }
+        a.data=tempdata
+        datas.push(a)
+
+
+        var option;
+        option = {
+            color:{
+                type: 'linear',
+                x: 0,
+                y: 0,
+                x2: 0,
+                y2: 1,
+                colorStops: [{
+                    offset: 0, color: '#8bc6ec' // 0% 处的颜色
+                }, {
+                    offset: 1, color: '#9599e2' // 100% 处的颜色
+                }],
+                global: false // 缺省为 false
+            },
+            toolbox:{
+                show:true,
+                feature:{
+                    saveAsImage:{
+                        type:'svg'
+                    }
+                }
+            },
+            title:{
+                text:title,
+                left:'center',
+                textStyle:{
+                    fontSize:15,
+                    fontFamily:"Arial"
+                }
+            },
+            // legend: {
+            //     data: [xtitle, 'P value', 'FDR'],
+            //     right:'0',
+            //     textStyle: {
+            //         fontSize:11,
+            //         fontFamily:"Arial"
+            //     }
+            //
+            // },
+            yAxis: [
+                {
+                    type: 'value',
+                    name:xtitle,
+
+                    nameTextStyle:{
+                        fontWeight:'bold',
+                        fontSize:12
+                    },
+                    axisLabel:{
+                      fontSize:11,
+                      fontFamily:"Arial"
+                    },
+                    position: 'left',
+                    minInterval:1
+                }
+
+            ],
+            tooltip:{},
+            grid:{
+                height:"40%",
+                right:"5%",
+                left:"10%"
+            },
+            xAxis: {
+                type: 'category',
+                name:ytitle,
+                data: ytick,
+                nameTextStyle:{
+                    fontWeight:'bold',
+                    fontSize:12,
+                    fontFamily:"Arial"
+                },
+                axisLabel:{
+                    rotate:90,
+                    fontSize:11,
+                    fontFamily:"Arial"
+                }
+            },
+            series: datas
+        };
+        if(ytick.length<5){
+            option.series[0].barWidth='10%'
+        }
+        else{
+            option.series[0].barWidth='50%'
+
+        }
+        option && myChart.setOption(option);
+    }
+
+    function getecharts(id,xtick,ytick,data,title,xtitle,ytitle){
+        var plotwidth=$("#gene").width();
+        $("#"+id).css("width","900px")
+        title=title.replace(/ [a-z][a-z] All/g,"")
+        if(ytick.length>=20){
+            $("#"+id).css("height","600px")
+        }
+        else if(ytick.length>=10){
+            $("#"+id).css("height","500px")
+        }
+
+        var ytick_length=0
+        ytick.map(function(e){
+            if(ytick_length<e.length){
+                ytick_length=e.length
+            }
+        })
+
+
+        var chartDom = document.getElementById(id);
+        var myChart = echarts.init(chartDom,null,{renderer:'svg'});
+        var app = {};
+        myChart.resize()
+        var option;
+        var max_legend=0;
+        for(i=0;i<data.length;i++){
+
+            max_legend=Math.max(data[i][2],max_legend)
+        }
+        data = data.map(function (item) {
+            return [item[0], item[1], item[2] || '-'];
+        });
+        option = {
+            title:{
+                text:title,
+                left: 'center',
+
+                textStyle:{
+                    fontFamily:"Arial",
+                    fontSize:15
+                }
+            },
+            toolbox:{
+                show:true,
+                feature:{
+                    saveAsImage:{
+                        type:'svg'
+                    }
+                }
+            },
+            tooltip: {
+                position: 'top'
+            },
+            grid:{
+                height:'30%',
+                right:"80",
+                top:'30%',
+                left:'10%',
+
+            },
+            xAxis: {
+                type: 'category',
+                data: xtick,
+                splitArea: {
+                    show: true
+                },
+                axisTick:{
+                    show:false
+                },
+                axisLabel:{
+                    show:true,
+                    // interval:0,
+                    rotate: 60,
+                    fontSize:10,
+                    fontFamily:"Arial"
+
+
+                },
+                name:xtitle,
+                nameTextStyle:{
+                    fontWeight:'bold',
+                    fontSize:12,
+                    fontFamily: "Arial"
+                },
+            },
+            yAxis: {
+                type: 'category',
+                data: celltype.reverse(),
+                splitArea: {
+                    show: true
+                },
+                axisTick:{
+                    show:false,
+
+                },
+                axisLabel:{
+                    interval:0,
+                    overflow:"break",
+                    fontFamily: "Arial",
+                    fontSize:11
+
+
+
+                },
+                name:ytitle,
+                // nameLocation:'center',
+                nameTextStyle:{
+                    fontWeight:'bold',
+                    fontSize:12,
+                    fontFamily: "Arial"
+
+                }
+                // nameGap:310
+
+            },
+            visualMap: {
+                min: 0,
+                max:max_legend,
+                calculable: true,
+                right: '0%',
+                top:'5%',
+                show:true,
+                inRange:{
+                    color:["#d8eafc","#82c2ec","#b0b6fa","#9599e2"]
+                }
+            },
+            series: [{
+                type: 'heatmap',
+                data: data,
+                label:{
+                    show:false
+                },
+                emphasis: {
+                    itemStyle: {
+                        shadowBlur: 10,
+                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                    }
+                }
+            }]
+        };
+        if(xtick.length>60){
+            option.xAxis.axisLabel.show=false
+        }
+        else{
+            option.series[0].label.show=true
+        }
+        if(ytick.length>5){
+            option.grid.height='70%'
+            option.grid.top='15%'
+        }
+        else{
+            option.visualMap.top='10%'
+        }
+
+
+        if($(window).width()>=1440){
+            if(ytick_length>30){
+                option.grid.left='25%'
+            }
+            else if(ytick_length>20){
+                option.grid.left='20%'
+            }
+        }
+        else if($(window).width()>=1000){
+            option.grid.left='15%'
+            if(ytick_length>30){
+                option.grid.left='25%'
+            }
+            else if(ytick_length>20) {
+                option.grid.left = '20%'
+            }
+        }
+        if (option && typeof option === 'object') {
+            myChart.setOption(option);
+        }
+    }
+
+    function getboxplot3(id,results){
+        var plotwidth=$("#composition").width();
+        $("#"+id).css("width","900px")
+
+        var chartDom = document.getElementById(id);
+        var myChart = echarts.init(chartDom);
+        var option;
+
+        var tissue=$.unique(unpack(results,"Cell_standard").sort());
+        var datas=[
+            ["Cell_standard","ratio"]
+        ]
+        results.map(function(e){
+            datas.push([e.Cell_standard,e.ratio])
+        })
+        echarts.registerTransform(window.ecSimpleTransform.aggregate);
+
+        option = {
+            dataset: [
+                {
+                    id:"raw",
+                    source:datas
+                },
+                {
+                    id:"aggregate",
+                    fromDatasetId:"raw",
+                    transform:
+                        [
+                            {
+                                type: 'ecSimpleTransform:aggregate',
+                                config: {
+                                    resultDimensions: [
+                                        { name: 'Min', from: 'ratio', method: 'min' },
+                                        { name: 'Q1', from: 'ratio', method: 'Q1' },
+                                        { name: 'Median', from: 'ratio', method: 'median' },
+                                        { name: 'Q3', from: 'ratio', method: 'Q3' },
+                                        { name: 'Max', from: 'ratio', method: 'max' },
+                                        { name: 'Cell_standard', from: 'Cell_standard' }
+                                    ],
+                                    groupBy: 'Cell_standard'
+                                }
+                            },
+                            {
+                                type: 'sort',
+                                config: {
+                                    dimension: 'Median',
+                                    order: 'desc'
+                                }
+                            }
+                        ]
+                },
+            ],
+            legend: {
+                show:false,
+                top: '10%'
+            },
+            title:{
+                text:"Cell-type composition in "+$("#name").text(),
+                right:'center',
+                top:"10%",
+                fontFamily:'Arial'
+            },
+            tooltip: {
+                trigger: 'item',
+                axisPointer: {
+                    type: 'shadow'
+                }
+            },
+            grid: {
+                left: '10%',
+                top: '20%',
+                right: '10%',
+                bottom: '15%',
+                height:'45%'
+            },
+            xAxis: {
+                type: 'category',
+                axisLabel:{
+                    interval:0,
+                    rotate: 35,
+
+                },
+                name:'Cell type',
+                boundaryGap: true,
+                nameGap: 30,
+                splitArea: {
+                    show: true
+                },
+                splitLine: {
+                    show: false
+                }
+            },
+            yAxis: {
+                type: 'value',
+                name: 'Cellular proportion'
+            },
+            series: [
+                {
+                    name: 'Cellular proportion',
+                    type: 'boxplot',
+                    datasetId: "aggregate",
+                    encode: {
+                        y: ['Min', 'Q1', 'Median', 'Q3', 'Max'],
+                        x: 'Cell_standard',
+                        itemName: ['Cell_standard'],
+                        tooltip: ['Max', 'Q3', 'Median', 'Q1', 'Min']
+                    }
+                }
+            ]
+        };
+        option && myChart.setOption(option);
+    }
+
+
+    function ctgeLS(data){
+
+        var results=data["results"];
+        results=eval(results).filter(function(e){
+            return e.Species==$("#sp_species_select").val()
+        })
+        $("#cell_type_cell_marker_enrichment_table").DataTable({
+            data:results,
+
+            columns:[
+                {data:"Species"},
+
+                {
+                    data:"Cell_standard",
+                    render:function(data,type,row){
+                        // return "<a class='celltype'>"+row.Cell_standard.replace(/_/g," ")+"</a>"
+                        return "<a target='_blank' href='/celltaxonomy/celltype/"+row.CT_ID+"'>"+row.Cell_standard.replace(/_/g," ")+"</a>"
+                    }
+                },
+                {
+                    data:"Cell_Marker",
+                    render:function(data,type,row){
+                        // return "<a class='marker'>"+row.Cell_Marker+"</a>"
+                        return "<a target='_blank' href='/celltaxonomy/marker/"+row.Gene_ENTREZID2+"'>"+row.Cell_Marker+"</a>"
+                    }
+                },
+                {data:"supported_paper_number"},
+                // {
+                //     data:"OR_value",
+                //     render:function(data,type,row){
+                //         if(row.OR_value!="Inf"){
+                //             return (row.OR_value*1).toPrecision(2)
+                //         }
+                //         else{
+                //             return row.OR_value
+                //         }
+                //     }
+                // },
+                // {data:"P_value"},
+                // {data:"FDR"},
+                {data:"Gene_ENTREZID2",visible:false}
+
+            ],
+            destroy: true,
+            deferRender:true,
+            iDisplayLength:5,
+            order:[3,"desc"],
+            dom: '<"row"<"col-lg-12"f>>t<"row"<"col-lg-6"i><"col-lg-6"p>>',
+
+
+
+        });
+
+
+        var newdata=[];
+        for(i=0;i<results.length;i++){
+            if($.inArray(results[i].Cell_standard,celltype)>=0){
+                newdata.push(results[i])
+            }
+        }
+        results=newdata;
+        var y=$.unique(unpack(results, 'Cell_standard').sort());
+        var x=$.unique(unpack(results, 'Cell_Marker').sort());
+        var z=new Array();
+        for (i=0;i<results.length;i++){
+            z.push([$.inArray(results[i].Cell_Marker,x),$.inArray(results[i].Cell_standard,y),results[i].supported_paper_number])
+
+        }
+
+
+        getecharts("cell_type_cell_marker_LS_heatmap",x,y,z,$("#name").text()+": number of supported publications of cell markers in "+$("#sp_species_select").val(),"Marker","Cell type")
+    }
+    $(document).ready(function(){
+        if([[${name}]]!=null){
+            getCelltypeDetail([[${name}]],[[${id}]])
+        }
+        else{
+
+            $.ajax({
+                url:'/celltaxonomy/tissue_statistic',
+                type:'post',
+                success:function(results){
+                    $("#statistic_table").DataTable({
+                        data:results,
+                        columns:[
+                            {
+                                data:"Tissue_standard",
+                                render:function(data,type,row){
+                                    if(row.Tissue_UberonOntology_ID2.indexOf("UBERON:")>-1){
+                                        return "<div>" +
+                                            "<a class='main_item' href='/celltaxonomy/tissue/"+row.Tissue_UberonOntology_ID2+"'>"+row.Tissue_standard+"</a>"+
+                                            "<div class='sub_item'><span >Uberon Ontology ID: </span><a class='sub_content' target='_blank' href='https://www.ebi.ac.uk/ols/ontologies/uberon/terms?iri=http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2F"+row.Tissue_UberonOntology_ID2.replace(/:/,"_")+"' class='geneentrezid'>"+row.Tissue_UberonOntology_ID2+"</a></div>"+
+                                            "</div>"
+                                        // return "<a style='color: #2c75c9;text-decoration: none' target='_blank' href='https://www.ebi.ac.uk/ols/ontologies/uberon/terms?iri=http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2F"+data.replace(/:/,"_")+"'>"+data+"</a>"
+                                    }
+                                    else{
+                                        return "<div>" +
+                                            "<a class='main_item'  href='/celltaxonomy/tissue/"+row.Tissue_UberonOntology_ID2+"'>"+row.Tissue_standard+"</a>"+
+                                            "<div class='sub_item'><span >Uberon Ontology ID: -</span></div>"+
+                                            "</div>"
+                                        // return data
+                                    }
+                                    // return "<a href='/celltaxonomy/tissue/"+row.Tissue_UberonOntology_ID2+"'>"+row.Tissue_standard+"</a>"
+
+                                }
+                            },
+                            {
+                                data:"Species_num",
+                                render:function(data,type,row){
+                                    return "<div style='width:50%;'>"+
+                                        "<div class='circle' data-note='"+row.Species_num+"' data-size='40'>" +
+                                        "<svg class='circle_svg' value='species' style='width: 40px; height: 40px;'>"+
+                                        "<circle r='19' cy='20' cx='20' style='stroke: #46cbb7; stroke-dashoffset: 23.8761;'></circle>"+
+                                        "</svg>"+
+                                        "<span style='display: none'>"+row.Species_num+"</span>"+
+                                        "</div>"+
+                                        "</div>"
+                                    // return "<a href='/celltaxonomy/tissue/"+row.Tissue_UberonOntology_ID2+"#detail2'"+row.Species_num+"'><span>"+row.Species_num+"</span></a>"
+                                }
+                            },
+                            {
+                                data:"Disease_num",
+                                render:function(data,type,row){
+                                    return "<div style='width:50%;'>"+
+                                        "<div class='circle' data-note='"+row.Disease_num+"' data-size='40'>" +
+                                        "<svg class='circle_svg' value='condition' style='width: 40px; height: 40px;'>"+
+                                        "<circle r='19' cy='20' cx='20' style='stroke: #9158e2; stroke-dashoffset: 23.8761;'></circle>"+
+                                        "</svg>"+
+                                        "<span style='display: none'>"+row.Disease_num+"</span>"+
+                                        "</div>"+
+                                        "</div>"
+                                    // return "<a href='/celltaxonomy/tissue/"+row.Tissue_UberonOntology_ID2+"#detail2'"+row.Disease_num+"'><span>"+row.Disease_num+"</span></a>"
+                                }
+                            },
+                            {
+                                data:"cell_num",
+                                render:function(data,type,row){
+                                    return "<div style='width:50%;'>"+
+                                        "<div class='circle' data-note='"+row.cell_num+"' data-size='40'>" +
+                                        "<svg class='circle_svg' value='cell' style='width: 40px; height: 40px;'>"+
+                                        "<circle r='19' cy='20' cx='20' style='stroke: #2487ce; stroke-dashoffset: 23.8761;'></circle>"+
+                                        "</svg>"+
+                                        "<span style='display: none'>"+row.cell_num+"</span>"+
+                                        "</div>"+
+                                        "</div>"
+                                    // return "<a href='/celltaxonomy/tissue/"+row.Tissue_UberonOntology_ID2+"#detail3'"+row.cell_num+"'><span>"+row.cell_num+"</span></a>"
+                                }
+                            },
+                            {
+                                data:"Marker_num",
+                                render:function(data,type,row){
+                                    return "<div style='width:50%;'>"+
+                                        "<div class='circle' data-note='"+row.Marker_num+"' data-size='40'>" +
+                                        "<svg class='circle_svg' value='marker' style='width: 40px; height: 40px;'>"+
+                                        "<circle r='19' cy='20' cx='20' style='stroke: #df6c4f; stroke-dashoffset: 23.8761;'></circle>"+
+                                        "</svg>"+
+                                        "<span style='display: none'>"+row.Marker_num+"</span>"+
+                                        "</div>"+
+                                        "</div>"
+                                    // return "<a href='/celltaxonomy/tissue/"+row.Tissue_UberonOntology_ID2+"#gene'"+row.Marker_num+"'><span>"+row.Marker_num+"</span></a>"
+                                }
+                            },
+                            {
+                                data:"PMID_num",
+                                render:function(data,type,row){
+                                    return "<div style='width:50%;'>"+
+                                        "<div class='circle' data-note='"+row.PMID_num+"' data-size='40'>" +
+                                        "<svg class='circle_svg' value='PMID' style='width: 40px; height: 40px;'>"+
+                                        "<circle r='19' cy='20' cx='20' style='stroke: #52d554; stroke-dashoffset: 23.8761;'></circle>"+
+                                        "</svg>"+
+                                        "<span style='display: none'>"+row.PMID_num+"</span>"+
+                                        "</div>"+
+                                        "</div>"
+                                }
+                            }
+
+                        ],
+                        destroy: true,
+                        deferRender:true,
+                        order:[4,"desc"],
+                        iDisplayLength:5,
+                        dom: '<"row"<"col-lg-12"f>>t<"row"<"col-lg-6"i><"col-lg-6"p>>',
+                    });
+                },
+                error:function(){
+                    console.log("error")
+                }
+            })
+            $.ajax({
+                url:"/celltaxonomy/static/json/tissue.json",
+                type:'GET',
+                dataType: 'json',
+                success:function(data){
+                    var zTreeObj;
+                    // zTree 的参数配置，深入使用请参考 API 文档（setting 配置详解）
+                    var setting = {
+                        data: {
+                            simpleData: {
+                                enable: true
+                            }
+                        },
+                        callback:{
+                            onClick:zTreeOnClick
+                        },
+                        check: {
+                            enable: true//checkbox
+                        },
+                        view: {
+                            nameIsHTML: true, //允许name支持html
+                            selectedMulti: false
+                        },
+                        edit: {
+                            enable: false,
+                            editNameSelectAll: false
+                        }
+                    };
+                    // zTree 的数据属性，深入使用请参考 API 文档（zTreeNode 节点数据详解）
+                    var zNodes = data;
+                    $(document).ready(function(){
+                        zTreeObj = $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+                        fuzzySearch('treeDemo','#key',null,true); //初始化模糊搜索方法
+                    });
+                }
+            });
+
+        }
+    });
+    function unpack(rows, key) {
+        return rows.map(function(row) { return row[key]; });
+    }
+    function getCelltypeDetail(name,id){
+        $(".breadcrumb").append("<li class='breadcrumb-item active'>"+name+"</li>")
+        $(".breadcrumb").children("li").eq(2).html("<a href='/celltaxonomy/tissue'>Tissues</a>")
+        $("#statistic").parent().parent().parent().parent().css("display","none");
+        $("#detail1").css("display","block");
+        $("#detail2").css("display","block");
+        $("#detail3").css("display","block");
+        $("#detail4").css("display","block");
+        $("#detail5").css("display","block");
+        $("#nav_side_bar").css("display","block")
+        name=name.replace(/<[^>]*>/g,"");
+
+        $("#name").text(name);
+        if(id.indexOf("UBERON:")>=0){
+            $("#id").text(id);
+
+        }
+        else{
+            $("#id").text("-");
+            $("#id").css("pointer-events","none")
+            $("#id").css("color","black")
+
+        }
+        $.ajax({
+            url:'/celltaxonomy/get_description',
+            type:'post',
+            data:{
+                'id':id
+            },
+            success:function(results){
+                if($("id").text()!="-"){
+                    $("#id").attr("href","https://www.ebi.ac.uk/ols/ontologies/uberon/terms?iri=http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2F"+$("#id").text().replace(/:/g,"_"))
+                }
+                $("#description").text(results[0].Definitions);
+                // $("#synonyms").text(results[0].Synonyms);
+
+            }
+        })
+        $.ajax({
+            url:"/celltaxonomy/tissue_summary",
+            type:"post",
+            dataType:'json',
+            data:{
+                id:id,
+                tissue:name
+            },
+            success:function(descriptions){
+                var markers=descriptions[0].Marker_num
+                var celltypes=descriptions[0].cell_num
+                var conditions=descriptions[0].Disease_num
+                var species=descriptions[0].Species_num
+                var publications=descriptions[0].PMID_num
+                if(conditions==1){conditions=" in "+conditions.toString()+" condition"} else if(conditions==0){conditions=""} else{conditions=" in "+conditions.toString()+" conditions"}
+                if(publications==1){publications="supported by "+publications.toString()+" publication"} else if(publications==0){publications=""} else{publications="supported by "+publications.toString()+" publications"}
+                if(celltypes==1){celltypes=celltypes+" cell type"} else if(celltypes==0){celltypes=""} else{celltypes=celltypes+" cell types"}
+                if(markers==1){markers=markers+" cell marker is"} else if(celltypes==0){markers=""} else{markers=markers+" cell markers are"}
+
+                $("#summary1").html(
+                    "In "+"<strong>"+name+"</strong>, "+markers+" reported for "+celltypes+conditions+" across "+species+" species, "+publications+"."
+                )
+
+            },
+            error:function(){
+                console.log("error")
+            }
+        })
+
+        $.ajax({
+            url:"/celltaxonomy/tissue_description",
+            type:"post",
+            dataType:'json',
+            data:{tissue:id},
+            success:function(descriptions){
+
+                $("#table-description").DataTable({
+                    data:descriptions,
+                    initComplete: function () {
+                        var r = $('#table-description tfoot tr');
+                        r.find('th').each(function(){
+                            $(this).css('padding', '8px 0')
+                            // $(this).css('border-top', '1px solid #ddd');
+                            // $(this).css('border-bottom', '1px solid #ddd');
+                        });
+                        $('#table-description thead').append(r);
+                        $('#search_0').css('text-align', 'center');
+
+                        this.api().columns([0,1,3,4,6]).every( function () {
+                            var column = this;
+                            var select = $('<select class="table-select"><option value="">Show All</option></select>')
+                                .appendTo( $(column.footer()).empty() )
+                                .on( 'change', function () {
+                                    var val = $.fn.dataTable.util.escapeRegex(
+                                        $(this).val()
+                                    );
+
+                                    column
+                                        .search( val ? '^'+val+'$' : '', true, false )
+                                        .draw();
+                                } );
+
+                            column.data().unique().sort().each( function ( d, j ) {
+                                select.append( '<option value="'+d+'">'+d+'</option>' )
+                            } );
+                        } );
+                    },
+
+                    columns:[
+                        {data:"Species"},
+
+                        {
+                            data:"Cell_standard",
+                            render:function(data,type,row){
+                                // return "<a class='celltype'>"+row.Cell_standard.replace(/_/g," ")+"</a>"
+                                return "<a target='_blank' href='/celltaxonomy/celltype/"+row.CT_ID+"'>"+row.Cell_standard.replace(/_/g," ")+"</a>"
+                            }
+
+                        },
+                        {
+                            data:"CT_ID",
+                            render:function(data,type,row){
+                                // return "<a class='ctid'>"+row.CT_ID+"</a>"
+                                return "<a target='_blank' href='/celltaxonomy/celltype/"+row.CT_ID+"'>"+row.CT_ID+"</a>"
+
+                            }
+                        },
+                        {
+                            data:"Cell_Marker",
+                            render:function(data,type,row){
+                                return "<a target='_blank' href='/celltaxonomy/marker/"+row.Gene_ENTREZID2+"'>"+data+"</a>"
+                            }
+                        },
+
+                        {
+                            data:"Disease_Type",
+                            render:function(data,type,row){
+                                if(row.Disease_Ontology_ID2!="-"){
+                                    return "<a target='_blank' href='/celltaxonomy/condition/"+row.Disease_Ontology_ID2+"'>"+data+"</a>"
+                                }
+                                else{
+                                    return data
+                                }
+                            }
+                        },
+                        {
+                            data:"Disease_Ontology_ID",
+                            render:function(data,type,row){
+                                if(row.Disease_Ontology_ID!="-"){
+                                    return "<a target='_blank' href='https://www.ebi.ac.uk/ols/ontologies/doid/terms?iri=http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2F"+row.Disease_Ontology_ID.replace(/:/,"_")+"'>"+row.Disease_Ontology_ID+"</a>"
+                                }
+                                else{
+                                    return row.Disease_Ontology_ID
+                                }
+                            }
+                        },
+                        {
+                            data:"Additional_Information2",
+                            render:function(data,type,row){
+                                if(row.Additional_Information2=="CellMarker"){
+                                    return "<a target='_blank' href='http://xteam.xbio.top/CellMarker/search.jsp?quickSearchInfo="+$("#name").text()+"'>CellMarker</a>"
+                                }
+
+                                else if(row.Additional_Information2=="PanglaoDB"){
+                                    return "<a target='_blank' href='https://panglaodb.se/search.html?query="+$("#name").text()+"'>PanglaoDB</a>"
+                                }
+
+                                // else if(row.Additional_Information2=="SHOGoiN"){
+                                //     return "<a class='SHOGoiN'>SHOGoiN</a>"
+                                // }
+                                else{
+
+                                    if($.isNumeric(row.Additional_Information2*1)){
+                                        return "<a target='_blank' href='https://pubmed.ncbi.nlm.nih.gov/"+row.Additional_Information2+"'>"+row.Additional_Information2+"</a>"
+                                    }
+                                    else{
+                                        return row.Additional_Information2
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            data:"PMID",
+                            render:function(data){
+                                if(data!="-"){
+                                    return "<a target='_blank' href='https://pubmed.ncbi.nlm.nih.gov/"+data+"'>"+data+"</a>"
+                                }
+                                else{
+                                    return data
+                                }
+                            }
+                        }
+                    ],
+                    destroy: true,
+                    dom: '<"row"<"col-lg-12"f>>t<"row"<"col-lg-6"i><"col-lg-6"p>>',
+                    "iDisplayLength":5,
+                    order:[6,'asc']
+
+                });
+
+            },
+            error:function(){
+                console.log("error")
+            }
+        })
+        $.ajax({
+            url:"/celltaxonomy/tissue_cell_type_enrichment",
+            type:"post",
+            dataType:'json',
+            data:{tissue:id},
+            success:function(results){
+                results=eval(results).filter(function(e){
+                    return e.supported_paper_number!=0
+                })
+                if(results.length==0){
+                    $("#detail4").css("display","none")
+                    $("#summary2").css("display","none")
+                }
+                else{
+                    var celltype="";
+                    var publications=0
+                    results.map(function(e){
+                        if(e.Species=="All" && e.supported_paper_number>publications){
+                            celltype=e.Cell_standard
+                            publications=e.supported_paper_number
+                        }
+                    })
+                    $("#summary2").html(
+                        celltype+" is mostly reported in "+"<strong>"+name+"</strong>"+" with "+publications+" publications."
+                    )
+
+                    var species=$.unique(unpack(results,"Species").sort()).reverse();
+
+                    $("#sp_species_select optgroup").empty()
+
+                    for(i=0;i<species.length;i++){
+                        if(species[i]!="All"){
+                            if(species[i]=="Mus musculus" || species[i]=="Homo sapiens"){
+                                $("#sp_species_select optgroup").eq(0).prepend(
+                                    "<option value='"+species[i]+"'>"+species[i]+"</option>"
+                                )
+                            }
+                            else{
+                                $("#sp_species_select optgroup").eq(0).append(
+                                    "<option value='"+species[i]+"'>"+species[i]+"</option>"
+                                )
+                            }
+
+                        }
+                        else{
+
+                            $("#sp_species_select optgroup").eq(1).append(
+                                "<option value='"+species[i]+"'>"+species[i]+"</option>"
+                            )
+                        }
+                    }
+                    $("#sp_species_select").find("option").eq(0).attr("selected",true)
+                    var results1=eval(results).filter(function(e){
+                        return e.Species==$("#sp_species_select").val()
+                    })
+
+
+
+                    getbarplot("cell_type_enrichment_literature_sup",results1,$("#name").text()+": supported cell types in "+$("#sp_species_select").val(),"No. of publications","","Cell_standard","supported_paper_number")
+
+
+
+                }
+
+            },
+            error:function(){
+                console.log("error")
+            }
+        })
+        $.ajax({
+            url:"/celltaxonomy/cell_type_cell_marker_heatmap",
+            type:"post",
+            dataType:'json',
+            data:{"id":id},
+            success:function(result) {
+                ctgeLS(result);
+            },
+            error:function(){
+                console.log("error")
+            }
+        })
+
+    }
+
+    $(document).ajaxStop(function(){
+
+        if($("#nav-side").children().length==1){
+            nav_side_bar_set()
+        }
+    })
+    window.onscroll=function(){
+        nav_side_bar_scroll()
+    }
+    function zTreeOnClick(event, treeId, treeNode) {
+        var a=document.createElement('a')
+        a.href="/celltaxonomy/tissue/"+treeNode.id;
+        a.click()
+
+        //alert(treeNode.id + ", " + treeNode.name);
+    };
+
+    $("#cell_type_enrichment_species_select").change(function(){
+        $.ajax({
+            url:"/celltaxonomy/tissue_cell_type_enrichment",
+            type:"post",
+            dataType:'json',
+            data:{tissue:$("#id").text()},
+            success:function(results){
+
+                results=eval(results).filter(function(e){
+                    return e.Species==$("#cell_type_enrichment_species_select").val()
+                })
+                results=eval(results).filter(function(e){
+                    return e.FDR<0.05
+                })
+                results=eval(results).filter(function(e){
+                    return e.cell_tissue_number>1
+                })
+                getplotly("cell_type_enrichment_or",results1,$("#name").text()+": reported cell-type association odds ratio of "+$("#cell_type_enrichment_species_select").val(),"OR2","Cell_standard")
+                getplotlystat("cell_type_enrichment_stat",results1,$("#name").text()+": reported cell-type association significance of "+$("#cell_type_enrichment_species_select").val(),"Cell_standard")
+
+            },
+            error:function(){
+                console.log("error")
+            }
+        })
+
+    })
+
+    $("#sp_species_select").change(function(){
+        $.ajax({
+            url:"/celltaxonomy/tissue_cell_type_enrichment",
+            type:"post",
+            dataType:'json',
+            data:{
+                tissue:$("#id").text()
+            },
+            success:function(results){
+                getbarplot("cell_type_enrichment_literature_sup",results,$("#name").text()+": supported cell types in "+$("#sp_species_select").val(),"No. of publications","","Cell_standard","supported_paper_number")
+            },
+            error:function(){
+                console.log("error")
+            }
+        })
+        $.ajax({
+            url:"/celltaxonomy/cell_type_cell_marker_heatmap",
+            type:"post",
+            dataType:'json',
+            data:{"id":$("#id").text()},
+            success:function(results) {
+                ctgeLS(results)
+            },
+            error:function(){
+                console.log("error")
+            }
+        })
+
+
+    })
+
+
+
+
+    $(".icon").parent().click(function(){
+        if($(this).parent().next().hasClass("in")){
+            $(this).find("i").removeClass("ion-chevron-down");
+            $(this).find("i").addClass("ion-chevron-right")
+        }
+        else{
+            $(this).find("i").addClass("ion-chevron-down");
+            $(this).find("i").removeClass("ion-chevron-right")
+        }
+    })
+    $("#browse_btn").click(function(){
+        $("#browse").css("visibility","hidden")
+        $("#browse").css("width",0)
+        $("#browse").parent().parent().css("width","40px")
+        $("#browse").parent().parent().css("margin","0")
+        $("#browse").parent().parent().css("background","#ffffff")
+        $("#browse").parent().parent().css("display","flex")
+
+
+
+        $("#statistic").parent().parent().parent().css("width","96%")
+        $("#browse_btn2").css("display","block")
+
+    })
+    $("#browse_btn2").click(function(){
+        $("#browse_btn2").css("display","none")
+
+        $("#browse").parent().parent().css("width","300px")
+
+        if($(window).width()>1400){
+            $("#browse").parent().parent().css("margin-left","30px")
+            $("#browse").parent().parent().css("margin-right","10px")
+        }
+
+        $("#browse").parent().parent().css("background","transparent")
+        $("#browse").parent().parent().css("display","block")
+
+        $("#browse").css("width","auto")
+        $("#browse").css("visibility","visible")
+
+        $("#statistic").parent().parent().parent().css("width","75%")
+
+
+    })
+    $(".details").click(function(){
+        if($(this).children("i").hasClass("ion-plus-round")){
+            $(this).children("i").removeClass("ion-plus-round")
+            $(this).children("i").addClass("ion-minus-round")
+        }
+        else{
+            $(this).children("i").removeClass("ion-minus-round")
+            $(this).children("i").addClass("ion-plus-round")
+        }
+
+    })
+
+    function post(URL,params) {
+        var temp_form = document.createElement("form");
+        temp_form .action = URL;
+        temp_form .target = "_blank";
+        temp_form .method = "post";
+        temp_form .style.display = "none";
+        for (var x in params){
+            var opt = document.createElement("textarea");
+            opt.name = x;
+            opt.value = params[x];
+            temp_form .appendChild(opt);
+        }
+
+
+        document.body.appendChild(temp_form);
+        temp_form .submit();
+    };
+
+    $(".icon").hover(function(){
+        var X = $(this).position().top;
+        var Y = $(this).offset().left;
+        var height=$(this).height();
+        var delta=$(window).width()-Y;
+        $(this).siblings(".tooltiptext").css("top",X+height+5)
+        if($(this).siblings("span").text().length>100){
+            $(this).siblings("span").css("width",350)
+            if(delta<175){
+                $(this).siblings(".tooltiptext").css("margin-left",-1*(180+175-delta+20))
+            }
+            else{
+                $(this).siblings(".tooltiptext").css("margin-left",-180)
+            }
+        }
+        if(Y<200){
+            $(this).siblings(".tooltiptext").css("margin-left",-20)
+        }
+
+    })
+
+    // $("#table-description").on("click",".SHOGoiN",function(){
+    //
+    //     post("https://stemcellinformatics.org/cell_marker/literatures",{"keyword":$("#name").text()})
+    // })
+    $("#statistic_table").on("click",".circle_svg",function(){
+        var row = $(this).closest("tr");
+        var type=$(this).attr("value")
+        var data = $('#statistic_table').DataTable().row(row).data();
+
+        if(row.next().hasClass("table_append") && row.next().attr("value")==type){
+            $(".table_append").remove()
+        }
+        else{
+            $.ajax({
+                url:"/celltaxonomy/tissue_statistic2",
+                type:'post',
+                data:{
+                    tissueid:data['Tissue_UberonOntology_ID2'],
+                    type:type
+                },
+                success:function(results){
+                    $(".table_append").remove()
+
+                    if(type=="species") {
+                        row.after(
+                            "<tr class='table_append' value='"+type+"'>"+
+                            "<td colspan='6' id='append_td'>" +
+                            '<div id="pub_div" >'+
+                            '<div>'+
+                            '<table id="pub" class="table table-hover table-striped" style="width:100%">'+
+                            '<thead>'+
+                            '<tr>'+
+                            '<th>Species</th>'+
+                            '<th>Species Taxonomy ID</th>'+
+                            '</tr>'+
+                            '</thead>'+
+                            '</table>'+
+                            '</div>'+
+                            '</div>'+
+                            "</td>"+
+                            "</tr>"
+                        )
+                        results=eval(results).filter(function(e){
+                            return e.Species!="-"
+                        })
+                        $("#pub").DataTable({
+                            data: results,
+                            columns: [
+                                {
+                                    data: "Species",
+                                    render: function (data,type,row) {
+                                        return "<a target='_blank' href='/celltaxonomy/species/" + row.Species_tax_ID + "'>" + data + "</a>"
+                                    }
+
+                                },
+                                {
+                                    data: "Species_tax_ID",
+                                    render:function(data){
+                                        return "<a target='_blank' href='https://www.ncbi.nlm.nih.gov/data-hub/taxonomy/"+data+"'>"+data+"</a>"
+                                    }
+                                },
+
+                            ],
+                            destroy: true,
+                            "iDisplayLength": 5,
+
+                            dom: '<"row">t<"row"<"col-lg-12"p>>',
+
+                        })
+                    }
+                    else if (type=="marker"){
+                        row.after(
+                            "<tr class='table_append' value='"+type+"'>"+
+                            "<td colspan='6' id='append_td'>" +
+                            '<div id="pub_div" >'+
+                            '<div>'+
+                            '<table id="pub" class="table table-hover table-striped" style="width:100%">'+
+                            '<thead>'+
+                            '<tr>'+
+                            '<th>Cell marker</th>'+
+                            '<th>ENTREZ ID</th>'+
+                            '</tr>'+
+                            '</thead>'+
+                            '</table>'+
+                            '</div>'+
+                            '</div>'+
+                            "</td>"+
+                            "</tr>"
+                        )
+                        $("#pub").DataTable({
+                            data: results,
+                            columns: [
+                                {
+                                    data: "Cell_Marker",
+                                    render: function (data,type,row) {
+                                        return "<a target='_blank' href='/celltaxonomy/marker/" + row.Gene_ENTREZID2 + "'>" + data + "</a>"
+                                    }
+
+                                },
+                                {
+                                    data: "Gene_ENTREZID",
+                                    render:function(data){
+                                        if(data!="-"){
+                                            return "<a target='_blank' href='https://www.ncbi.nlm.nih.gov/gene/"+data+"'>"+data+"</a>"
+                                        }
+                                        else{
+                                            return data
+                                        }
+                                    }
+                                },
+
+                            ],
+                            destroy: true,
+                            "iDisplayLength": 5,
+
+                            dom: '<"row">t<"row"<"col-lg-12"p>>',
+
+                        })
+                    }
+                    else if (type=="condition"){
+                        row.after(
+                            "<tr class='table_append' value='"+type+"'>"+
+                            "<td colspan='6' id='append_td'>" +
+                            '<div id="pub_div" >'+
+                            '<div>'+
+                            '<table id="pub" class="table table-hover table-striped" style="width:100%">'+
+                            '<thead>'+
+                            '<tr>'+
+                            '<th>Condition</th>'+
+                            '<th>Disease ID</th>'+
+                            '</tr>'+
+                            '</thead>'+
+                            '</table>'+
+                            '</div>'+
+                            '</div>'+
+                            "</td>"+
+                            "</tr>"
+                        )
+                        results=eval(results).filter(function(e){
+                            return e.Disease_Type!="-"
+                        })
+                        $("#pub").DataTable({
+                            data: results,
+                            columns: [
+                                {
+                                    data: "Disease_Type",
+                                    render: function (data,type,row) {
+                                        return "<a target='_blank' href='/celltaxonomy/condition/" + row.Disease_Ontology_ID2 + "'>" + data + "</a>"
+                                    }
+
+                                },
+                                {
+                                    data: "Disease_Ontology_ID",
+                                    render:function(data){
+                                        if(data!="-"){
+                                            return "<a target='_blank' href='https://www.ebi.ac.uk/ols/ontologies/doid/terms?iri=http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2F"+data.replace(/:/,"_")+"'>"+data+"</a>"
+                                        }
+                                        else{
+                                            return data
+                                        }
+                                    }
+                                },
+
+                            ],
+                            destroy: true,
+                            "iDisplayLength": 5,
+
+                            dom: '<"row">t<"row"<"col-lg-12"p>>',
+
+                        })
+                    }
+                    else if (type=="cell"){
+                        row.after(
+                            "<tr class='table_append' value='"+type+"'>"+
+                            "<td colspan='6' id='append_td'>" +
+                            '<div id="pub_div" >'+
+                            '<div>'+
+                            '<table id="pub" class="table table-hover table-striped" style="width:100%">'+
+                            '<thead>'+
+                            '<tr>'+
+                            '<th>Cell type</th>'+
+                            '<th>Cell Taxonomy ID</th>'+
+                            '<th>Cell Ontology ID</th>'+
+                            '</tr>'+
+                            '</thead>'+
+                            '</table>'+
+                            '</div>'+
+                            '</div>'+
+                            "</td>"+
+                            "</tr>"
+                        )
+                        $("#pub").DataTable({
+                            data: results,
+                            columns: [
+                                {
+                                    data: "Cell_standard",
+                                    render: function (data,type,row) {
+                                        return "<a target='_blank' href='/celltaxonomy/celltype/" + row.CT_ID + "'>" + data + "</a>"
+                                    }
+
+                                },
+                                {
+                                    data: "CT_ID",
+                                    render:function(data){
+                                        if(data!="-"){
+                                            return "<a target='_blank' href='/celltaxonomy/celltype/"+data+"'>"+data+"</a>"
+                                        }
+                                        else{
+                                            return data
+                                        }
+                                    }
+                                },
+                                {
+                                    data: "Specific_Cell_Ontology_ID",
+                                    render:function(data){
+                                        if(data.indexOf(".")<0){
+                                            return "<a target='_blank' href='https://www.ebi.ac.uk/ols/ontologies/cl/terms?iri=http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2F"+data.replace(/:/,"_")+"'>"+data+"</a>"
+                                        }
+                                        else{
+                                            return "-"
+                                        }
+                                    }
+                                },
+
+                            ],
+                            destroy: true,
+                            "iDisplayLength": 5,
+
+                            dom: '<"row">t<"row"<"col-lg-12"p>>',
+
+                        })
+                    }
+                    else{
+                        row.after(
+                            "<tr class='table_append' value='"+type+"'>"+
+                            "<td colspan='6' id='append_td'>" +
+                            '<div id="pub_div" >'+
+                            '<div>'+
+                            '<table id="pub" class="table table-hover table-striped" style="width:100%">'+
+                            '<thead>'+
+                            '<tr>'+
+                            '<th>PMID</th>'+
+                            '<th>Title</th>'+
+                            '<th>Journal</th>'+
+                            '</tr>'+
+                            '</thead>'+
+                            '</table>'+
+                            '</div>'+
+                            '</div>'+
+                            "</td>"+
+                            "</tr>"
+                        )
+                        results=eval(results).filter(function(e){
+                            return e.PMID!="-"
+                        })
+                        $("#pub").DataTable({
+                            data: results,
+                            columns: [
+                                {
+                                    data:"PMID",
+                                    render:function(data){
+                                        return "<a target='_blank' href='https://pubmed.ncbi.nlm.nih.gov/"+data+"'>"+data+"</a>"
+                                    }
+
+                                },
+                                {data:"title"},
+                                {data:"journalvolume"},
+
+                            ],
+                            destroy: true,
+                            "iDisplayLength": 5,
+
+                            dom: '<"row">t<"row"<"col-lg-12"p>>',
+
+                        })
+                    }
+                }
+            })
+        }
+    })
+
+
+    $("#reload").click(function(){
+        location.reload()
+    })
+    if($(window).width()>1400){
+
+    }
+    else if($(window).width()>1024){
+
+        $(".col-sm-3").css("margin-left","0")
+        $(".col-sm-3").css("margin-right","0")
+
+        $(".col-lg-3").css("padding-left",0)
+        $(".col-lg-9").css("padding",0)
+        // $(".col-lg-9").addClass("col-lg-10")
+        // $(".col-lg-9").removeClass("col-lg-9")
+        $("#statistic_table").css("font-size","13px")
+
+    }
+    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+        "num-html-pre": function ( a ) {
+            if(a=="Inf"){
+                a=10000000000
+            }
+            else{
+                a=a*1
+            }
+            return a
+        },
+
+        "num-html-asc": function ( a, b ) {
+            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+        },
+
+        "num-html-desc": function ( a, b ) {
+            return ((a < b) ? 1 : ((a > b) ? -1 : 0));
+        }});
+
+</script>
+
+</body>
+</html>

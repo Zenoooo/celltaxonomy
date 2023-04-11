@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SearchResults - Cell Taxonomy - CNCB-NGDC</title>
+    <link rel="icon" href="/celltaxonomy/static/img/CellTaxonomy v3.png">
+
+    <link href="/celltaxonomy/static/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/celltaxonomy/static/css/ionicons.min.css">
+
+    <script src="/celltaxonomy/static/js/jquery.min.js"></script>
+
+    <link rel="stylesheet" href="/celltaxonomy/static/css/bootstrap.min.css" >
+    <link rel="stylesheet" href="/celltaxonomy/static/css/dataTables.bootstrap.min.css" >
+    <script src="/celltaxonomy/static/js/bootstrap.min.js"></script>
+
+    <script src="/celltaxonomy/static/js/jquery.dataTables.min.js"></script>
+    <script src="/celltaxonomy/static/js/dataTables.buttons.min.js"></script>
+    <script src="/celltaxonomy/static/js/dataTables.bootstrap.min.js"></script>
+    <link href=" /celltaxonomy/static/css/dataTables.colVis.css" rel="stylesheet">
+    <link href="/celltaxonomy/static/css/select2.min.css" rel="stylesheet" />
+    <script src="/celltaxonomy/static/js/select2.min.js"></script>
+    <link href="/celltaxonomy/static/css/bow.ui.min.css" rel="stylesheet">
+    <script type="text/javascript" src="/celltaxonomy/static/js/headerfooter-full.js"></script>
+    <script src="/celltaxonomy/static/js/swiper-bundle.min.js"></script>
+    <link href="/celltaxonomy/static/css/swiper-bundle.min.css" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="/celltaxonomy/static/css/my/my.css">
+    <style>
+
+        .indexes,.tissue-indexes{
+            display: flex;
+            padding: 10px;
+            width: 100%;
+            justify-content: center;
+            margin:0 auto;
+        }
+        .index,.tissue-index{
+            display: inline-block;
+            padding:0 1.35% 0 1.35%;
+            font-size: 17px;
+            border-bottom: 1px solid #ddd;
+        }
+        .index.active,.tissue-index.active{
+
+            border: 1px solid #ddd;
+            border-bottom-color: transparent;
+            border-radius: 4px 4px 0 0;
+        }
+        .index a,.pagenumber a,.tissue-index a{
+            color:#333;
+            text-decoration: none;
+        }
+        .filter-title:focus{
+            color: white;
+            text-decoration: none;
+        }
+
+        textarea{
+            margin:0 !important
+        }
+        .select2-selection__rendered{
+            margin:0 !important
+        }
+        .select2 {
+            width: 90% !important;
+        }
+        #table-marker tbody tr td{
+            word-break: break-word;
+            white-space: normal;
+        }
+        .filter-title{
+            margin-top: 10px;
+        }
+
+        @media screen and (min-width: 1500px){
+
+        }
+        @media screen and (max-width: 1400px) and (min-width: 1024px){
+            .select2-container .select2-selection--multiple{
+                min-height: 0;
+                padding:0
+            }
+        }
+        .search_type{
+            font-weight: 500;
+            padding:20px 0 20px 20px;
+            color:black;
+            text-decoration: underline;
+            background: #FCFCFC;
+
+        }
+        .cell_item,.marker_item,.tissue_item{
+            list-style: none;
+            padding:15px 30px;
+            margin: 2px 0 0 0;
+            color:#202121;
+            background: #FCFCFC;
+
+        }
+        .cell_item:hover{
+            box-shadow: 1px 2px 5px #cbcbcb;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+        .append_item{
+            opacity: 0;
+            transition: 2s;
+        }
+        ul{
+            margin:0;
+        }
+        #cell_card,#marker_card,#tissue_card{
+            border-radius: 5px;
+        }
+        #specific_card{
+            background: white;
+            width: 30%;
+            padding: 10px 20px;
+            margin-top:50px
+        }
+        #specific_card a{
+            font-size: 25px;
+            display: block;
+            margin-bottom: 20px;
+        }
+        #specific_card p{
+            font-size: 10px;
+            display: block;
+            margin: 0 0 5px 0;
+        }
+
+        .item_title{
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        .item_content{
+            font-size: 14px;
+            color: #656565
+        }
+        .mypanel-body{
+            background: transparent;
+        }
+        p{
+            margin:0
+        }
+        strong{
+            font-weight: 700;
+        }
+        svg {
+            float: left;
+            width: 40px;
+            height: 40px;
+            fill: none;
+            stroke-width: 1;
+            transform: rotate(-90deg);
+        }
+        .circle:before{
+            content: attr(data-note);
+            text-align: center;
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            font-size: 14px;
+            transform: translateY(-50%);
+        }
+        .circle{
+            position:relative;
+            float: left;
+        }
+        .circle_title{
+            font-size: 10px;
+            text-align: center;
+        }
+        .species_circle{
+            margin-left: 20px;
+        }
+        .swiper {
+            width: 100%;
+            height: 100%;
+        }
+        .swiper-button-next,.swiper-button-prev,.swiper-pagination{
+            position: fixed;
+        }
+        .swiper-button-next,.swiper-button-prev{
+            width: 50px !important;
+            height: 50px !important;
+            background: black;
+            border-radius: 50%;
+        }
+        .swiper-button-next:after, .swiper-rtl .swiper-button-prev:after,
+        .swiper-button-prev:after, .swiper-rtl .swiper-button-next:after{
+            content: '';
+        }
+        .ion-android-arrow-back, .ion-android-arrow-forward{
+            font-size: 30px;
+            color: white;
+        }
+        .swiper-pagination-bullet {
+            width: 13px;
+            height: 10px;
+            display: inline-block;
+            background: #7b7b7b;
+            opacity: .2;
+            margin: 0 5px;
+            border-radius: 20px;
+            transition: opacity .5s, background-color .5s, width .5s;
+            transition-delay: .5s, .5s, 0s;
+        }
+        .swiper-pagination-bullet-active{
+            opacity: 1;
+            background: black;
+            width: 100px;
+            transition-delay: 0s;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <nav th:replace="common/topbar::topbar"></nav>
+</header>
+<!--    <div style="overflow: hidden;height:150px;width: 100%;background-image: url(/celltaxonomy/static/img/B1415360227.jpeg)">-->
+<!--        <div class="col-lg-offset-1" style="display: flex;align-items: center;height: 100%;">-->
+<!--            <h1 style="text-align: left;color: white;width:100%;font-size: 76px">Search Results</h1>-->
+<!--        </div>-->
+<!--    </div>-->
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/celltaxonomy/">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Search results</li>
+    </ol>
+</nav>
+    <div class="container" style="background:#f4f7f6;padding:0 100px" >
+        <div class="page">
+            <div class="col-lg-12 " style="margin: 30px 0;">
+                <div class="panle panel-default">
+                    <div class="panel-body" style="padding: 0">
+                        <div style="display:flex;justify-content: center;">
+                            <input id="search" type="text" style="width: 50%;flex:0 0 auto;height: 45px">
+                            <span id="search_btn" style="cursor: pointer;padding:2px 20px;border-radius: 5px;display: block;color:white;background: black;font-size: 17px;margin:0 0 0 10px;line-height: 41px">Search</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="swiper">
+            <!--                <div id="no_result" style="margin-bottom: 20px;display: none">-->
+            <!--                    <i style="font-size: 23px">No items found.</i>-->
+            <!--                </div>-->
+            <div class="swiper-wrapper">
+
+                <div class="swiper-slide">
+                    <div class="mypanel-body column_card" id="cell_card">
+                        <div>
+                            <h3 class="search_type">CELL TYPE</h3>
+                        </div>
+                        <div >
+                            <ul id="cell_region"></ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="swiper-slide">
+                    <div class="mypanel-body column_card" id="marker_card" >
+                        <div>
+                            <h3 class="search_type">MARKER</h3>
+                        </div>
+                        <div >
+                            <ul id="marker_region"></ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="swiper-slide">
+                    <div class="mypanel-body column_card" id="tissue_card" >
+                        <div>
+                            <h3 class="search_type" >TISSUE</h3>
+                        </div>
+                        <div >
+                            <ul id="tissue_region"></ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="swiper-slide">
+                    <div class="mypanel-body column_card" id="species_card" >
+                        <div>
+                            <h3 class="search_type">SPECIES</h3>
+                        </div>
+                        <div>
+                            <ul id="species_region"></ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="swiper-slide">
+                    <div class="mypanel-body column_card" id="condition_card">
+                        <div>
+                            <h3 class="search_type">CONDITION</h3>
+                        </div>
+                        <div>
+                            <ul id="condition_region"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="swiper-pagination"></div>
+            <div class="news-slider__ctr">
+
+                <div class="news-slider__arrows">
+                    <button class="news-slider__arrow swiper-button-prev">
+                      <span class="icon-font">
+                          <i class="icon ion-android-arrow-back"></i>
+                      </span>
+                    </button>
+                    <button class="news-slider__arrow swiper-button-next">
+                      <span class="icon-font">
+                          <i class="icon ion-android-arrow-forward"></i>
+                      </span>
+                    </button>
+                </div>
+            <div class="swiper-scrollbar"></div>
+        </div>
+
+    </div>
+
+<script th:inline="javascript">
+    function getoptions(url,title,id,query,species,tissuename,diseasename,celltypename,tissue,disease,celltype){
+        $("#"+id).select2({
+            ajax: {
+                url: "/celltaxonomy"+url,
+                dataType: 'json',
+                type: "post",
+                data:function(params){
+                    var search={
+                        term:params.term,
+                        title:title,
+                        query:query,
+                        speciess:species,
+                        tissuename:tissuename,
+                        diseasename:diseasename,
+                        celltypename:celltypename,
+                        tissue:tissue,
+                        disease:disease,
+                        celltype:celltype
+                    }
+                    return search
+                },
+                processResults: function (data) {
+                    var res = data.map(function (item) {
+
+                        return {id: item[title],text:item[title]};
+                    });
+                    return {
+                        results: res
+                    };
+                }
+            }
+
+
+        });
+    };
+    function getUrlParam(name) {
+
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]); return null;
+
+    };
+    function sortMarker(a,b){
+        return b.Cell_Marker-a.Cell_Marker
+    }
+    var cell;
+    var marker;
+    var tissue;
+    var species;
+    var condition;
+    $(document).ready(function() {
+        var query=getUrlParam('query').replace(/\+/g," ");
+        var mySwiper = new Swiper ('.swiper', {
+            loop: false, // 循环模式选项
+            slidesPerView: 3,
+            spaceBetween: 30,
+            observer:true,
+            observeParents:true,
+            centerInsufficientSlides:true,
+            // 如果需要分页器
+            pagination: {
+                el: '.swiper-pagination',
+            },
+
+            // 如果需要前进后退按钮
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+
+            // 如果需要滚动条
+            scrollbar: {
+                el: '.swiper-scrollbar',
+            },
+            on: {
+                observerUpdate: function(){
+                },
+            },
+        })
+
+        $("#search").val(query)
+        $.ajax({
+            url: "/celltaxonomy/home_search",
+            data:
+                {
+                    "query": query
+                },
+            type: 'post',
+            success:function(results){
+                cell=results["cell"];
+                marker=results["marker"];
+                tissue=results["tissue"];
+                species=results["species"];
+                condition=results["condition"];
+                if(cell.length==0 && marker.length==0 && tissue.length==0 && species.length==0 && condition.length==0){
+                    $("#cell_card").css("display","none")
+                    $("#marker_card").css("display","none")
+                    $("#tissue_card").css("display","none")
+                    $("#species_card").css("display","none")
+                    $("#condition_card").css("display","none")
+
+                    $("#no_result").css("display","block")
+                }
+                else{
+
+
+                    if(cell.length==0){
+                        $("#cell_card").parent().css("display","none")
+                    }
+                    else{
+                        var show_cell=cell.slice(0,10);
+                        show_cell.map(function(a){
+                            $("#cell_region").append(
+                                "<li class='cell_item'>"+
+                                "<div style='display: flex;justify-content: space-between'>"+
+                                "<div>" +
+                                "<p class='item_title'>"+a["Cell_standard"]+"</p>"+
+                                "<p class='item_content item_link'><strong>Cell Taxonomy ID:</strong> "+a['CT_ID']+"</p>"+
+                                "<p class='item_content'><strong>Alias:</strong> "+a["Cell_alias_change"]+"</p>"+
+                                "</div>"+
+                                "<div >"+
+                                "<div class='circle' data-note='"+a["Gene_count"]+"' data-size='40'>" +
+                                "<svg style='width: 40px; height: 40px;'>"+
+                                "<circle r='19' cy='20' cx='20' style='stroke: #df6c4f;stroke-dasharray: 119.381; stroke-dashoffset: 23.8761;'></circle>"+
+                                "</svg>"+
+                                "</div>"+
+                                "<p class='circle_title'>Marker</p>"+
+                                "</div>"+
+                                "</div>"+
+                                "</li>"
+
+                            )
+                        })
+                    }
+
+                    if(marker.length==0){
+                        $("#marker_card").parent().css("display","none")
+                    }
+                    else{
+                        if(!isNaN(parseInt(query))){
+                            marker.map(function(a){
+                                if(a["Gene_ENTREZID2"]==query){
+                                    $("#marker_region").append(
+                                        "<li class='cell_item'>"+
+                                        "<div style='display: flex;justify-content: space-between'>"+
+                                        "<div>" +
+                                        "<p class='item_title'>"+a["Cell_Marker"]+"</p>"+
+                                        "<p class='item_content item_link' value='"+a["Gene_ENTREZID2"]+"'><strong>ENTREZ ID:</strong> "+a['Gene_ENTREZID2']+"</p>"+
+                                        "<p class='item_content item_link'><strong>Species:</strong> "+a['Species']+"</p>"+
+                                        "<p class='item_content item_link' style='word-break: break-word'><strong>Alias:</strong> "+a['Gene_Alias'].replace(/;|,/g,", ")+"</p>"+
+                                        "</div>"+
+                                        "<div >"+
+                                        "<div class='circle' data-note='"+a["Cell_count"]+"' data-size='40'>" +
+                                        "<svg style='width: 40px; height: 40px;'>"+
+                                        "<circle r='19' cy='20' cx='20' style='stroke:#2487ce;stroke-dasharray: 119.381; stroke-dashoffset: 23.8761;'></circle>"+
+                                        "</svg>"+
+                                        "</div>"+
+                                        "<p class='circle_title'>Cell</p>"+
+                                        "</div>"+
+                                        "</div>"+
+                                        "</li>"
+                                    )
+                                    marker=[a];
+
+                                }
+
+                            })
+                        }
+                        else{
+                            marker=marker.sort()
+                            var show_marker=marker.slice(0,10);
+                            var reg=/[a-zA-Z]/
+                            show_marker.map(function(a){
+                                if(reg.test(a['Gene_ENTREZID2'])){
+                                    a['Gene_ENTREZID']="-"
+                                }
+                                else{
+                                    a['Gene_ENTREZID']=a['Gene_ENTREZID2']
+
+                                }
+                                $("#marker_region").append(
+                                    "<li class='cell_item'>"+
+                                    "<div style='display: flex;justify-content: space-between'>"+
+                                    "<div>" +
+                                    "<p class='item_title'>"+a["Cell_Marker"]+"</p>"+
+                                    "<p class='item_content item_link' value='"+a['Gene_ENTREZID2']+"'><strong>ENTREZ ID:</strong> "+a['Gene_ENTREZID']+"</p>"+
+                                    "<p class='item_content item_link'><strong>Species:</strong> "+a['Species']+"</p>"+
+                                    "<p class='item_content item_link' style='word-break: break-word'><strong>Alias:</strong> "+a['Gene_Alias'].replace(/;|,/g,", ")+"</p>"+
+                                    "</div>"+
+                                    "<div >"+
+                                    "<div class='circle' data-note='"+a["Cell_count"]+"' data-size='40'>" +
+                                    "<svg style='width: 40px; height: 40px;'>"+
+                                    "<circle r='19' cy='20' cx='20' style='stroke:#2487ce;stroke-dasharray: 119.381; stroke-dashoffset: 23.8761;'></circle>"+
+                                    "</svg>"+
+                                    "</div>"+
+                                    "<p class='circle_title'>Cell</p>"+
+                                    "</div>"+
+                                    "</div>"+
+                                    "</li>"
+                                )
+                            })
+                        }
+
+                    }
+
+                    if(tissue.length==0){
+                        $("#tissue_card").parent().css("display","none")
+                    }
+                    else{
+                        var show_tissue=tissue.slice(0,10);
+                        show_tissue.map(function(a){
+                            if(a['Synonyms']==="\r"){
+                                a['Synonyms']="-"
+                            }
+                            $("#tissue_region").append(
+                                "<li class='cell_item'>"+
+                                "<div style='display: flex;justify-content: space-between'>"+
+                                "<div>" +
+                                "<p class='item_title'>"+a["Tissue_standard"]+"</p>"+
+                                "<p class='item_content item_link'><strong>Uberon Ontology ID:</strong> "+a['Tissue_UberonOntology_ID']+"</p>"+
+                                "<p class='item_content item_link'><strong>Alias:</strong> "+a['Synonyms'].replace(/\|/g,", ")+"</p>"+
+                                "</div>"+
+                                "<div >"+
+                                "<div class='circle' data-note='"+a["Cell_count"]+"' data-size='40'>" +
+                                "<svg style='width: 40px; height: 40px;'>"+
+                                "<circle r='19' cy='20' cx='20' style='stroke:#2487ce;stroke-dasharray: 119.381; stroke-dashoffset: 23.8761;'></circle>"+
+                                "</svg>"+
+                                "</div>"+
+                                "<p class='circle_title'>Cell</p>"+
+                                "</div>"+
+                                "</div>"+
+                                "</li>"
+                            )
+                        })
+                    }
+
+                    if(species.length==0){
+                        $("#species_card").parent().css("display","none")
+                    }
+                    else{
+                        species.map(function(a){
+                            $("#species_region").append(
+                                "<li class='cell_item'>"+
+                                "<div style='display: flex;justify-content: space-between'>"+
+                                "<div>" +
+                                "<p class='item_title'>"+a["Species"]+"</p>"+
+                                "<p class='item_content item_link'><strong>Taxonomy ID:</strong> "+a['Species_ID']+"</p>"+
+                                "<p class='item_content item_link'><strong>Alias:</strong> "+a['Species_alias']+"</p>"+
+                                "</div>"+
+                                "<div style='display: flex;'>"+
+                                "<div class='species_circle'>"+
+                                "<div class='circle ' data-note='"+a["Cell_count"]+"' data-size='40'>" +
+                                "<svg style='width: 40px; height: 40px;'>"+
+                                "<circle r='19' cy='20' cx='20' style='stroke:#2487ce;stroke-dasharray: 119.381; stroke-dashoffset: 23.8761;'></circle>"+
+                                "</svg>"+
+                                "</div>"+
+                                "<p class='circle_title'>Cell</p>"+
+                                "</div>"+
+                                "<div class='species_circle'>"+
+                                "<div class='circle' data-note='"+a["Gene_count"]+"' data-size='40'>" +
+                                "<svg style='width: 40px; height: 40px;'>"+
+                                "<circle r='19' cy='20' cx='20' style='stroke:#df6c4f;stroke-dasharray: 119.381; stroke-dashoffset: 23.8761;'></circle>"+
+                                "</svg>"+
+                                "</div>"+
+                                "<p class='circle_title'>Marker</p>"+
+                                "</div>"+
+                                "<div class='species_circle'>"+
+                                "<div class='circle' data-note='"+a["Tissue_count"]+"' data-size='40'>" +
+                                "<svg style='width: 40px; height: 40px;'>"+
+                                "<circle r='19' cy='20' cx='20' style='stroke:#ecd06f;stroke-dasharray: 119.381; stroke-dashoffset: 23.8761;'></circle>"+
+                                "</svg>"+
+                                "</div>"+
+                                "<p class='circle_title'>Tissue</p>"+
+                                "</div>"+
+                                "</div>"+
+                                "</div>"+
+                                "</li>"
+                            )
+                        })
+                        $("#species_region").append(
+                            "<li style='list-style: none;text-align: center;margin:5px 0'><i>No more results</i></li>"
+                        )
+                    }
+                    if(condition.length==0){
+                        $("#condition_card").parent().css("display","none")
+                    }
+                    else{
+                        condition.map(function(a){
+                            var reg=/DOID:/
+                            if(reg.test(a['Condition_ID'])){
+                                $("#condition_region").append(
+                                    "<li class='cell_item'>"+
+                                    "<div style='display: flex;justify-content: space-between'>"+
+                                    "<div>" +
+                                    "<p class='item_title'>"+a["Conditions"]+"</p>"+
+                                    "<p class='item_content item_link'><strong>ID:</strong> "+a['Condition_ID']+"</p>"+
+                                    "</div>"+
+                                    "<div style='display: flex;'>"+
+                                    "<div class='species_circle'>"+
+                                    "<div class='circle ' data-note='"+a["Cell_count"]+"' data-size='40'>" +
+                                    "<svg style='width: 40px; height: 40px;'>"+
+                                    "<circle r='19' cy='20' cx='20' style='stroke:#2487ce;stroke-dasharray: 119.381; stroke-dashoffset: 23.8761;'></circle>"+
+                                    "</svg>"+
+                                    "</div>"+
+                                    "<p class='circle_title'>Cell</p>"+
+                                    "</div>"+
+                                    "<div class='species_circle'>"+
+                                    "<div class='circle' data-note='"+a["Gene_count"]+"' data-size='40'>" +
+                                    "<svg style='width: 40px; height: 40px;'>"+
+                                    "<circle r='19' cy='20' cx='20' style='stroke:#df6c4f;stroke-dasharray: 119.381; stroke-dashoffset: 23.8761;'></circle>"+
+                                    "</svg>"+
+                                    "</div>"+
+                                    "<p class='circle_title'>Marker</p>"+
+                                    "</div>"+
+                                    "<div class='species_circle'>"+
+                                    "<div class='circle' data-note='"+a["Tissue_count"]+"' data-size='40'>" +
+                                    "<svg style='width: 40px; height: 40px;'>"+
+                                    "<circle r='19' cy='20' cx='20' style='stroke:#ecd06f;stroke-dasharray: 119.381; stroke-dashoffset: 23.8761;'></circle>"+
+                                    "</svg>"+
+                                    "</div>"+
+                                    "<p class='circle_title'>Tissue</p>"+
+                                    "</div>"+
+                                    "</div>"+
+                                    "</div>"+
+                                    "</li>"
+                                )
+                            }
+                            else{
+                                $("#condition_region").append(
+                                    "<li class='cell_item'>"+
+                                    "<div style='display: flex;justify-content: space-between'>"+
+                                    "<div>" +
+                                    "<p class='item_title'>"+a["Conditions"]+"</p>"+
+                                    "<p class='item_content item_link'><strong>ID: </strong>-</p>"+
+                                    "</div>"+
+                                    "<div style='display: flex;'>"+
+                                    "<div class='species_circle'>"+
+                                    "<div class='circle ' data-note='"+a["Cell_count"]+"' data-size='40'>" +
+                                    "<svg style='width: 40px; height: 40px;'>"+
+                                    "<circle r='19' cy='20' cx='20' style='stroke:#2487ce;stroke-dasharray: 119.381; stroke-dashoffset: 23.8761;'></circle>"+
+                                    "</svg>"+
+                                    "</div>"+
+                                    "<p class='circle_title'>Cell</p>"+
+                                    "</div>"+
+                                    "<div class='species_circle'>"+
+                                    "<div class='circle' data-note='"+a["Gene_count"]+"' data-size='40'>" +
+                                    "<svg style='width: 40px; height: 40px;'>"+
+                                    "<circle r='19' cy='20' cx='20' style='stroke:#df6c4f;stroke-dasharray: 119.381; stroke-dashoffset: 23.8761;'></circle>"+
+                                    "</svg>"+
+                                    "</div>"+
+                                    "<p class='circle_title'>Marker</p>"+
+                                    "</div>"+
+                                    "<div class='species_circle'>"+
+                                    "<div class='circle' data-note='"+a["Tissue_count"]+"' data-size='40'>" +
+                                    "<svg style='width: 40px; height: 40px;'>"+
+                                    "<circle r='19' cy='20' cx='20' style='stroke:#ecd06f;stroke-dasharray: 119.381; stroke-dashoffset: 23.8761;'></circle>"+
+                                    "</svg>"+
+                                    "</div>"+
+                                    "<p class='circle_title'>Tissue</p>"+
+                                    "</div>"+
+                                    "</div>"+
+                                    "</div>"+
+                                    "</li>"
+                                )
+                            }
+
+                        })
+                        $("#condition_region").append(
+                            "<li style='list-style: none;text-align: center;margin:5px 0'><i>No more results</i></li>"
+                        )
+                    }
+
+
+                }
+
+            }
+        })
+
+
+
+    });
+
+
+    function post(URL,params) {
+        var temp_form = document.createElement("form");
+        temp_form .action = "/celltaxonomy"+URL;
+        temp_form .target = "_blank";
+        temp_form .method = "post";
+        temp_form .style.display = "none";
+        for (var x in params){
+            var opt = document.createElement("textarea");
+            opt.name = x;
+            opt.value = params[x];
+            temp_form .appendChild(opt);
+        }
+
+
+        document.body.appendChild(temp_form);
+        temp_form .submit();
+    };
+
+    $("#cell_region").on("click",".cell_item",function(){
+        var cell=$(this).find(".item_link").text().split(": ")[1]
+        window.location.href = "/celltaxonomy/celltype/"+cell;
+    })
+    $("#marker_region").on("click",".cell_item",function(){
+        var cell=$(this).find(".item_link").eq(0).attr("value")
+        window.location.href = "/celltaxonomy/marker/"+cell;
+    })
+    $("#tissue_region").on("click",".cell_item",function(){
+        var cell=$(this).find(".item_link").eq(0).text().split(": ")[1]
+        window.location.href = "/celltaxonomy/tissue/"+cell;
+    })
+    $("#condition_region").on("click",".cell_item",function(){
+        var cell=$(this).find(".item_link").eq(0).text().split(": ")[1]
+        window.location.href = "/celltaxonomy/condition/"+cell;
+    })
+    $("#species_region").on("click",".cell_item",function(){
+        var cell=$(this).find(".item_link").eq(0).text().split(": ")[1]
+        window.location.href = "/celltaxonomy/species/"+cell;
+    })
+    $("#search_btn").click(function(){
+        window.location.href="/celltaxonomy/searchresults?query="+$("#search").val()
+
+    })
+    $("#search").keydown(function(event){
+        if(event.keyCode==13){
+            window.location.href="/celltaxonomy/searchresults?query="+$("#search").val()
+        }
+    })
+    var show1=10;
+    var show2=10;
+    var show3=10;
+    var judge1=0;
+    var judge2=0;
+    var judge3=0;
+    $(window).scroll(function(){
+        var $this=$(this)
+        var scrollTop = $this.scrollTop();
+        var viewHeight=$this.height()
+        var contentHeight = $(".bigd-footer").offset().top;
+        if(show1<cell.length && scrollTop/(contentHeight-viewHeight)>1){
+            var show_cell=cell.slice(show1,show1+10)
+            show_cell.map(function(a){
+                $("#cell_region").append(
+                    "<li class='cell_item append_item'>"+
+                    "<div style='display: flex;justify-content: space-between'>"+
+                    "<div>" +
+                    "<p class='item_title'>"+a["Cell_standard"]+"</p>"+
+                    "<p class='item_content item_link'><strong>Cell Taxonomy ID:</strong> "+a['CT_ID']+"</p>"+
+                    "<p class='item_content'><strong>Alias:</strong> "+a["Cell_alias_change"]+"</p>"+
+                    "</div>"+
+                    "<div >"+
+                    "<div class='circle' data-note='"+a["Gene_count"]+"' data-size='40'>" +
+                    "<svg style='width: 40px; height: 40px;'>"+
+                    "<circle r='19' cy='20' cx='20' style='stroke: #df6c4f;stroke-dasharray: 119.381; stroke-dashoffset: 23.8761;'></circle>"+
+                    "</svg>"+
+                    "</div>"+
+                    "<p class='circle_title'>Marker</p>"+
+                    "</div>"+
+                    "</div>"+
+                    "</li>"
+                )
+            })
+            show1=show1+10;
+            setTimeout(function(){
+                $(".append_item").css("opacity",1)
+            },500)
+        }
+        else if(show1>cell.length && judge1==0){
+            $("#cell_region").append(
+                "<li style='list-style: none;text-align: center;margin:5px 0'><i>No more results</i></li>"
+            )
+            judge1=1
+        }
+        if(show2<marker.length && scrollTop/(contentHeight-viewHeight)>1){
+            var show_marker=marker.slice(show2,show2+10)
+            var reg=/[a-zA-Z]/
+
+            show_marker.map(function(a){
+                if(reg.test(a['Gene_ENTREZID2'])){
+                    a['Gene_ENTREZID']="-"
+                }
+                else{
+                    a['Gene_ENTREZID']=a['Gene_ENTREZID2']
+
+                }
+                $("#marker_region").append(
+                    "<li class='cell_item append_item'>"+
+                    "<div style='display: flex;justify-content: space-between'>"+
+                    "<div>" +
+                    "<p class='item_title'>"+a["Cell_Marker"]+"</p>"+
+                    "<p class='item_content item_link' value='"+a['Gene_ENTREZID2']+"'><strong>ENTREZ ID:</strong> "+a['Gene_ENTREZID']+"</p>"+
+                    "<p class='item_content item_link'><strong>Species:</strong> "+a['Species']+"</p>"+
+                    "<p class='item_content item_link' style='word-break: break-word'><strong>Alias:</strong> "+a['Gene_Alias'].replace(/;|,/g,", ")+"</p>"+
+                    "</div>"+
+                    "<div >"+
+                    "<div class='circle' data-note='"+a["Cell_count"]+"' data-size='40'>" +
+                    "<svg style='width: 40px; height: 40px;'>"+
+                    "<circle r='19' cy='20' cx='20' style='stroke:#2487ce;stroke-dasharray: 119.381; stroke-dashoffset: 23.8761;'></circle>"+
+                    "</svg>"+
+                    "</div>"+
+                    "<p class='circle_title'>Cell</p>"+
+                    "</div>"+
+                    "</div>"+
+                    "</li>"
+                )
+            })
+            show2=show2+10;
+            setTimeout(function(){
+                $(".append_item").css("opacity",1)
+            },500)
+        }
+        else if(show2>marker.length && judge2==0){
+            $("#marker_region").append(
+                "<li style='list-style: none;text-align: center;margin:5px 0'><i>No more results</i></li>"
+            )
+            judge2=1
+        }
+        if(show3<tissue.length && scrollTop/(contentHeight-viewHeight)>1){
+            var show_tissue=tissue.slice(show3,show3+10)
+            show_tissue.map(function(a){
+                $("#tissue_region").append(
+                    "<li class='cell_item append_item'>"+
+                    "<div style='display: flex;justify-content: space-between'>"+
+                    "<div>" +
+                    "<p class='item_title'>"+a["Tissue_standard"]+"</p>"+
+                    "<p class='item_content item_link'><strong>Uberon Ontology ID:</strong> "+a['Tissue_UberonOntology_ID']+"</p>"+
+                    "<p class='item_content item_link'><strong>Alias:</strong> "+a['Synonyms'].replace(/\|/g,", ")+"</p>"+
+                    "</div>"+
+                    "<div >"+
+                    "<div class='circle' data-note='"+a["Cell_count"]+"' data-size='40'>" +
+                    "<svg style='width: 40px; height: 40px;'>"+
+                    "<circle r='19' cy='20' cx='20' style='stroke:#2487ce;stroke-dasharray: 119.381; stroke-dashoffset: 23.8761;'></circle>"+
+                    "</svg>"+
+                    "</div>"+
+                    "<p class='circle_title'>Cell</p>"+
+                    "</div>"+
+                    "</div>"+
+                    "</li>"
+                )
+            })
+            show3=show3+10;
+            setTimeout(function(){
+                $(".append_item").css("opacity",1)
+            },500)
+        }
+        else if(show3>tissue.length & judge3==0){
+            $("#tissue_region").append(
+                "<li style='list-style: none;text-align: center;margin:5px 0'><i>No more results</i></li>"
+            )
+            judge3=1
+        }
+    });
+</script>
+</body>
+</html>

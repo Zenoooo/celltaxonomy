@@ -1,0 +1,471 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.ct.Mapper.SearchMapper">
+    <select id="getSearchData" resultType="HashMap">
+        select * from ct.all_search_table
+        where Cell_standard like concat('%',#{query},'%')
+            or Tissue like concat('%',#{query},'%')
+            or Cell_Marker like concat('%',#{query},'%')
+            or PMID like concat('%',#{query},'%')
+            or Specific_Cell_Ontology_ID = #{query}
+            or Tissue_UberonOntology_ID = #{query}
+            or Species like concat('%',#{query},'%')
+            or Disease_Type like concat('%',#{query},'%')
+            or Cell_alias_change like concat('%',#{query},'%')
+            or CT_ID = #{query}
+            or Gene_ENTREZID=#{query}
+    </select>
+    <select id="getHomeSearchCell" resultType="HashMap">
+        select * from ct.search_celltype
+        where Cell_standard like concat('%',#{query},'%')
+        or CT_ID = #{query}
+        or Specific_Cell_Ontology_ID =#{query}
+        or Cell_alias_change like concat('%',#{query},'%')
+        order by abs(length(#{query})-length(Cell_standard)) asc,abs(locate(#{query},Cell_Standard)-1) asc
+    </select>
+    <select id="getHomeSearchMarker" resultType="HashMap">
+        select * from ct.search_marker
+        where
+                Cell_Marker like concat('%',#{query},'%')
+                or Gene_Alias like concat('%',#{query},'%')
+                or Gene_ENTREZID2 = #{query}
+        order by length(replace(Cell_Marker,#{query},""))/length(Cell_Marker) asc
+    </select>
+    <select id="getHomeSearchTissue" resultType="HashMap">
+        select * from ct.search_tissue
+        where Tissue_standard like concat('%',#{query},'%')
+        or Tissue_UberonOntology_ID = #{query}
+        order by length(Tissue_standard) asc
+    </select>
+    <select id="getHomeSearchSpecies" resultType="HashMap">
+        select * from ct.search_species
+        where Species REGEXP concat('[[:&lt;:]]',#{query},'[[:&gt;:]]')
+        or Species_alias REGEXP concat('[[:&lt;:]]',#{query},'[[:&gt;:]]')
+    </select>
+    <select id="getHomeSearchCondition" resultType="HashMap">
+        select * from ct.search_condition
+        where Conditions REGEXP concat('[[:&lt;:]]',#{query},'[[:&gt;:]]')
+        or Condition_ID REGEXP concat('[[:&lt;:]]',#{query},'[[:&gt;:]]')
+    </select>
+    <select id="getFilterData" resultType="HashMap">
+        select * from ct.all_search_table where (Specific_Cell_Type like concat('%',${query},'%') or Tissue like concat('%',${query},'%') or Cell_Marker like concat('%',${query},'%') or PMID like concat('%',${query},'%'))
+        <if test="cell_types!='()'">
+            and Specific_Cell_Type in ${cell_types}
+        </if>
+        <if test="tissues!='()'">
+            and Tissue in ${tissues}
+        </if>
+
+        <if test="species!='()'">
+            and Species in ${species}
+        </if>
+    </select>
+    <select id="getTissueList" resultType="HashMap">
+        select distinct ${title} from ${database}
+        <where>
+            <if test="term!='null'">
+                and ${title} like concat('%',#{term},'%')
+            </if>
+            <if test="query!='null'">
+                and (Cell_standard like concat('%',#{query},'%')
+                or Tissue_standard like concat('%',#{query},'%')
+                or Cell_Marker like concat('%',#{query},'%')
+                or PMID like concat('%',#{query},'%')
+                or Specific_Cell_Ontology_ID = #{query}
+                or Tissue_UberonOntology_ID2 = #{query}
+                or Species like concat('%',#{query},'%')
+                or Disease_Type like concat('%',#{query},'%'))
+            </if>
+            <if test="speciess.size()>0 ">
+                and Species in
+                <foreach collection="speciess" item="name" index="index" open="(" close=")" separator=",">
+                    #{name}
+                </foreach>
+            </if>
+
+            <if test="genename.size()>0">
+                and ${gene} in
+                <foreach collection="genename" item="name" index="index" open="(" close=")" separator=",">
+                    #{name}
+                </foreach>
+            </if>
+            <if test="celltypename.size()>0" >
+                and ${celltype} in
+                <foreach collection="celltypename" item="name" index="index" open="(" close=")" separator=",">
+                    #{name}
+                </foreach>
+            </if>
+            <if test="diseasename.size()>0 and diseasename!=null">
+                and ${disease} in
+                <foreach collection="diseasename" item="name" index="index" open="(" close=")" separator=",">
+                    #{name}
+                </foreach>
+            </if>
+                and ${title} != "-"
+        </where>
+
+        order by length(${title})
+        limit 0,100;
+    </select>
+    <select id="getGeneList" resultType="HashMap">
+        select distinct ${title} from ${database}
+        <where>
+            <if test='term!="null"'>
+                and ${title} like concat('%',#{term},'%')
+            </if>
+            <if test="query!='null'">
+                and (Cell_standard like concat('%',#{query},'%')
+                or Tissue_standard like concat('%',#{query},'%')
+                or Cell_Marker like concat('%',#{query},'%')
+                or PMID like concat('%',#{query},'%')
+                or Specific_Cell_Ontology_ID = #{query}
+                or Tissue_UberonOntology_ID2 = #{query}
+                or Species like concat('%',#{query},'%')
+                or Disease_Type like concat('%',#{query},'%'))
+            </if>
+            <if test="speciess.size()>0 ">
+                and Species in
+                <foreach collection="speciess" item="name" index="index" open="(" close=")" separator=",">
+                    #{name}
+                </foreach>
+            </if>
+            <if test="tissuename.size()>0">
+                and ${tissue} in
+                <foreach collection="tissuename" item="name" index="index" open="(" close=")" separator=",">
+                    #{name}
+                </foreach>
+            </if>
+
+            <if test="celltypename.size()>0" >
+                and ${celltype} in
+                <foreach collection="celltypename" item="name" index="index" open="(" close=")" separator=",">
+                    #{name}
+                </foreach>
+            </if>
+            <if test="diseasename.size()>0 and diseasename!=null">
+                and ${disease} in
+                <foreach collection="diseasename" item="name" index="index" open="(" close=")" separator=",">
+                    #{name}
+                </foreach>
+            </if>
+            and ${title} != "-" and ${title} != "NULL"
+        </where>
+
+        ORDER BY length(${title}),${title}
+        limit 0,100;
+    </select>
+    <select id="getDiseaseList" resultType="HashMap">
+        select distinct ${title} from ${database}
+        <where>
+            <if test="term!='null'">
+                and ${title} like concat('%',#{term},'%')
+            </if>
+            <if test="query!='null'">
+                and (Cell_standard like concat('%',#{query},'%')
+                or Tissue_standard like concat('%',#{query},'%')
+                or Cell_Marker like concat('%',#{query},'%')
+                or PMID like concat('%',#{query},'%')
+                or Specific_Cell_Ontology_ID = #{query}
+                or Tissue_UberonOntology_ID2 = #{query}
+                or Species like concat('%',#{query},'%')
+                or Disease_Type like concat('%',#{query},'%'))
+            </if>
+            <if test="speciess.size()>0 ">
+                and Species in
+                <foreach collection="speciess" item="name" index="index" open="(" close=")" separator=",">
+                    #{name}
+                </foreach>
+            </if>
+            <if test="tissuename.size()>0">
+                and ${tissue} in
+                <foreach collection="tissuename" item="name" index="index" open="(" close=")" separator=",">
+                    #{name}
+                </foreach>
+            </if>
+            <if test="genename.size()>0">
+                and ${gene} in
+                <foreach collection="genename" item="name" index="index" open="(" close=")" separator=",">
+                    #{name}
+                </foreach>
+            </if>
+            <if test="celltypename.size()>0" >
+                and ${celltype} in
+                <foreach collection="celltypename" item="name" index="index" open="(" close=")" separator=",">
+                    #{name}
+                </foreach>
+            </if>
+
+            and ${title} != "-"
+        </where>
+
+        ORDER BY length(${title})
+        limit 0,100;
+
+    </select>
+    <select id="getSpeciesList" resultType="HashMap">
+        select distinct Species from ${database}
+        <where>
+            <if test="term!='null'">
+                and Species like concat('%',#{term},'%')
+            </if>
+            <if test="query!='null'">
+                and (Cell_standard like concat('%',#{query},'%')
+                or Tissue_standard like concat('%',#{query},'%')
+                or Cell_Marker like concat('%',#{query},'%')
+                or PMID like concat('%',#{query},'%')
+                or Specific_Cell_Ontology_ID = #{query}
+                or Tissue_UberonOntology_ID2 = #{query}
+                or Species like concat('%',#{query},'%')
+                or Disease_Type like concat('%',#{query},'%'))
+            </if>
+
+            <if test="tissuename.size()>0">
+                and ${tissue} in
+                <foreach collection="tissuename" item="name" index="index" open="(" close=")" separator=",">
+                    #{name}
+                </foreach>
+            </if>
+            <if test="genename.size()>0">
+                and ${gene} in
+                <foreach collection="genename" item="name" index="index" open="(" close=")" separator=",">
+                    #{name}
+                </foreach>
+            </if>
+            <if test="celltypename.size()>0" >
+                and ${celltype} in
+                <foreach collection="celltypename" item="name" index="index" open="(" close=")" separator=",">
+                    #{name}
+                </foreach>
+            </if>
+            <if test="diseasename.size()>0 and diseasename!=null">
+                and ${disease} in
+                <foreach collection="diseasename" item="name" index="index" open="(" close=")" separator=",">
+                    #{name}
+                </foreach>
+            </if>
+            and Species != "-"
+        </where>
+
+        ORDER BY length(Species)
+        limit 0,100;
+
+    </select>
+    <select id="getEnrichedMarker" resultType="HashMap">
+        select distinct cell_id,cell from ct.all_search_table inner join ct.enriched_marker_cell on Cell_Marker=marker
+        <where>
+            <if test="term!='null'">
+                and cell like concat('%',#{term},'%')
+            </if>
+            <if test="query!='null'">
+                and (Cell_standard like concat('%',#{query},'%')
+                or Tissue_standard like concat('%',#{query},'%')
+                or Cell_Marker like concat('%',#{query},'%')
+                or PMID like concat('%',#{query},'%')
+                or Specific_Cell_Ontology_ID = #{query}
+                or Tissue_UberonOntology_ID2 = #{query}
+                or Species like concat('%',#{query},'%')
+                or Disease_Type like concat('%',#{query},'%'))
+            </if>
+
+            <if test="tissuename.size()>0">
+                and ${tissue} in
+                <foreach collection="tissuename" item="name" index="index" open="(" close=")" separator=",">
+                    #{name}
+                </foreach>
+            </if>
+            <if test="genename.size()>0">
+                and ${gene} in
+                <foreach collection="genename" item="name" index="index" open="(" close=")" separator=",">
+                    #{name}
+                </foreach>
+            </if>
+            <if test="celltypename.size()>0" >
+                and ${celltype} in
+                <foreach collection="celltypename" item="name" index="index" open="(" close=")" separator=",">
+                    #{name}
+                </foreach>
+                and cell in
+                <foreach collection="celltypename" item="name" index="index" open="(" close=")" separator=",">
+                    #{name}
+                </foreach>
+            </if>
+            <if test="diseasename.size()>0 and diseasename!=null">
+                and ${disease} in
+                <foreach collection="diseasename" item="name" index="index" open="(" close=")" separator=",">
+                    #{name}
+                </foreach>
+            </if>
+            <if test="speciess.size()>0 ">
+                and Species in
+                <foreach collection="speciess" item="name" index="index" open="(" close=")" separator=",">
+                    #{name}
+                </foreach>
+            </if>
+        </where>
+
+        ORDER BY length(cell)
+        limit 0,100;
+
+    </select>
+
+    <select id="getCelltypeList" resultType="HashMap">
+        select distinct ${title} from ${database}
+        <where>
+            <if test="term!='null'">
+                and ${title} like concat('%',#{term},'%')
+            </if>
+            <if test="query!='null'">
+                and (Cell_standard like concat('%',#{query},'%')
+                or Tissue_standard like concat('%',#{query},'%')
+                or Cell_Marker like concat('%',#{query},'%')
+                or PMID like concat('%',#{query},'%')
+                or Specific_Cell_Ontology_ID = #{query}
+                or Tissue_UberonOntology_ID2 = #{query}
+                or Species like concat('%',#{query},'%')
+                or Disease_Type like concat('%',#{query},'%'))
+            </if>
+            <if test="speciess.size()>0 ">
+                and Species in
+                <foreach collection="speciess" item="name" index="index" open="(" close=")" separator=",">
+                    #{name}
+                </foreach>
+            </if>
+            <if test="tissuename.size()>0">
+                and ${tissue} in
+                <foreach collection="tissuename" item="name" index="index" open="(" close=")" separator=",">
+                    #{name}
+                </foreach>
+            </if>
+            <if test="genename.size()>0">
+                and ${gene} in
+                <foreach collection="genename" item="name" index="index" open="(" close=")" separator=",">
+                    #{name}
+                </foreach>
+            </if>
+
+            <if test="diseasename.size()>0 and diseasename!=null">
+                and ${disease} in
+                <foreach collection="diseasename" item="name" index="index" open="(" close=")" separator=",">
+                    #{name}
+                </foreach>
+            </if>
+        </where>
+
+        ORDER BY length(${title})
+        limit 0,100;
+
+    </select>
+    <select id="getOtherList" resultType="HashMap">
+        select distinct ${title} from ct.all_search_table
+        <where>
+            <if test="term!='null'">
+                and ${title} like concat('%',#{term},'%')
+            </if>
+            <if test="query!='null'">
+                and (Cell_standard like concat('%',#{query},'%')
+                or Tissue_standard like concat('%',#{query},'%')
+                or Cell_Marker like concat('%',#{query},'%')
+                or PMID like concat('%',#{query},'%')
+                or Specific_Cell_Ontology_ID = #{query}
+                or Tissue_UberonOntology_ID2 = #{query}
+                or Species like concat('%',#{query},'%')
+                or Disease_Type like concat('%',#{query},'%'))
+            </if>
+        </where>
+
+        ORDER BY length(${title})
+        limit 0,100;
+
+    </select>
+
+    <select id="getSearchTable" resultType="HashMap">
+        select * from ct.all_search_table
+        limit 0,1000
+    </select>
+    <select id="updateSearchTable"  resultType="HashMap">
+        select distinct ${title} from ${database}
+        <where>
+<!--            <if test='enrichedname.size()>0'>-->
+<!--                and Cell_standard in-->
+<!--                <foreach collection="enrichedname" item="name" index="index" open="(" close=")" separator=",">-->
+<!--                    #{name}-->
+<!--                </foreach>-->
+<!--            </if>-->
+<!--            <if test='confidence.size()>0'>-->
+<!--                and Marker_Resource2 in-->
+<!--                <foreach collection="confidence" item="name" index="index" open="(" close=")" separator=",">-->
+<!--                    #{name}-->
+<!--                </foreach>-->
+<!--            </if>-->
+<!--            <if test='source.size()>0'>-->
+<!--                and Additional_Information2 in-->
+<!--                <foreach collection="source" item="name" index="index" open="(" close=")" separator=",">-->
+<!--                    #{name}-->
+<!--                </foreach>-->
+<!--            </if>-->
+            <if test="search!=''">
+                and (Cell_standard like concat('%',#{search},'%')
+                or Tissue_standard like concat('%',#{search},'%')
+                or Cell_Marker like concat('%',#{search},'%')
+                or PMID like concat('%',#{search},'%')
+                or Specific_Cell_Ontology_ID = #{search}
+                or Tissue_UberonOntology_ID2 = #{search}
+                or Species like concat('%',#{search},'%')
+                or Disease_Type like concat('%',#{search},'%'))
+            </if>
+            <if test="speciess.size()>0 ">
+                and Species in
+                <foreach collection="speciess" item="name" index="index" open="(" close=")" separator=",">
+                    #{name}
+                </foreach>
+            </if>
+
+            <if test="tissuename.size()>0">
+                and ${tissue} in
+                <foreach collection="tissuename" item="name" index="index" open="(" close=")" separator=",">
+                    #{name}
+                </foreach>
+            </if>
+            <if test="genename.size()>0">
+                and ${gene} in
+                <foreach collection="genename" item="name" index="index" open="(" close=")" separator=",">
+                    #{name}
+                </foreach>
+            </if>
+            <if test="celltypename.size()>0" >
+                and Replace(Replace(${celltype},")",""),"(","") in
+                <foreach collection="celltypename" item="name" index="index" open="(" close=")" separator=",">
+                    #{name}
+                </foreach>
+            </if>
+            <if test="diseasename.size()>0 and diseasename!=null">
+                and ${disease} in
+                <foreach collection="diseasename" item="name" index="index" open="(" close=")" separator=",">
+                    #{name}
+                </foreach>
+            </if>
+            <if test="othername.size()>0">
+                and ${other} in
+                <foreach collection="othername" item="name" index="index" open="(" close=")" separator=",">
+                    #{name}
+                </foreach>
+            </if>
+            <if test="query!=null">
+                and (Cell_standard like concat(#{query},'%')
+                or Tissue_standard like concat(#{query},'%')
+                or Cell_Marker like concat(#{query},'%')
+                or PMID = #{query}
+                or Specific_Cell_Ontology_ID = #{query}
+                or Tissue_UberonOntology_ID2 = #{query}
+                or Species = #{query}
+                or Disease_Type = #{query})
+                or CT_ID = #{query}
+                or Gene_ENTREZID=#{query}
+            </if>
+        </where>
+        order by ${ordertitle} ${direction}
+    </select>
+
+</mapper>

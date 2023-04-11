@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.ct.Mapper.CurationMapper">
+    <insert id="add_curation">
+        insert into curation(
+            Species,
+            Cell_original_name ,
+            Cell_standard ,
+            Cell_id,
+            Parent_cell_id,
+            New_cell_description ,
+            Tissue ,
+            Tissue_id,
+            Conditions ,
+            Disease_id,
+            Positive_cell_marker ,
+            Negative_cell_marker ,
+            Combinatorial_cell_marker ,
+            Marker_description ,
+            PMID ,
+            Life_stage ,
+            Library,
+            Datasets_id ,
+            Curator,
+            `Date`,
+            Uncertain)
+        value(
+            #{Species},
+            #{Cell_original_name} ,
+            #{Cell_standard} ,
+            #{Cell_id},
+            #{Parent_cell_id},
+            #{New_cell_description} ,
+            #{Tissue} ,
+            #{Tissue_id},
+            #{Condition} ,
+            #{Disease_id},
+            #{Positive_cell_marker} ,
+            #{Negative_cell_marker} ,
+            #{Combinatorial_cell_marker} ,
+            #{Marker_description} ,
+            #{PMID} ,
+            #{Life_stage} ,
+            #{Library} ,
+            #{Datasets_id} ,
+            #{Curator},
+            #{Date},
+            #{Uncertain}
+        )
+    </insert>
+    <update id="edit_curation">
+        update curation
+        set
+            Species = #{Species},
+            Cell_original_name  =#{Cell_original_name} ,
+            Cell_standard  = #{Cell_standard} ,
+            Cell_id =  #{Cell_id},
+            Parent_cell_id = #{Parent_cell_id},
+            New_cell_description  =#{New_cell_description} ,
+            Tissue  = #{Tissue} ,
+            Tissue_id = #{Tissue_id},
+            Conditions  = #{Condition} ,
+            Disease_id =   #{Disease_id},
+            Positive_cell_marker  = #{Positive_cell_marker} ,
+            Negative_cell_marker  = #{Negative_cell_marker} ,
+            Combinatorial_cell_marker  = #{Combinatorial_cell_marker} ,
+            Marker_description  =#{Marker_description} ,
+            PMID  = #{PMID} ,
+            Life_stage  = #{Life_stage} ,
+            Library  = #{Library} ,
+            Datasets_id  =  #{Datasets_id} ,
+            Curator =  #{Curator},
+            `Date` = #{Date},
+            Uncertain=#{Uncertain}
+        where ID=#{ID}
+
+
+    </update>
+    <select id="curationlogin" resultType="HashMap">
+        select * from curators where username=#{username} and passwords=#{password}
+    </select>
+    <select id="getContributions" resultType="HashMap">
+        select * from curation where Curator=#{username}
+        order by `Date` desc
+    </select>
+    <delete id="deleteCuration" >
+        delete from curation where ID=#{ID}
+    </delete>
+
+    <select id="getCelltype" resultType="HashMap">
+        select distinct Specific_Cell_Ontology_ID,Cell_standard from search_celltype
+        <where>
+            <if test="term!=null">
+                Cell_standard like concat('%',#{term},'%')
+            </if>
+        </where>
+        order by length(Cell_standard)
+    </select>
+
+    <select id="getCellDetail" resultType="HashMap">
+        select Cell_standard,ID,group_concat(Parent_ID) as Parent_ID from cell_relationship
+        <where>
+            ID=#{cellid}
+        </where>
+        group by Cell_standard,ID
+    </select>
+
+    <select id="getTissueList" resultType="HashMap">
+        select distinct Tissue_UberonOntology_ID,Tissue_standard from search_tissue
+        <where>
+            <if test="term!=null">
+                Tissue_standard like concat('%',#{term},'%')
+            </if>
+        </where>
+        order by length(Tissue_standard)
+    </select>
+    <select id="getConditionList" resultType="HashMap">
+        select distinct Conditions,Condition_ID from search_condition
+        <where>
+            <if test="term!=null">
+                Conditions like concat('%',#{term},'%')
+            </if>
+        </where>
+        order by length(Conditions)
+    </select>
+    <select id="getSpeciesList" resultType="HashMap">
+        select distinct Species from species_page
+        <where>
+            <if test="term!=null">
+                Species like concat('%',#{term},'%')
+            </if>
+        </where>
+        order by length(Species)
+    </select>
+    <select id="getTotalCuration" resultType="HashMap">
+        select * from curation
+    </select>
+
+    <select id="getProfile" resultType="HashMap">
+        select
+        count(distinct PMID) as PMID,
+        count(distinct Cell_standard) as Cell_standard,
+        count(distinct Conditions) as Conditions,
+        count(distinct Tissue) as Tissue,
+        count(distinct Species) as Species,
+        GROUP_CONCAT(distinct Positive_cell_marker separator ";") as Positive_cell_marker,
+        GROUP_CONCAT(distinct Negative_cell_marker separator ";") as Negative_cell_marker,
+        GROUP_CONCAT(distinct Combinatorial_cell_marker separator ";") as Combinatorial_cell_marker
+        from curation
+        where Curator=#{username}
+        GROUP BY Curator
+    </select>
+
+    <update id="changePassword">
+        update curators set passwords=#{password} where username=#{username}
+    </update>
+
+    <select id="getLibrary" resultType="HashMap">
+        select distinct Library from curation
+    </select>
+</mapper>

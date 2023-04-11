@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.ct.Mapper.SpeciesMapper">
+<!--    <select id="getSpecies" resultType="HashMap">-->
+<!--        select * from species_page-->
+<!--        <where>-->
+<!--            <if test="tissue.size()>0">-->
+<!--                and Tissue_standard in-->
+<!--                <foreach collection="tissue" item="name" index="index" open="(" close=")" separator=",">-->
+<!--                    #{name}-->
+<!--                </foreach>-->
+<!--            </if>-->
+<!--            <if test="species.size()>0">-->
+<!--                and Species in-->
+<!--                <foreach collection="species" item="name" index="index" open="(" close=")" separator=",">-->
+<!--                    #{name}-->
+<!--                </foreach>-->
+<!--            </if>-->
+<!--            <if test="celltype.size()>0">-->
+<!--                and Cell_standard in-->
+<!--                <foreach collection="celltype" item="name" index="index" open="(" close=")" separator=",">-->
+<!--                    #{name}-->
+<!--                </foreach>-->
+<!--            </if>-->
+<!--        </where>-->
+<!--    </select>-->
+    <select id="getSpecies" resultType="HashMap">
+        select * from search_species
+    </select>
+    <select id="getSpeciesByID" resultType="HashMap">
+        select * from search_species where Species_ID=#{id}
+    </select>
+    <select id="getSpeciesBasicByID" resultType="HashMap">
+        select distinct Cell_standard,CT_ID,Disease_Type,Disease_Ontology_ID,Disease_Ontology_ID2,
+            Tissue_standard,Tissue_UberonOntology_ID2,Additional_Information2,PMID
+        from all_search_table where Species_tax_ID=#{id}
+    </select>
+
+    <select id="getSpeciesList" resultType="HashMap">
+        select Species,Count(Species) as counts from species_page
+        <where>
+            <if test="tissue.size()>0">
+                and Tissue_standard in
+                <foreach collection="tissue" item="name" index="index" open="(" close=")" separator=",">
+                    #{name}
+                </foreach>
+            </if>
+            <if test="celltype.size()>0">
+                and Cell_standard in
+                <foreach collection="celltype" item="name" index="index" open="(" close=")" separator=",">
+                    #{name}
+                </foreach>
+            </if>
+        </where>
+
+        group by Species
+        order by counts desc
+    </select>
+    <select id="getSpeciesStatistic" resultType="HashMap">
+        select distinct ${item} from all_search_table as a left join publication_for_browse as b on a.PMID=b.PMID
+        where Species_tax_ID=#{id}
+    </select>
+</mapper>

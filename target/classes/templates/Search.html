@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Search - Cell Taxonomy - CNCB-NGDC</title>
+    <link rel="icon" href="/celltaxonomy/static/img/CellTaxonomy v3.png">
+
+
+    <link href="/celltaxonomy/static/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/celltaxonomy/static/css/ionicons.min.css">
+
+
+    <script src="/celltaxonomy/static/js/jquery.min.js"></script>
+
+    <link rel="stylesheet" href="/celltaxonomy/static/css/bootstrap.min.css" >
+    <link rel="stylesheet" href="/celltaxonomy/static/css/dataTables.bootstrap.min.css" >
+    <script src="/celltaxonomy/static/js/jquery.dataTables.min.js"></script>
+    <script src="/celltaxonomy/static/js/dataTables.buttons.min.js"></script>
+    <script src="/celltaxonomy/static/js/dataTables.bootstrap.min.js"></script>
+    <link href=" /celltaxonomy/static/css/dataTables.colVis.css" rel="stylesheet">
+    <link href="/celltaxonomy/static/css/select2.min.css" rel="stylesheet" />
+    <script src="/celltaxonomy/static/js/select2.min.js"></script>
+    <link href="/celltaxonomy/static/css/bow.ui.min.css" rel="stylesheet">
+    <script type="text/javascript" src="/celltaxonomy/static/js/headerfooter-full.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="/celltaxonomy/static/css/my/my.css">
+    <style>
+
+
+        .confidence,.source{
+            cursor: pointer;
+            transition: 0.3s;
+            margin-left: 20px;
+
+        }
+        .confidence:hover,.source:hover{
+            color:#2487ce;
+
+        }
+        .confidence.active,.source.active{
+            color:#2487ce;
+        }
+        .mypanel-body::-webkit-scrollbar {
+            /*滚动条整体样式*/
+            width : 15px;  /*高宽分别对应横竖滚动条的尺寸*/
+            height: 12px;
+        }
+        .mypanel-body::-webkit-scrollbar-thumb{
+            /*滚动条里面小方块*/
+            border-radius   : 10px;
+            background-color: #2487ce;
+            background-image: -webkit-linear-gradient(
+                    45deg,
+                    rgba(255, 255, 255, 0.2) 25%,
+                    transparent 25%,
+                    transparent 50%,
+                    rgba(255, 255, 255, 0.2) 50%,
+                    rgba(255, 255, 255, 0.2) 75%,
+                    transparent 75%,
+                    transparent
+            );
+        }
+        .mypanel-body::-webkit-scrollbar-track{
+            /*滚动条里面轨道*/
+            box-shadow   : 0 0 1px rgba(0, 0, 0, 0.2);
+            background   : #ededed;
+            border-radius: 10px;
+        }
+        .search-item{
+            margin:20px 0 20px 0
+        }
+        h2{
+            color:black;
+            font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",sans-serif;
+        }
+        .select2-selection__rendered{
+            margin:0;
+        }
+        .js-example-basic-multiple{
+            width: 200px;
+        }
+        .search_region li{
+            display: block;
+            margin-top: 10px;
+        }
+        .title{
+            width: 150px;
+        }
+        select.input-sm{
+            line-height:20px;
+        }
+        #search_table_filter{
+            display: flex;
+            justify-content: flex-end;
+        }
+        .select2-search__field{
+            min-height: 32px;
+        }
+        .select2{
+            margin-bottom: 5px;
+        }
+        select{
+            margin-bottom: 0;
+        }
+        textarea{
+            margin: 0 !important;
+        }
+        .loader {
+            z-index: 999;
+            color: #0C64B6;
+            font-size: 90px;
+            text-indent: -9999em;
+            overflow: hidden;
+            width: 1em;
+            height: 1em;
+            border-radius: 50%;
+            margin: 72px auto;
+            position: relative;
+            -webkit-transform: translateZ(0);
+            -ms-transform: translateZ(0);
+            transform: translateZ(0);
+            -webkit-animation: load6 1.7s infinite ease, round 1.7s infinite ease;
+            animation: load6 1.7s infinite ease, round 1.7s infinite ease;
+        }
+        @-webkit-keyframes load6 {
+            0% {
+                box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+            }
+            5%,
+            95% {
+                box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+            }
+            10%,
+            59% {
+                box-shadow: 0 -0.83em 0 -0.4em, -0.087em -0.825em 0 -0.42em, -0.173em -0.812em 0 -0.44em, -0.256em -0.789em 0 -0.46em, -0.297em -0.775em 0 -0.477em;
+            }
+            20% {
+                box-shadow: 0 -0.83em 0 -0.4em, -0.338em -0.758em 0 -0.42em, -0.555em -0.617em 0 -0.44em, -0.671em -0.488em 0 -0.46em, -0.749em -0.34em 0 -0.477em;
+            }
+            38% {
+                box-shadow: 0 -0.83em 0 -0.4em, -0.377em -0.74em 0 -0.42em, -0.645em -0.522em 0 -0.44em, -0.775em -0.297em 0 -0.46em, -0.82em -0.09em 0 -0.477em;
+            }
+            100% {
+                box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+            }
+        }
+        @keyframes load6 {
+            0% {
+                box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+            }
+            5%,
+            95% {
+                box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+            }
+            10%,
+            59% {
+                box-shadow: 0 -0.83em 0 -0.4em, -0.087em -0.825em 0 -0.42em, -0.173em -0.812em 0 -0.44em, -0.256em -0.789em 0 -0.46em, -0.297em -0.775em 0 -0.477em;
+            }
+            20% {
+                box-shadow: 0 -0.83em 0 -0.4em, -0.338em -0.758em 0 -0.42em, -0.555em -0.617em 0 -0.44em, -0.671em -0.488em 0 -0.46em, -0.749em -0.34em 0 -0.477em;
+            }
+            38% {
+                box-shadow: 0 -0.83em 0 -0.4em, -0.377em -0.74em 0 -0.42em, -0.645em -0.522em 0 -0.44em, -0.775em -0.297em 0 -0.46em, -0.82em -0.09em 0 -0.477em;
+            }
+            100% {
+                box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+            }
+        }
+        @-webkit-keyframes round {
+            0% {
+                -webkit-transform: rotate(0deg);
+                transform: rotate(0deg);
+            }
+            100% {
+                -webkit-transform: rotate(360deg);
+                transform: rotate(360deg);
+            }
+        }
+        @keyframes round {
+            0% {
+                -webkit-transform: rotate(0deg);
+                transform: rotate(0deg);
+            }
+            100% {
+                -webkit-transform: rotate(360deg);
+                transform: rotate(360deg);
+            }
+        }
+
+
+        @media screen and (max-width: 1400px) and (min-width: 1024px) {
+            .select2 {
+                width: 160px !important;
+            }
+        }
+    </style>
+
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?6b352b313257516a97fd9d0db0276208";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+</head>
+<body>
+<header>
+    <nav th:replace="common/topbar::topbar"></nav>
+</header>
+    <div class="container" style="background: #f4f7f6">
+
+        <div class="row">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/celltaxonomy/">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Advanced search</li>
+                </ol>
+            </nav>
+            <div class="mypanel" style="margin: 0 50px 0 50px;" >
+                <div class="mypanel-body" style="padding: 20px 50px 20px 50px">
+                    <h2 >Advanced search</h2>
+
+                    <div style="display: flex;justify-content: space-between">
+                        <ul class="search_region">
+                            <li style="display: flex">
+
+                                <span style="font-size:15px;font-weight: 700;display: block;width: 153px;text-align: center;line-height: 45px">Species</span>
+
+                                <select id="speciess"  class="js-example-basic-multiple" multiple="multiple">
+                                </select>
+                            </li>
+
+                            <li>
+                                <select id="tissue" class="title" >
+                                    <option value="Tissue_Standard">Tissue name</option>
+                                    <option value="Tissue_UberonOntology_ID">Tissue ID</option>
+                                </select>
+                                <select id="tissuename"  class="js-example-basic-multiple" multiple="multiple">
+                                    <option value="Tissue Name"></option>
+                                </select>
+                            </li>
+                        </ul>
+                        <ul class="search_region">
+                            <li>
+                                <select id="celltype" class="title">
+                                    <option value="Cell_Standard">Cell type</option>
+                                    <option value="Specific_Cell_Ontology_ID">Cell ontology ID</option>
+                                    <option value="CT_ID">Cell Taxonomy ID</option>
+                                    <!--                                    <option value="Is_New_Cell_Type">New cell type</option>-->
+                                </select>
+                                <select id="celltypename" class="js-example-basic-multiple" multiple="multiple" >
+                                </select>
+                            </li>
+                            <li>
+                                <select id="gene" class="title" style="width: 150px">
+                                    <option value="Cell_Marker">Gene symbol</option>
+                                    <option value="Gene_ENTREZID">Gene ID</option>
+<!--                                    <option value="Gene_Alias">Alias</option>-->
+<!--                                    <option value="Gene_Ensembl_ID">Ensembl ID</option>-->
+<!--                                    <option value="Uniprot">Uniprot</option>-->
+<!--                                    <option value="PFAM">PFAM</option>-->
+<!--                                    <option value="GO2">GO term</option>-->
+
+                                </select>
+                                <select id="genename" class="js-example-basic-multiple" multiple="multiple" >
+
+                                </select>
+                            </li>
+
+
+
+                        </ul>
+                        <ul class="search_region" >
+
+                            <li>
+                                <select id="disease" class="title">
+                                    <option value="Disease_Type">Condition</option>
+                                    <option value="Disease_Ontology_ID">Disease ID</option>
+                                </select>
+                                <select id="diseasename" class="js-example-basic-multiple" multiple="multiple" >
+                                </select>
+                            </li>
+<!--                            <li>-->
+<!--                                <select id="other" class="title">-->
+<!--                                    <option value="PMID">PMID</option>-->
+<!--                                </select>-->
+<!--                                <select id="othername" class="js-example-basic-multiple" multiple="multiple" >-->
+<!--                                </select>-->
+<!--                            </li>-->
+
+                        </ul>
+
+
+                    </div>
+
+                </div>
+            </div>
+            <div class="mypanel" style="margin: 10px 50px 0 50px;display: none" >
+                <div class="mypanel-body" style="padding: 20px 50px 20px 50px;">
+                    <div class="loader" id="loading_region" style="position: relative;">Loading...</div>
+                    <div id="table_region" style="visibility: hidden;height: 0;overflow: hidden">
+                        <table id="search_table"  class="table table-hover table-striped">
+                            <thead>
+                            <tr>
+                                <th>Species</th>
+                                <th>Cell Taxonomy ID</th>
+
+                                <th>Cell type</th>
+                                <!--                            <th>New Cell Type</th>-->
+                                <th>Tissue</th>
+                                <th>Cell marker</th>
+
+                                <th>Condition</th>
+                                <th>Publication</th>
+
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+<script>
+    function getoptions(url,title,id,speciesname,celltypename,diseasename,tissuename,genename,tissue,disease,gene,celltype){
+        $("#"+id).select2({
+            ajax: {
+                url: "/celltaxonomy"+url,
+                dataType: 'json',
+                type: "post",
+                data:function(params){
+
+                    var query={
+                        term:params.term,
+                        title:title,
+                        speciess:speciesname,
+                        celltypename:celltypename,
+                        diseasename:diseasename,
+                        tissuename:tissuename,
+                        genename:genename,
+                        tissue:tissue,
+                        disease:disease,
+                        gene:gene,
+                        celltype:celltype,
+                    }
+
+                    return query
+                },
+                processResults: function (data) {
+                    var res = data.map(function (item) {
+                        return {id: item[title],text:item[title]};
+                    });
+                    return {
+                        results: res
+                    };
+                }
+            }
+
+
+        });
+    }
+    $(document).ready(function() {
+        getoptions("/tissue_list","Tissue_Standard","tissuename");
+        getoptions("/disease_list","Disease_Type","diseasename");
+        getoptions("/gene_list","Cell_Marker","genename");
+        getoptions("/species_list","Species","speciess");
+        getoptions("/celltype_list","Cell_Standard","celltypename");
+
+
+        // $("#search_table").DataTable({
+        //     ajax:{
+        //         url: "/celltaxonomy/search_table_update",
+        //         type: "post",
+        //         data:{"from":"search"}
+        //     },
+        //     columns:[
+        //
+        //         {data:"Species"},
+        //         {
+        //             data:"CT_ID",
+        //             render:function(data,type,row){
+        //                 return "<a target='_blank' href='/celltaxonomy/celltype/"+row.CT_ID+"'>"+row.CT_ID+"</a>"
+        //             }
+        //         },
+        //
+        //         {
+        //             data:"Cell_standard",
+        //             render:function(data,type,row){
+        //                 return "<a target='_blank' href='/celltaxonomy/celltype/"+row.CT_ID+"'>"+row.Cell_standard.replace(/_/g," ")+"</a>"
+        //             }
+        //         },
+        //         // {data:"Is_New_Cell_Type"},
+        //         {
+        //             data:"Tissue_standard",
+        //             render:function(data,type,row){
+        //                 if(row.Tissue_standard!="-"){
+        //                     return "<a target='_blank' href='/celltaxonomy/tissue/"+row.Tissue_UberonOntology_ID2+"'>"+row.Tissue_standard.replace(/_/g," ")+"</a>"
+        //                 }
+        //                 else{
+        //                     return row.Tissue_standard
+        //                 }
+        //             }
+        //         },
+        //         {
+        //             data:"Cell_Marker",
+        //             render:function(data,type,row){
+        //                 return "<a target='_blank' href='/celltaxonomy/marker/"+row.Gene_ENTREZID2+"'>"+row.Cell_Marker.replace(/_/g," ")+"</a>"
+        //             }
+        //         },
+        //         {
+        //             data:"Disease_Type",
+        //             render:function(data,type,row){
+        //                 if(data!="-"){
+        //                     return "<a target='_blank' href='/celltaxonomy/condition/"+row.Disease_Ontology_ID2+"'>"+data+"</a>"
+        //                 }
+        //                 else{
+        //                     return data
+        //                 }
+        //             }
+        //         },
+        //         {
+        //             data:"PMID",
+        //             render:function(data,type,row){
+        //                 if(row.PMID!="-"){
+        //                     return "<a target='_blank' href='https://pubmed.ncbi.nlm.nih.gov/"+row.PMID+"/'>"+row.PMID+"</a>"
+        //                 }
+        //                 else{
+        //                     return row.PMID
+        //                 }
+        //             }
+        //         }
+        //
+        //
+        //
+        //     ],
+        //     initComplete:function(){
+        //         $("#table_region").css("visibility","visible")
+        //         $("#table_region").css("height","auto")
+        //
+        //         $("#loading_region").css("display","none")
+        //     },
+        //     destroy:true,
+        //     deferRender:true,
+        //     bServerSide:true
+        //
+        // });
+
+
+    });
+    $(".js-example-basic-multiple").change(function(){
+
+        var speciess=$("#speciess").val();
+        var tissuename=$("#tissuename").val();
+        var diseasename=$("#diseasename").val();
+        var genename=$("#genename").val();
+        var celltypename=$("#celltypename").val();
+        var othername=$("#othername").val();
+
+        var tissue=$("#tissue").val();
+        var disease=$("#disease").val();
+        var gene=$("#gene").val();
+        var celltype=$("#celltype").val();
+        var other=$("#other").val();
+        var confidence=[];
+
+        if(speciess!=null){
+            var speciess2=speciess.toString()
+        }
+        if(tissuename!=null){
+            var tissuename2=tissuename.toString()
+        }
+        if(diseasename!=null){
+            var diseasename2=diseasename.toString()
+        }
+        if(genename!=null){
+            var genename2=genename.toString()
+        }
+        if(celltypename!=null){
+            var celltypename2=celltypename.toString()
+        }
+        getoptions("/tissue_list",$("#tissue").val(),"tissuename",speciess2,celltypename2,diseasename2,tissuename2,genename2,tissue,disease,gene,celltype);
+        getoptions("/disease_list",$("#disease").val(),"diseasename",speciess2,celltypename2,diseasename2,tissuename2,genename2,tissue,disease,gene,celltype);
+        getoptions("/gene_list",$("#gene").val(),"genename",speciess2,celltypename2,diseasename2,tissuename2,genename2,tissue,disease,gene,celltype);
+        getoptions("/species_list","Species","speciess",speciess2,celltypename2,diseasename2,tissuename2,genename2,tissue,disease,gene,celltype);
+        getoptions("/celltype_list",$("#celltype").val(),"celltypename",speciess2,celltypename2,diseasename2,tissuename2,genename2,tissue,disease,gene,celltype);
+
+        if(speciess==null && tissuename==null && diseasename==null && genename==null && celltypename==null){
+            $("#table_region").parent().parent().css("display","none")
+        }
+        else{
+            $("#table_region").parent().parent().css("display","block")
+
+            $("#table_region").css("visibility","hidden")
+            $("#table_region").css("height","0")
+
+            $("#loading_region").css("display","block")
+            $("#search_table").DataTable({
+                ajax:{
+                    url:"/celltaxonomy/search_table_update",
+                    type:'post',
+                    data:{
+                        "speciess":JSON.stringify(speciess) ,
+                        "tissuename":JSON.stringify(tissuename),
+                        "diseasename":JSON.stringify(diseasename),
+                        "genename":JSON.stringify(genename),
+                        "celltypename":JSON.stringify(celltypename),
+                        "othername":JSON.stringify(othername),
+                        "confidence":JSON.stringify(confidence),
+                        "tissue":tissue,
+                        "disease":disease,
+                        "gene":gene,
+                        "celltype":celltype,
+                        "other":other,
+                        "from":"search"
+                    }
+                },
+                columns:[
+
+                    {
+                        data:"Species",
+                        render:function(data,type,row){
+                            return "<a target='_blank' href='/celltaxonomy/species/"+row.Species_tax_ID+"'>"+data+"</a>"
+                        }
+                    },
+                    {
+                        data:"CT_ID",
+                        render:function(data,type,row){
+                            return "<a target='_blank' href='/celltaxonomy/celltype/"+row.CT_ID+"'>"+row.CT_ID+"</a>"
+                        }
+                    },
+
+                    {
+                        data:"Cell_standard",
+                        render:function(data,type,row){
+                            return "<a target='_blank' href='/celltaxonomy/celltype/"+row.CT_ID+"'>"+row.Cell_standard.replace(/_/g," ")+"</a>"
+                        }
+                    },
+                    // {data:"Is_New_Cell_Type"},
+                    {
+                        data:"Tissue_standard",
+                        render:function(data,type,row){
+                            if(row.Tissue_standard!="-"){
+                                return "<a target='_blank' href='/celltaxonomy/tissue/"+row.Tissue_UberonOntology_ID2+"'>"+row.Tissue_standard.replace(/_/g," ")+"</a>"
+                            }
+                            else{
+                                return row.Tissue_standard
+                            }
+                        }
+                    },
+                    {
+                        data:"Cell_Marker",
+                        render:function(data,type,row){
+                            return "<a target='_blank' href='/celltaxonomy/marker/"+row.Gene_ENTREZID2+"'>"+row.Cell_Marker.replace(/_/g," ")+"</a>"
+                        }
+                    },
+                    {
+                        data:"Disease_Type",
+                        render:function(data,type,row){
+                            if(data=="-"){
+                                return data
+                            }
+                            else{
+                                return "<a target='_blank' href='/celltaxonomy/condition/"+row.Disease_Ontology_ID2+"'>"+data+"</a>"
+                            }
+
+                        }
+
+                    },
+                    {
+                        data:"PMID",
+                        render:function(data,type,row){
+                            if(row.PMID!="-"){
+                                return "<a target='_blank' href='https://pubmed.ncbi.nlm.nih.gov/"+row.PMID+"/'>"+row.PMID+"</a>"
+                            }
+                            else{
+                                return row.PMID
+                            }
+                        }
+                    }
+
+
+
+                ],
+                initComplete:function(){
+                    $("#table_region").css("visibility","visible")
+                    $("#table_region").css("height","auto")
+                    $("#loading_region").css("display","none")
+                },
+                order:[2,"asc"],
+                destroy:true,
+                bServerSide: true
+
+            });
+        }
+
+
+
+    })
+    $(".title").change(function(){
+        var speciess=$("#speciess").val();
+        var tissuename=$("#tissuename").val();
+        var diseasename=$("#diseasename").val();
+        var genename=$("#genename").val();
+        var celltypename=$("#celltypename").val();
+        var othername=$("#othername").val();
+
+        var tissue=$("#tissue").val();
+        var disease=$("#disease").val();
+        var gene=$("#gene").val();
+        var celltype=$("#celltype").val();
+        var other=$("#other").val();
+        var confidence=[];
+
+        if(speciess!=null){
+            var speciess2=speciess.toString()
+        }
+        if(tissuename!=null){
+            var tissuename2=tissuename.toString()
+        }
+        if(diseasename!=null){
+            var diseasename2=diseasename.toString()
+        }
+        if(genename!=null){
+            var genename2=genename.toString()
+        }
+        if(celltypename!=null){
+            var celltypename2=celltypename.toString()
+        }
+
+        var title=$(this).val();
+        $(this).next().empty();
+        getoptions("/"+$(this).attr("id")+"_list",title,$(this).attr("id")+"name",speciess2,celltypename2,diseasename2,tissuename2,genename2,tissue,disease,gene,celltype);
+    });
+
+    function post(URL,params) {
+        var temp_form = document.createElement("form");
+        temp_form .action = "/celltaxonomy"+URL;
+        temp_form .target = "_blank";
+        temp_form .method = "post";
+        temp_form .style.display = "none";
+        for (var x in params){
+            var opt = document.createElement("textarea");
+            opt.name = x;
+            opt.value = params[x];
+            temp_form .appendChild(opt);
+        }
+
+
+        document.body.appendChild(temp_form);
+        temp_form .submit();
+    };
+
+</script>
+</body>
+</html>

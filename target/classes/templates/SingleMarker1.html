@@ -1,0 +1,3013 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>SingleMarker - Cell Taxonomy - CNCB-NGDC</title>
+    <link rel="icon" href="/celltaxonomy/static/img/CellTaxonomy v3.png">
+
+
+    <link rel="stylesheet" href="/celltaxonomy/static/css/ionicons.min.css">
+
+    <script src="/celltaxonomy/static/js/jquery.min.js"></script>
+
+
+    <script src="/celltaxonomy/static/js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" href="/celltaxonomy/static/css/bootstrap.min.css" >
+    <link rel="stylesheet" href="/celltaxonomy/static/css/dataTables.bootstrap.min.css" >
+    <script src="/celltaxonomy/static/js/jquery.dataTables.min.js"></script>
+    <script src="/celltaxonomy/static/js/dataTables.buttons.min.js"></script>
+    <script src="/celltaxonomy/static/js/jszip.min.js"></script>
+    <script src="/celltaxonomy/static/js/buttons.html5.min.js"></script>
+    <script src="/celltaxonomy/static/js/buttons.bootstrap.min.js"></script>
+    <script src="/celltaxonomy/static/js/dataTables.bootstrap.min.js"></script>
+    <link href="/celltaxonomy/static/css/dataTables.colVis.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/celltaxonomy/static/css/page.min.css">
+    <script type="text/javascript" src="/celltaxonomy/static/js/echarts.min.js"></script>
+    <script type="text/javascript" src="/celltaxonomy/static/js/headerfooter-full.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-simple-transform/dist/ecSimpleTransform.min.js"></script>
+
+    <link href="/celltaxonomy/static/css/bow.ui.min.css" rel="stylesheet">
+    <script type="text/javascript" src="/celltaxonomy/static/js/my/my.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="/celltaxonomy/static/css/my/my.css">
+    <style>
+        #table-marker select{
+            height:20px;
+            width:90%
+        }
+        .pagination{
+            display: block;
+        }
+        .marker-detail ul li{
+            display: block;
+            margin: 10px 0 10px 0;
+        }
+        .marker-description{
+            font-size: 40px;
+            font-weight: 700;
+            font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",sans-serif;
+            color: #16507b;
+        }
+        .id-card-title{
+            font-weight: 700;
+        }
+        .Browser::-webkit-scrollbar,.table-region::-webkit-scrollbar {
+            /*滚动条整体样式*/
+            width : 15px;  /*高宽分别对应横竖滚动条的尺寸*/
+            height: 12px;
+        }
+        .Browser::-webkit-scrollbar-thumb,.table-region::-webkit-scrollbar-thumb{
+            /*滚动条里面小方块*/
+            border-radius   : 10px;
+            background-color: #2487ce;
+            background-image: -webkit-linear-gradient(
+                    45deg,
+                    rgba(255, 255, 255, 0.2) 25%,
+                    transparent 25%,
+                    transparent 50%,
+                    rgba(255, 255, 255, 0.2) 50%,
+                    rgba(255, 255, 255, 0.2) 75%,
+                    transparent 75%,
+                    transparent
+            );
+        }
+        .Browser::-webkit-scrollbar-track,.table-region::-webkit-scrollbar-track {
+            /*滚动条里面轨道*/
+            box-shadow   : 0 0 1px rgba(0, 0, 0, 0.2);
+            background   : #ededed;
+            border-radius: 10px;
+        }
+        .figure-li{
+            border:1px solid #2487ce;
+            color: #2487ce;
+            padding: 8px 20px 8px 20px;
+            border-radius: 5px;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+        .figure-li a{
+            color:inherit;
+            text-decoration: none;
+
+        }
+        .figure-li.active,.figure-li:hover{
+            background: #2487ce;
+            color: white;
+        }
+        /*.idlink{*/
+        /*    padding-left: 30px;*/
+        /*}*/
+        .ytick text{
+            text-transform: capitalize;
+        }
+        .xtick text{
+            text-transform: capitalize;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <nav th:replace="common/topbar::topbar"></nav>
+</header>
+
+<!--    <div style="overflow: hidden;height:150px;width: 100%;background-image: url(/celltaxonomy/static/img/B1415360227.jpeg)">-->
+<!--        <div class="col-sm-offset-1 col-lg-offset-1" style="display: flex;align-items: center;height: 100%;">-->
+<!--            <h1 style="text-align: left;color: white;width:100%;font-size: 76px">Marker Browser</h1>-->
+<!--        </div>-->
+<!--    </div>-->
+<div class="container" style="background: #fcfcfc">
+        <div class="row">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/celltaxonomy/">Home</a></li>
+                    <li class="breadcrumb-item" aria-current="page"><a href="/celltaxonomy/marker">Marker</a></li>
+                    <li class="breadcrumb-item" th:text="${markername}"></li>
+                </ol>
+            </nav>
+            <div class="col-lg-12">
+                <div id="nav_side_bar" class="col-lg-2 col-sm-3" style="background: #F6F6F6;padding:0;">
+                    <div >
+                    </div>
+                    <ul id="nav-side">
+                        <li style="border-bottom: 1px solid #777777;pointer-events: none">
+                            <span style="font-size: 22px"  th:text="${markername}"></span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-lg-10">
+                    <div class="mypanel">
+                        <div class="mypanel-body" id="basic" style="margin-top:10px;padding: 10px 20px 20px 20px">
+
+                            <div>
+                                <div >
+                                    <div class="marker-detail">
+                                        <h4 style="color: #16507b;font-size: 28px;" th:text="${markername}"></h4>
+                                        <div>
+                                            <table class="table table-hover table-striped" style="width: 100%;table-layout: fixed">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Gene Alias</th>
+                                                        <th>Ensembl ID</th>
+                                                        <th>ENTREZ ID</th>
+                                                        <th>UniProt ID</th>
+                                                        <th>Pfam ID</th>
+                                                        <th>Orthologs</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr th:each="mic:${markeridcard}">
+                                                        <td th:text="${mic.Gene_Alias}"></td>
+                                                        <td id="geneensemblid" th:text="${mic.Gene_Ensembl_ID}"></td>
+                                                        <td id="entrezid"  th:text="${mic.Gene_ENTREZID}"></td>
+                                                        <td id="uniprot" th:text="${mic.Uniprot}"></td>
+                                                        <td id="PFAM" th:text="${mic.PFAM}"></td>
+                                                        <td id="HomoloGene" th:text="${mic.HomoloGene}"></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mypanel">
+                        <div class="mypanel-body" id="detail10" style="margin-top:10px;padding: 10px 20px 20px 20px">
+
+                            <div>
+                                <div class="table-title">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#summary_region">
+                                        <i style="font-size:20px" class="icon ion-chevron-down"></i>
+                                        <span style="font-size:20px;font-weight: 700;"  id="summary">Summary</span>
+                                    </a>
+                                </div>
+                                <div id="summary_region" class="collapse in">
+                                    <ul style="margin-bottom: 0">
+                                        <li id="summary1"></li>
+                                        <li id="summary2"></li>
+                                        <li id="summary3">
+                                            For <span id="summary3_celltype"></span>, <span th:text="${markername}"></span> is differentially expressed in <span id="summary3_ratio"></span> of datasets (log2FC > 0.25, FDR < 0.05), and the median log2FC is <span id="summary3_fc"></span>.
+                                        </li>
+                                        <li id="summary4"></li>
+                                    </ul>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="marker_table" style="margin-top:20px" >
+                        <div class="mypanel">
+                            <div class="mypanel-body" style="padding:0 15px 15px 15px">
+                                <div class="Browser"  style="padding-top: 30px">
+                                    <table id="table-marker" class="table table-striped table-hover " style="width:100%">
+                                        <thead>
+                                        <tr>
+                                            <th>Cell taxonomy ID</th>
+                                            <th>Cell type</th>
+                                            <th>Cell ID</th>
+                                            <th>Species</th>
+                                            <th>Tissue</th>
+                                            <th>Tissue ID</th>
+                                            <th>Condition</th>
+                                            <th>Disease ID</th>
+                                            <th>PMID</th>
+                                            <th>
+                                                Confidence Level
+                                                <div class="wrapper" style="height: 18px">
+                                                    <i class="icon ion-help-circled" style="line-height: 8px"></i>
+                                                    <span class="tooltiptext" style="display: block;white-space: normal">
+                                                    Divided into four parts according to way to get the marker, including Commercially validated, Computationally predicted, Experimentally validated, and Not available (-).                                                    </span>
+                                                </div>
+                                            </th>
+                                            <th >Source</th>
+
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                        </tbody>
+                                        <tfoot>
+                                        <tr>
+                                            <th >Cell taxonomy ID</th>
+                                            <th >Cell type</th>
+                                            <th >Cell ID</th>
+                                            <th >Species</th>
+                                            <th >Tissue</th>
+                                            <th >Tissue ID</th>
+                                            <th >Condition</th>
+                                            <th >Disease ID</th>
+                                            <th >PMID</th>
+                                            <th >Confidence Level</th>
+                                            <th >Source</th>
+                                        </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="tissue" class="mypanel" style="margin-top: 20px">
+                        <div class="mypanel-body" style="padding: 10px 20px 20px 20px">
+                            <div class="Browser" id="width">
+                                <div class="table-title" style="margin:0 0 20px 0;color:#2C75C9">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#cell_tissue_enrichment">
+
+                                        <i style="font-size:20px" class="icon ion-chevron-down"></i>
+                                        <span style="font-size:20px;font-weight: 700;" id="publication-supported_markers">Publication-supported cell types</span>
+                                        <div class="wrapper" style="height: 18px">
+                                            <i class="icon ion-help-circled" style="line-height: 8px;font-size: 20px"></i>
+                                            <span class="tooltiptext" style="display: block;white-space: normal">
+                                            This panel shows the top publication-supported cell types of this marker gene in various tissues. The ‘*’ means if this marker is significantly associated for this cell type: *** for < 0.001, ** for [0.001, 0.01) and * for [0.01, 0.05)
+                                        </span>
+                                        </div>
+                                    </a>
+                                </div>
+
+                                <div id="cell_tissue_enrichment" >
+                                    <div id="cell_type_tissue_enrichment" style="margin-top: 20px">
+                                        <div>
+                                            <div id="cell_enrichment_literature_support" style="height: 250px"></div>
+                                        </div>
+
+                                        <div>
+                                            <div>
+                                                <div style="height: 600px;" id="cell_tissue_enrichment_LS_heatmap"></div>
+                                            </div>
+                                        </div>
+
+
+                                        <div>
+                                            <a data-toggle="collapse"  href="#table1" style="text-decoration: none">
+                                                <i class="icon ion-plus-round"></i>
+                                                Show details
+                                            </a>
+                                        </div>
+                                        <div id="table1"  class="collapse table-region" >
+                                            <table id="cell_tissue_marker_table" style="width: 100%;" class="table table-striped table-hover">
+                                                <thead>
+                                                <tr>
+                                                    <th>Species</th>
+                                                    <th>Cell type</th>
+                                                    <th>Tissue</th>
+                                                    <th>No. of publications</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+
+                                                </tr>
+                                                </tbody>
+                                                <tfoot>
+                                                <tr>
+                                                    <th>Species</th>
+                                                    <th>Cell type</th>
+                                                    <th>Tissue</th>
+                                                    <th>No. of publications</th>
+
+                                                </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    <div class="mypanel">
+                        <div class="mypanel-body" id="detail8" style="margin-top:10px;padding: 10px 20px 20px 20px">
+
+                            <div>
+                                <div class="table-title">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#cell_markerDE">
+                                        <i style="font-size:20px" class="icon ion-chevron-down"></i>
+                                        <span style="font-size:20px;font-weight: 700;" id="cell_marker_differential_expression/">Cell marker differential expression</span>
+                                        <div class="wrapper" style="height: 18px">
+                                            <i class="icon ion-help-circled" style="line-height: 8px;font-size: 20px"></i>
+                                            <span class="tooltiptext" style="display: block;white-space: normal">
+                                            This panel shows the top cell types in which this marker is highly specifically expressed (with significant high fold change between this cell type and others in relevant scRNA-seq datasets; FDR < 0.05).
+                                        </span>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div id="cell_markerDE" class="collapse in">
+                                    <div>
+                                        <div>
+                                            <input type="checkbox" class="switch" checked>
+                                            <span>Show Publication-supported cell types</span>
+                                            <div class="wrapper" style="height: 18px">
+                                                <i class="icon ion-help-circled" style="line-height: 8px;font-size: 20px"></i>
+                                                <span class="tooltiptext" style="display: block;white-space: normal">
+                                            This panel shows the top cell types in which this marker is highly specifically expressed (with significant high fold change between this cell type and others in relevant scRNA-seq datasets; FDR < 0.05).
+                                        </span>
+                                            </div>
+                                        </div>
+                                        <div style="display: flex;justify-content: space-between;margin-top: 20px">
+                                            <div>
+                                                <div >
+                                                    <label>log2FC greater than</label>
+                                                    <select id="cell_markerDE_barplot_threshold" style="width: 200px">
+                                                        <option value="0.25">0.25</option>
+                                                        <option value="0.5">0.5</option>
+                                                        <option value="1">1</option>
+                                                        <option value="1.5">1.5</option>
+                                                        <option value="2">2</option>
+                                                    </select>
+                                                </div>
+
+                                                <div >
+                                                    <label>FDR less than</label>
+                                                    <select id="cell_markerDE_barplot_FDR" style="width:200px;">
+                                                        <option value="0.001">0.001</option>
+                                                        <option value="0.01">0.01</option>
+                                                        <option value="0.05" selected>0.05</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div style="display: flex;justify-content: center;margin: 10px 0">
+                                                    <p id="warn" style="display: none;font-size: 25px">No results</p>
+                                                </div>
+                                                <div>
+                                                    <div id="cell_markerDE_barplot" style="height: 250px">
+
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div style="display: flex;justify-content: space-between">
+                                            <div>
+                                                <label>FDR less than</label>
+                                                <select id="cell_markerDE_fdr" style="width: 200px">
+                                                    <option value="0.05">0.05</option>
+                                                    <option value="0.01">0.01</option>
+                                                    <option value="0.001">0.001</option>
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <div id="cell_markerDE_plot" style="height: 250px">
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <a data-toggle="collapse" href="#DE_table" style="text-decoration: none">
+                                                <i class="icon ion-plus-round"></i>
+                                                Show details
+                                            </a>
+                                        </div>
+                                        <div id="DE_table" class="collapse">
+                                            <table style="width:100%" class="table table-striped table-hover" id="cell_marker_DE_table">
+                                                <thead>
+                                                <tr>
+                                                    <th>Species</th>
+
+                                                    <th>Dataset</th>
+                                                    <th>Cell type</th>
+                                                    <th>log2FC</th>
+                                                    <th>
+                                                        Pct.cell type
+                                                        <div class="wrapper" style="height: 18px">
+                                                            <i class="icon ion-help-circled" style="line-height: 8px"></i>
+                                                            <span class="tooltiptext" style="display: block;white-space: normal">
+                                                        The expression percentage of this gene in this cell type
+                                                    </span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        Pct.others
+                                                        <div class="wrapper" style="height: 18px">
+                                                            <i class="icon ion-help-circled" style="line-height: 8px"></i>
+                                                            <span class="tooltiptext" style="display: block;white-space: normal">
+                                                        The expression percentage of this gene in other cell types
+                                                    </span>
+                                                        </div>
+                                                    </th>
+                                                    <th>P value</th>
+
+                                                    <th>P value adjusted</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+
+                                                </tbody>
+
+                                            </table>
+                                        </div>
+
+                                    </div>
+                                    <div>
+                                        <div style="display: flex;justify-content: flex-end">
+
+                                            <div>
+                                                <div>
+                                                    <p id="ss_tag" style="display: none">No results</p>
+                                                </div>
+                                                <div id="cell_marker_ss_plot" style="height: 250px">
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+
+                                    <div>
+                                        <a data-toggle="collapse" href="#table2" style="text-decoration: none">
+                                            <i class="icon ion-plus-round"></i>
+                                            Show details
+                                        </a>
+                                    </div>
+                                    <div id="table2" class="collapse">
+                                        <table style="width:100%" class="table table-hover table-striped" id="cell_marker_se_table">
+                                            <thead>
+                                            <tr>
+                                                <th>Species</th>
+                                                <th>Dataset</th>
+                                                <th>Cell type</th>
+                                                <th>
+                                                    Specificity score
+                                                    <div class="wrapper" style="height: 18px">
+                                                        <i class="icon ion-help-circled" style="line-height: 8px"></i>
+                                                        <span class="tooltiptext" style="display: block;white-space: normal">
+                                                            Jensen-Shannon (JS) divergence score (0-1) is calculated to quantify the cell type specificity of one marker gene (Cabili MN et al., 2011 ).
+                                                        </span>
+                                                    </div>
+                                                </th>
+                                            </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script th:inline="javascript">
+        function sortORasc(a,b){
+            return b.OR2-a.OR2
+        }
+        var barplot_ytick;
+
+        function getbarplot(id,data,title,xtitle,ytitle,name,value){
+
+            var plotwidth=$("#width").width();
+            $("#"+id).css("width",plotwidth*0.95)
+            title=title.replace(/ [a-z][a-z] All/g,"")
+
+            data=data.slice(0,30)
+            var chartDom = document.getElementById(id);
+            var myChart = echarts.init(chartDom);
+            var app = {};
+
+            if(name=="Tissue_standard"){
+                barplot_ytick=unpack(data.sort(sortTELS),name)
+            }
+            else{
+                barplot_ytick=unpack(data.sort(sortLS),name)
+            }
+            var datas=[];
+            var a={}
+            a.name="No. of publications"
+            a.type="bar"
+            a.markPoint={}
+            a.markPoint.data=[]
+            a.markPoint.silent=true
+            a.markPoint.itemStyle={}
+            a.markPoint.itemStyle.color="transparent"
+            a.markPoint.label={}
+            a.markPoint.label.color="black"
+            a.markPoint.label.offset=[0,20]
+            var tempdata= new Array(barplot_ytick.length)
+            for (var j=0;j<data.length;j++){
+                tempdata[$.inArray(data[j][name],barplot_ytick)]=data[j][value]*1
+                if(data[j].FDR<0.001){
+                    a.markPoint.data.push({coord:[data[j][name],data[j][value]*1],value:"***"})
+                }
+                else if(data[j].FDR<0.01 && data[j].FDR>0.001){
+                    a.markPoint.data.push({coord:[data[j][name],data[j][value]*1],value:"**"})
+                }
+                else if(data[j].FDR<0.05 && data[j].FDR>0.01){
+                    a.markPoint.data.push({coord:[data[j][name],data[j][value]*1],value:"*"})
+                }
+            }
+            a.data=tempdata
+            datas.push(a)
+
+
+            var option;
+            option = {
+                color:['#6b778d'],
+                title:{
+                    text:title,
+                    left:'center',
+                    textStyle:{
+                        fontFamily:"Arial",
+                        fontSize:15
+                    }
+                },
+                legend: {
+                    data: [xtitle],
+                    right:'0',
+                    top:'5%',
+                    textStyle:{
+                        fontFamily:"Arial",
+                        fontSize:11
+                    }
+
+                },
+                yAxis: [
+                    {
+                        type: 'value',
+                        name:xtitle,
+
+                        nameTextStyle:{
+                            fontWeight:'bold',
+                            fontSize:12,
+                            fontFamily:"Arial"
+                        },
+                        axisLabel:{
+                            fontSize:11,
+                            fontFamily:"Arial"
+                        },
+                        position: 'left',
+                    }
+                ],
+                tooltip:{},
+                grid:{
+                    width:"85%",
+                    height:"40%",
+                    right:"5%",
+                    top:"15%"
+                },
+                xAxis: {
+                    type: 'category',
+                    name:ytitle,
+                    data: barplot_ytick,
+                    nameTextStyle:{
+                        fontWeight:'bold',
+                        fontSize:14,
+                        fontFamily:"Arial"
+
+                    },
+                    axisLabel:{
+                        rotate:45,
+                        fontSize:11,
+                        fontFamily:"Arial",
+                        formatter:function(value){
+                            if(value.length>30){
+                                let list=value.split("");
+                                let result="";
+                                if(list[Math.floor(value.length/2)]==" "){
+                                    result+=value.slice(0,Math.floor(value.length/2)+1)+"\n";
+                                    result+=value.slice(Math.floor(value.length/2)+1,value.length)
+                                    return result
+                                }
+                                else{
+                                    result+=value.slice(0,Math.floor(value.length/2)+1)+"-\n";
+                                    result+=value.slice(Math.floor(value.length/2)+1,value.length)
+
+                                    return result
+                                }
+                            }
+                            else{
+                                return value
+                            }
+                        }
+
+                    }
+                },
+                series: datas
+            };
+
+            option && myChart.setOption(option);
+        }
+        function getboxplot(id,results){
+            var plotwidth=$("#detail8").width();
+            $("#"+id).css("width",plotwidth*0.8)
+
+            var chartDom = document.getElementById(id);
+            var myChart = echarts.init(chartDom);
+            var option;
+
+            var datas=[
+                ["Cell_standard","Score"]
+            ]
+            results.map(function(e){
+                datas.push([e.Cell_standard,(e.avg_log2FC*1).toPrecision(2)])
+            })
+
+            echarts.registerTransform(window.ecSimpleTransform.aggregate);
+
+            option = {
+                dataset: [
+                    {
+                        id:"raw",
+                        source:datas
+                    },
+                    {
+                        id:"aggregate",
+                        fromDatasetId:"raw",
+                        transform:
+                            [
+                                {
+                                    type: 'ecSimpleTransform:aggregate',
+                                    config: {
+                                        resultDimensions: [
+                                            { name: 'Min', from: 'Score', method: 'min' },
+                                            { name: 'Q1', from: 'Score', method: 'Q1' },
+                                            { name: 'Median', from: 'Score', method: 'median' },
+                                            { name: 'Q3', from: 'Score', method: 'Q3' },
+                                            { name: 'Max', from: 'Score', method: 'max' },
+                                            { name: 'Cell_standard', from: 'Cell_standard' }
+                                        ],
+                                        groupBy: 'Cell_standard'
+                                    }
+                                },
+                                {
+                                    type: 'sort',
+                                    config: {
+                                        dimension: 'Median',
+                                        order: 'desc'
+                                    }
+                                }
+                            ]
+                    },
+                ],
+                legend: {
+                    show:false,
+                    top: '10%'
+                },
+                title:{
+                    text:"Expression fold-change of "+[[${markername}]]+" between one cell type and others across datasets",
+                    right:'center',
+                    textStyle:{
+                        fontFamily:'Arial',
+                        fontSize:15
+                    }
+                },
+                tooltip: {
+                    trigger: 'item',
+                    axisPointer: {
+                        type: 'shadow'
+                    }
+                },
+                grid: {
+                    left: '6%',
+                    right: '5%',
+                    height:'40%'
+                },
+                xAxis: {
+                    type: 'category',
+                    axisLabel:{
+                        interval:0,
+                        rotate: 45,
+                        fontFamily:'Arial',
+                        fontSize:11
+
+                    },
+                    boundaryGap: true,
+                    splitArea: {
+                        show: true
+                    },
+                    splitLine: {
+                        show: false
+                    }
+                },
+                dataZoom:{
+                    type:"slider",
+                    show:false,
+                    endValue:19
+
+                },
+                yAxis: {
+                    type: 'value',
+                    name: 'log2FC',
+                    nameTextStyle:{
+                        fontWeight:'bold',
+                        fontFamily:"Arial"
+                    }
+                },
+                series: [
+                    {
+                        name: 'log2FC',
+                        type: 'boxplot',
+                        datasetId: "aggregate",
+                        encode: {
+                            y: ['Min', 'Q1', 'Median', 'Q3', 'Max'],
+                            x: 'Tissue',
+                            itemName: ['Tissue'],
+                            tooltip: ['Max', 'Q3', 'Median', 'Q1', 'Min']
+                        }
+                    }
+                ]
+            };
+            if($(window).width()>1400){
+            }
+            else if($(window).width()>1024){
+                option.grid.left="10%"
+
+            }
+            else{
+
+            }
+            option && myChart.setOption(option);
+        }
+        function getboxplot2(id,results){
+            var plotwidth=$("#detail8").width();
+            $("#"+id).css("width",plotwidth-40)
+
+            var chartDom = document.getElementById(id);
+            var myChart = echarts.init(chartDom);
+            var option;
+
+            var marker=$.unique(unpack(results,"Cell_standard").sort());
+            var tissue=$.unique(unpack(results,"Tissue").sort());
+            var title;
+            if(id.indexOf("_SRS")>=0){
+                title=id.split("_")[1]
+            }
+            else{
+                title=id
+            }
+            function makeData() {
+                var data = [];
+                var datas=[];
+                for(var t=0;t<tissue.length;t++){
+                    data=[];
+
+                    for (var i = 0; i < marker.length; i++) {
+
+                        var result;
+                        result=eval(results).filter(function(e){
+                            return e.Cell_standard===marker[i]
+                        });
+                        result=eval(result).filter(function(e){
+                            return e.Tissue===tissue[t]
+                        });
+                        if (result.length==0){
+                            data.push([]);
+                        }
+                        else{
+                            data.push([result[0].Max.toPrecision(2),result[0].Min.toPrecision(2),result[0].Q1.toPrecision(2),result[0].Q2.toPrecision(2),result[0].Q3.toPrecision(2)]);
+                        }
+
+                    }
+                    datas.push(data);
+                }
+                return datas;
+            }
+            var datas = makeData();
+
+            var dataset=[];
+            var series=[];
+            for (var i=0;i<datas.length;i++){
+                dataset.push(
+                    {
+                        dimension:['Max','Min','Q1','Q2','Q3'],
+                        source:datas[i]
+                    }
+                );
+            }
+            for(i=0;i<datas.length;i++){
+                dataset.push({
+                    fromDatasetIndex: i,
+                    transform: [
+                        {
+                            type: 'boxplot',
+                            config:{
+                                itemNameFormatter:function(params){
+                                    return marker[params.value]
+                                }
+                            }
+                        },
+                        {
+                            type:'sort',
+                            config:{dimension:'Q2',order:'desc'}
+                        }
+                    ]
+                })
+            }
+            for(i=0;i<datas.length;i++){
+                series.push(
+                    {
+                        name: tissue[i],
+                        type: 'boxplot',
+                        datasetIndex: i+datas.length
+                    }
+                )
+            }
+
+
+
+            option = {
+                dataset: [],
+                legend: {
+                    top: '10%'
+                },
+                title:{
+                    text:title,
+                    right:'center',
+                    fontFamily:'Arial'
+                },
+                tooltip: {
+                    trigger: 'item',
+                    axisPointer: {
+                        type: 'shadow'
+                    },
+                    formatter:function(params){
+                        return `
+                            Cell type: ${params.data[0]}<br/>
+                            Max: ${params.data[5].toPrecision(2)}<br/>
+                            Q3: ${params.data[4].toPrecision(2)}<br/>
+                            Median: ${params.data[3].toPrecision(2)}<br/>
+                            Q1: ${params.data[2].toPrecision(2)}<br/>
+                            Min: ${params.data[1].toPrecision(2)}<br/>
+                            `
+                    }
+                },
+                grid: {
+                    left: '10%',
+                    top: '20%',
+                    right: '10%',
+                    bottom: '15%',
+                    height:'60%'
+                },
+                xAxis: {
+                    type: 'category',
+                    axisLabel:{
+                        interval:0,
+                        rotate: 10,
+
+                    },
+                    name:'Cell type',
+                    boundaryGap: true,
+                    nameGap: 30,
+                    splitArea: {
+                        show: true
+                    },
+                    splitLine: {
+                        show: false
+                    }
+                },
+                yAxis: {
+                    type: 'value',
+                    name: 'TPM or CPM',
+                    splitArea: {
+                        show: false
+                    }
+                },
+
+                series: []
+            };
+            option.dataset=dataset;
+            option.series=series;
+
+            option && myChart.setOption(option);
+        }
+        function getbarplotDE(id,data){
+            var plotwidth=$("#detail8").width();
+            var title=""
+
+            $("#"+id).css("width",plotwidth*0.8)
+
+            var chartDom = document.getElementById(id);
+            var myChart = echarts.init(chartDom);
+            var total=[]
+            var ytick=unpack(data["result"],"Cell_standard")
+            for(var i=0;i<ytick.length;i++){
+                var temp=eval(data["total"]).filter(function(e){
+                    return e.Cell_standard==ytick[i]
+
+                })
+                total.push(
+                    temp[0].counts
+                )
+            }
+
+            var app = {};
+
+
+            var ratio=[]
+            data=data['result']
+            for(var i=0;i<ytick.length;i++){
+                ratio.push((data[i].counts/total[i]).toPrecision(2))
+            }
+
+            var option;
+            option = {
+                color:["#9FE080",'#6b778d',"#FAC858"],
+                title:{
+                    text:"Differential expression of "+[[${markername}]]+" in cell types",
+                    left:'center',
+                    textStyle:{
+                        fontFamily:"Arial",
+                        fontSize:15
+                    }
+                },
+                legend: {
+                    right:'center',
+                    top:'10%',
+                    data:["Differentially expressed datasets (DE)","Expressed datasets (E)","Ratio (DE/E)"],
+                    textStyle:{
+                        fontFamily:"Arial",
+                        fontSize:11
+                    },
+                    width:"90%"
+                },
+                yAxis: [
+                    {
+                        type: 'value',
+                        name:"Number of datasets",
+
+                        nameTextStyle:{
+                            fontWeight:'bold',
+                            fontSize:12,
+                            fontFamily:"Arial"
+                        },
+                        axisLabel:{
+                            fontFamily:"Arial",
+                            fontSize:11
+                        },
+                    },
+                    {
+                        type: 'value',
+                        name:"Ratio",
+                        axisLabel:{
+                            fontFamily:"Arial",
+                            fontSize:11
+                        },
+                        nameTextStyle:{
+                            fontWeight:'bold',
+                            fontSize:12,
+                            fontFamily:"Arial",
+                            align:"left"
+                        }
+
+
+                    }
+
+                ],
+                tooltip:{},
+                grid:{
+                    height:"40%",
+                    right:"5%",
+                    left:'6%'
+                },
+                xAxis: {
+                    type: 'category',
+                    // name:"Marker",
+                    data: ytick,
+                    // nameTextStyle:{
+                    //     fontWeight:'bold',
+                    //     fontSize:11,
+                    //     fontFamily:"Arial",
+                    //
+                    // },
+                    // nameGap:30,
+                    axisLabel:{
+                        rotate:30,
+                        fontFamily:"Arial",
+                        fontSize:11
+                    }
+                },
+                series: [
+                    {
+                        name:"Differentially expressed datasets (DE)",
+                        type:"bar",
+                        data:unpack(data,"counts")
+                    },
+                    {
+                        name:"Expressed datasets (E)",
+                        type:"bar",
+
+                        data:total
+                    },
+                    {
+                        name:"Ratio (DE/E)",
+                        type:"scatter",
+                        yAxisIndex:1,
+                        data:ratio
+                    }
+                ]
+            };
+
+            if($(window).width()>1400){
+            }
+            else if($(window).width()>1024){
+                option.grid.left="10%"
+
+            }
+            else{
+
+            }
+            option && myChart.setOption(option);
+        }
+        function getboxplotSS(id,results){
+            var plotwidth=$("#detail8").width();
+            $("#"+id).css("width",plotwidth*0.8)
+
+            var chartDom = document.getElementById(id);
+            var myChart = echarts.init(chartDom);
+            var option;
+
+            var tissue=$.unique(unpack(results,"Tissue").sort());
+            var datas=[
+                ["Cell_standard","Score"]
+            ]
+            results.map(function(e){
+                datas.push([e.Cell_standard,(e.Cell_specific_score*1).toPrecision(2)])
+            })
+
+            echarts.registerTransform(window.ecSimpleTransform.aggregate);
+
+            option = {
+                dataset: [
+                    {
+                        id:"raw",
+                        source:datas
+                    },
+                    {
+                        id:"aggregate",
+                        fromDatasetId:"raw",
+                        transform:
+                            [
+                                {
+                                    type: 'ecSimpleTransform:aggregate',
+                                    config: {
+                                        resultDimensions: [
+                                            { name: 'Min', from: 'Score', method: 'min' },
+                                            { name: 'Q1', from: 'Score', method: 'Q1' },
+                                            { name: 'Median', from: 'Score', method: 'median' },
+                                            { name: 'Q3', from: 'Score', method: 'Q3' },
+                                            { name: 'Max', from: 'Score', method: 'max' },
+                                            { name: 'Cell_standard', from: 'Cell_standard' }
+                                        ],
+                                        groupBy: 'Cell_standard'
+                                    }
+                                },
+                                {
+                                    type: 'sort',
+                                    config: {
+                                        dimension: 'Median',
+                                        order: 'desc'
+                                    }
+                                }
+                            ]
+                    },
+                ],
+                legend: {
+                    show:false,
+                    top: '10%'
+                },
+                title:{
+                    text:[[${markername}]]+" expression specificity in cell types across datasets",
+                    right:'center',
+                    textStyle:{
+                        fontFamily:"Arial",
+                        fontSize:15
+                    }
+                },
+                tooltip: {
+                    trigger: 'item',
+                    axisPointer: {
+                        type: 'shadow'
+                    }
+                },
+                grid: {
+                    left: '6%',
+                    right: '5%',
+                    height:'40%'
+                },
+                xAxis: {
+                    type: 'category',
+                    axisLabel:{
+                        interval:0,
+                        rotate: 45,
+                        fontFamily:"Arial",
+                        fontSize:11
+
+                    },
+                    boundaryGap: true,
+                    splitArea: {
+                        show: true
+                    },
+                    splitLine: {
+                        show: false
+                    }
+                },
+                dataZoom:{
+                    type:"slider",
+                    show:false,
+                    endValue:19
+                },
+                yAxis: {
+                    type: 'value',
+                    name: 'Cell specificity score',
+                    nameTextStyle:{
+                        fontFamily:"Arila",
+                        fontSize:11,
+                        fontWeight:'bold'
+                    },
+                    axisLabel:{
+                        fontFamlily:"Arial",
+                        fontSize:11
+
+                    },
+                },
+                series: [
+                    {
+                        name: 'Cell specificity score',
+                        type: 'boxplot',
+                        datasetId: "aggregate",
+                        encode: {
+                            y: ['Min', 'Q1', 'Median', 'Q3', 'Max'],
+                            x: 'Tissue',
+                            itemName: ['Tissue'],
+                            tooltip: ['Max', 'Q3', 'Median', 'Q1', 'Min']
+                        }
+                    }
+                ]
+            };
+            if($(window).width()>1400){
+            }
+            else if($(window).width()>1024){
+                option.grid.left="10%"
+
+            }
+            else{
+
+            }
+            option && myChart.setOption(option);
+        }
+
+
+        function getecharts(id,xtick,ytick,data,title,xtitle,ytitle){
+            var plotwidth=$("#width").width();
+            $("#"+id).css("width",plotwidth*0.95)
+
+
+            var chartDom = document.getElementById(id);
+            var myChart = echarts.init(chartDom);
+            var app = {};
+            title=title.replace(/ [a-z][a-z] All/g,"")
+
+            var option;
+            var max_legend=0;
+            for(i=0;i<data.length;i++){
+
+                max_legend=Math.max(data[i][2],max_legend)
+            }
+            data = data.map(function (item) {
+                return [item[0], item[1], item[2] || '-'];
+            });
+
+            option = {
+                title:{
+                    text:title,
+                    right:'center',
+                    textStyle:{
+                        fontSize:15,
+                        fontFamily:"Arial"
+                    }
+                },
+                tooltip: {
+                    trigger:'item',
+                    axisPointer:{
+                        type:"cross"
+                    },
+                    position: 'top',
+                },
+                grid:{
+                    height:'30%',
+                    right:"6%",
+                    left:"20%",
+                    top:'30%'
+                },
+                xAxis: {
+                    type: 'category',
+                    data: xtick,
+                    splitArea: {
+                        show: true
+                    },
+                    axisTick:{
+                        show:false
+                    },
+                    axisLabel:{
+                        interval:0,
+                        rotate: 45,
+                        fontSize:11,
+                        fontFamily: "Arial"
+
+                    },
+                    name:xtitle,
+                    nameTextStyle:{
+                        fontWeight:'bold',
+                        fontSize:11,
+                        fontFamily: "Arial"
+
+                    },
+                },
+                yAxis: {
+                    type: 'category',
+                    data: ytick,
+                    splitArea: {
+                        show: true
+                    },
+                    axisTick:{
+                      show:false,
+
+                    },
+                    axisLabel:{
+                        interval:0,
+                        fontFamily: "Arial",
+                        fontSize:11,
+                        // formatter:function(value){
+                        //     if(value.length>30){
+                        //         let list=value.split("");
+                        //         let result="";
+                        //         if(list[Math.floor(value.length/2)]==" "){
+                        //             result+=value.slice(0,i)+"\n";
+                        //             result+=value.slice(i+1,value.length)
+                        //             return result
+                        //         }
+                        //         else{
+                        //             result+=value.slice(0,Math.floor(value.length/2)+1)+"-\n";
+                        //             result+=value.slice(Math.floor(value.length/2)+1,value.length)
+                        //
+                        //             return result
+                        //         }
+                        //     }
+                        //     else{
+                        //         return value
+                        //     }
+                        // }
+                    },
+                    name:ytitle,
+                    nameTextStyle:{
+                        fontWeight:'bold',
+                        fontSize:12,
+                        fontFamily: "Arial"
+                    },
+
+
+                },
+                label:{
+                    fontFamily:"Arial",
+                    fontSize:10
+                },
+                visualMap: {
+                    min: 0,
+                    max:max_legend,
+                    calculable: true,
+                    right: '0',
+                    top:'5%',
+                    show:false
+                },
+                series: [{
+                    type: 'heatmap',
+                    data: data,
+                    label: {
+                        show: true,
+                        fontSize:10
+                    },
+                    itemStyle:{
+                        borderColor:"Black",
+                        borderWidth:0.3
+                    },
+                    emphasis: {
+                        itemStyle: {
+                            shadowBlur: 10,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    }
+                }]
+            };
+            if(ytick.length>5){
+                option.grid.height='60%'
+                option.grid.top='10%'
+
+            }
+
+            if (option && typeof option === 'object') {
+                myChart.setOption(option);
+            }
+        }
+        function unpack(rows, key) {
+            return rows.map(function(row) { return row[key]; });
+        }
+        function cteLS(data){
+            var results=data["results"];
+
+
+            var newdata=[];
+            for(i=0;i<results.length;i++){
+                if($.inArray(results[i].Cell_standard,barplot_ytick)>=0){
+                    newdata.push(results[i])
+                }
+            }
+            results=newdata;
+            var n=0;
+            var len=barplot_ytick.length;
+            for(i=0;i<len;i++){
+                var temp=eval(results).filter(function(e){
+                    return e.Cell_standard==barplot_ytick[i-n]
+                });
+                if(temp.length==0){
+                    barplot_ytick.splice(i-n,1)
+                    n+=1
+                }
+
+            }
+            var y=barplot_ytick.reverse();
+
+
+            var x=$.unique(unpack(results, 'Tissue_standard').sort());
+
+            var z = new Array();
+
+            for (i=0;i<results.length;i++){
+                z.push([$.inArray(results[i].Tissue_standard,x),$.inArray(results[i].Cell_standard,y),results[i].marker_tissue_number])
+
+            }
+            if(y.length<=5){
+                $("#cell_tissue_enrichment_LS_heatmap").css('height',"300px")
+            }
+            getecharts("cell_tissue_enrichment_LS_heatmap",x,y,z,[[${markername}]]+": number of supported publications","Tissue","Cell type")
+        }
+        var cell_list=[];
+        var DE;
+        var DE_plot;
+        var DE_bar;
+        var DE_score;
+        var summary_celltype=""
+
+        $(document).ready(function() {
+            $.ajax({
+                url:"/celltaxonomy/cell_type_enrichment",
+                type:"post",
+                async:false,
+                dataType:'json',
+                data:{
+                    marker:$(".marker-description").find("span").text(),
+                    entrezid:$("#entrezid").text()
+                },
+                success:function(results){
+                    if(results.length>0){
+                        var publication=0;
+                        results.map(function(e){
+                            if(e.marker_cell_number*1>publication*1){
+                                publication=e.marker_cell_number
+                                summary_celltype=e.Cell_standard
+                            }
+                        })
+                        if(publication*1===1){publication=publication.toString()+" publication"}else{publication=publication.toString()+" publications"}
+                        $("#summary2").text(
+                            [[${markername}]]+" is mostly reported in "+summary_celltype+" with "+publication+"."
+                        )
+
+                        getbarplot("cell_enrichment_literature_support",results,[[${markername}]]+": number of supported publications","No. of publications","","Cell_standard","marker_cell_number")
+
+                        var data=results.slice(0,30)
+                        cell_list=$.unique(unpack(data,"Cell_standard").sort())
+
+
+                    }
+                    else{
+                        $("#tissue").css("display","none")
+                    }
+
+
+
+                },
+                error:function(){
+                    console.log("error")
+                }
+            });
+
+            $.ajax({
+                url:"/celltaxonomy/cell_tissue_enrichment",
+                type:"post",
+                dataType:'json',
+                data:{
+                    marker:$(".marker-description").find("span").text(),
+                    entrezid:$("#entrezid").text()
+                },
+                success:function(data){
+                    var results=data["results"];
+                    results=eval(results).filter(function(e){
+                        return e.FDR<0.05
+                    })
+                    results=eval(results).filter(function(e){
+                        return e.marker_tissue_number>1
+                    })
+
+                    var species=$.unique(unpack(results,"Species").sort());
+                    for(i=0;i<species.length;i++){
+                        $("#cell_enrichment_heatmap_species_select").append(
+                            "<option value='"+species[i]+"'>"+species[i]+"</option>"
+                        )
+                    }
+                    if(results.length==0){
+                        if($("#cell_enrichment_or").parent().parent().css("display")=="none"){
+                            $("#cell_enrichment_or").parent().parent().parent().parent().css("display","none")
+                        }
+                        else{
+                            $("#cell_tissue_enrichment_heatmap").parent().css("display","none")
+                            $("#cell_marker_table2").parent().css("display","none")
+                        }
+                    }
+                    else{
+                        $("#cell_marker_table2").DataTable({
+                            data:results,
+                            initComplete: function () {
+                                var r = $('#cell_marker_table2 tfoot tr');
+                                r.find('th').each(function(){
+                                    $(this).css('padding', '8px 0')
+                                    $(this).css('border-top', '1px solid #ddd');
+                                    $(this).css('border-bottom', '1px solid #ddd');
+                                });
+                                $('#cell_marker_table2 thead').append(r);
+                                $('#search_0').css('text-align', 'center');
+
+                                this.api().columns([0,1,2,3,4,5]).every( function () {
+                                    var column = this;
+                                    var select = $('<select style="width:80%;height:auto;padding: 0 5px;margin: 0;font-size: 13px"><option value="">Show All</option></select>')
+                                        .appendTo( $(column.footer()).empty() )
+                                        .on( 'change', function () {
+                                            var val = $.fn.dataTable.util.escapeRegex(
+                                                $(this).val()
+                                            );
+
+                                            column
+                                                .search( val ? '^'+val+'$' : '', true, false )
+                                                .draw();
+                                        } );
+
+                                    column.data().unique().sort().each( function ( d, j ) {
+                                        select.append( '<option value="'+d+'">'+d+'</option>' )
+                                    } );
+                                } );
+                            },
+
+                            columns:[
+                                {data:"Species"},
+                                {
+                                    data:"Cell_standard",
+                                    render:function(data,type,row){
+                                        // return "<a class='celltype'>"+row.Cell_standard.replace(/_/g," ")+"</a>"
+                                        return "<a target='_blank' href='/celltaxonomy/celltype/"+row.CT_ID+"'>"+row.Cell_standard.replace(/_/g," ")+"</a>"
+
+                                    }
+                                },
+                                {
+                                    data:"Tissue_standard",
+                                    render:function(data,type,row){
+                                        return "<a href='/celltaxonomy/tissue/"+row.Tissue_UberonOntology_ID2_x+"'>"+row.Tissue_standard+"</a>"
+                                    }
+                                },
+                                // {data:"marker_cell_number"},
+                                {
+                                    data:"OR_value",
+                                    render:function(data,type,row){
+                                        if(row.OR_value!="Inf"){
+                                            return (row.OR_value*1).toPrecision(2)
+                                        }
+                                        else{
+                                            return row.OR_value
+                                        }
+                                    }
+                                },
+                                {data:"P_value"},
+                                {data:"FDR"},
+
+                            ],
+                            destroy: true,
+                            deferRender:true,
+                            order:[2,"desc"],
+                            dom: '<"row"<"col-lg-4"l><"col-lg-4"B><"col-lg-4"f>>t<"row"<"col-lg-6"i><"col-lg-6"p>>',
+                            buttons: [
+                                'copy', 'excel', 'pdf'
+                            ],
+                            "aoColumnDefs":[
+                                {"sType":'num-html','aTargets':[2]}
+                            ]
+
+                        });
+                    }
+
+                    results=data["results"];
+                    if(results.length==0){
+                        $("#cell_tissue_marker_table").parent().css("display","none")
+                    }
+                    else{
+                        $("#cell_tissue_marker_table").DataTable({
+                            data:results,
+                            initComplete: function () {
+                                var r = $('#cell_tissue_marker_table tfoot tr');
+                                r.find('th').each(function(){
+                                    $(this).css('padding', '8px 0')
+                                    $(this).css('border-top', '1px solid #ddd');
+                                    $(this).css('border-bottom', '1px solid #ddd');
+                                });
+                                $('#cell_tissue_marker_table thead').append(r);
+                                $('#search_0').css('text-align', 'center');
+
+                                this.api().columns([0,1,2,3]).every( function () {
+                                    var column = this;
+                                    var select = $('<select style="width:80%;height:auto;padding: 0 5px;margin: 0;font-size: 13px"><option value="">Show All</option></select>')
+                                        .appendTo( $(column.footer()).empty() )
+                                        .on( 'change', function () {
+                                            var val = $.fn.dataTable.util.escapeRegex(
+                                                $(this).val()
+                                            );
+
+                                            column
+                                                .search( val ? '^'+val+'$' : '', true, false )
+                                                .draw();
+                                        } );
+
+                                    column.data().unique().sort().each( function ( d, j ) {
+                                        select.append( '<option value="'+d+'">'+d+'</option>' )
+                                    } );
+                                } );
+                            },
+
+                            columns:[
+                                {data:"Species"},
+
+                                {
+                                    data:"Cell_standard",
+                                    render:function(data,type,row){
+                                        // return "<a class='celltype'>"+row.Cell_standard.replace(/_/g," ")+"</a>"
+                                        return "<a target='_blank' href='/celltaxonomy/celltype/"+row.CT_ID+"'>"+row.Cell_standard.replace(/_/g," ")+"</a>"
+
+                                    }
+                                },
+                                {
+                                    data:"Tissue_standard",
+                                    render:function(data,type,row){
+                                        return "<a target='_blank' href='/celltaxonomy/tissue/"+row.Tissue_UberonOntology_ID2_x+"'>"+row.Tissue_standard.replace(/_/g," ")+"</a>"
+                                    }
+
+                                },
+                                {data:"marker_tissue_number"},
+                                // {
+                                //     data:"OR_value",
+                                //     render:function(data,type,row){
+                                //         if(row.OR_value!="Inf"){
+                                //             return (row.OR_value*1).toPrecision(2)
+                                //         }
+                                //         else{
+                                //             return row.OR_value
+                                //         }
+                                //     }
+                                //
+                                // },
+                                // {data:"P_value"},
+                                // {data:"FDR"},
+                                {data:"Tissue_UberonOntology_ID2_x",visible:false}
+
+                            ],
+                            destroy: true,
+                            deferRender:true,
+                            order:[3,"desc"],
+                            dom: '<"row"<"col-lg-4"l><"col-lg-4"B><"col-lg-4"f>>t<"row"<"col-lg-6"i><"col-lg-6"p>>',
+                            buttons: [
+                                'copy', 'excel', 'pdf'
+                            ]
+
+                        });
+
+                        species=$.unique(unpack(results,"Species").sort());
+
+                        cteLS(data)
+                    }
+
+
+
+
+
+
+
+                },
+                error:function(){
+                    console.log("error")
+                }
+            });
+            $.ajax({
+                url:'/celltaxonomy/marker_table',
+                type:'post',
+                data:{
+                  "marker":function(){
+                      if($("#entrezid").text()!="-"){
+                          return $("#entrezid").text()
+                      }
+                      else{
+                          return $("#marker-name").text()
+                      }
+
+                  }
+                },
+                success:function(results){
+                    var celltypes=$.unique(unpack(results,"Cell_standard").sort()).length
+                    var conditions=$.unique(unpack(results,"Disease_Type").sort()).length
+                    var tissues=$.unique(unpack(results,"Tissue_standard").sort()).length
+                    var species=$.unique(unpack(results,"Cell_standard").sort()).length
+                    var publications=$.unique(unpack(results,"PMID").sort()).length
+
+                    if(celltypes===1){celltypes=celltypes.toString()+" cell type"}else{celltypes=celltypes.toString()+" cell types"}
+                    if(conditions===1){conditions=conditions.toString()+" condition"}else{conditions=conditions.toString()+" conditions"}
+                    if(tissues===1){tissues=tissues.toString()+" tissue"}else{tissues=tissues.toString()+" tissues"}
+                    if(publications===1){publications=publications.toString()+" publication"}else{publications=publications.toString()+" publications"}
+                    $("#summary1").text(
+                        [[${markername}]]+" is associated with "+celltypes+" in "+conditions+" and "+tissues+" across "+species+" species, supported by "+publications+"."
+                    )
+
+                    $("#table-marker").DataTable({
+                        initComplete: function () {
+                            var r = $('#table-marker tfoot tr');
+                            r.find('th').each(function(){
+                                $(this).css('padding', '8px 0')
+                                $(this).css('border-top', '1px solid #ddd');
+                                $(this).css('border-bottom', '1px solid #ddd');
+                            });
+                            $('#table-marker thead').append(r);
+                            $('#search_0').css('text-align', 'center');
+
+                            this.api().columns([0,1,2,3,4,5, 6, 7,8,9,10]).every( function () {
+                                var column = this;
+                                var select = $('<select style="width:80%;height:auto;padding: 0 5px;margin: 0;font-size: 13px"><option value="">Show All</option></select>')
+                                    .appendTo( $(column.footer()).empty() )
+                                    .on( 'change', function () {
+                                        var val = $.fn.dataTable.util.escapeRegex(
+                                            $(this).val()
+                                        );
+
+                                        column
+                                            .search( val ? '^'+val+'$' : '', true, false )
+                                            .draw();
+                                    } );
+
+                                column.data().unique().sort().each( function ( d, j ) {
+                                    select.append( '<option value="'+d+'">'+d+'</option>' )
+                                } );
+                            } );
+                        },
+                        data:results,
+                        columns:[
+                            {
+                                data:"CT_ID",
+                                render:function(data,type,row){
+                                    // return "<a class='ctid'>"+row.CT_ID+"</a>"
+                                    return "<a target='_blank' href='/celltaxonomy/celltype/"+row.CT_ID+"'>"+row.CT_ID+"</a>"
+
+                                }
+                            },
+                            {
+                                data:"Cell_standard",
+                                render:function(data,type,row){
+                                    // return "<a class='celltype'>"+row.Cell_standard+"</a>"
+                                    return "<a target='_blank' href='/celltaxonomy/celltype/"+row.CT_ID+"'>"+row.Cell_standard+"</a>"
+
+                                }
+                            },
+                            {
+                                data:"Specific_Cell_Ontology_ID",
+                                bVisible: false
+                            },
+                            {data:"Species"},
+                            {
+                                data:"Tissue_standard",
+                                render:function(data,type,row){
+                                    if(row.Tissue_standard!="-"){
+                                        return "<a class='tissue'>"+row.Tissue_standard+"</a>"
+                                    }
+                                    else{
+                                        return row.Tissue_standard
+                                    }
+                                }
+                            },
+                            {
+                                data:"Tissue_UberonOntology_ID",
+                                bVisible: false
+                            },
+                            {data:"Disease_Type"},
+                            {
+                                data:"Disease_Ontology_ID",
+                                bVisible: false
+                            },
+                            {
+                                data:"PMID",
+                                render:function(data,type,row){
+                                    if(row.PMID!="-"){
+                                        return "<a target='_blank' href='https://pubmed.ncbi.nlm.nih.gov/"+row.PMID+"/'>"+row.PMID+"</a>"
+                                    }
+                                    else{
+                                        return row.PMID
+                                    }
+                                }
+                            },
+                            {data:"Marker_Resource"},
+                            {
+                                data:"Additional_Information2",
+                                render:function(data,type,row){
+                                    if(row.Additional_Information2=="CellMarker"){
+                                        return "<a target='_blank' href='http://bio-bigdata.hrbmu.edu.cn/CellMarker/search.jsp?quickSearchInfo="+[[${markername}]]+"'>CellMarker</a>"
+                                    }
+
+                                    else if(row.Additional_Information2=="PanglaoDB"){
+                                        return "<a target='_blank' href='https://panglaodb.se/search.html?query="+[[${markername}]]+"'>PanglaoDB</a>"
+                                    }
+
+                                    else if(row.Additional_Information2=="SHOGoiN"){
+                                        return "<a class='SHOGoiN'>SHOGoiN</a>"
+                                    }
+
+                                    else{
+
+                                        if($.isNumeric(row.Additional_Information2*1)){
+                                            return "<a target='_blank' href='https://pubmed.ncbi.nlm.nih.gov/"+row.Additional_Information2+"'>"+row.Additional_Information2+"</a>"
+                                        }
+                                        else{
+                                            return row.Additional_Information2
+                                        }
+                                    }
+                                }
+                            }
+
+
+                        ],
+                        destroy: true,
+                        iDisplayLength:5,
+                        aLengthMenu:[5,10,15,20],
+                        deferRender:true,
+                        dom: '<"row"<"col-lg-4"l><"col-lg-4"B><"col-lg-4"f>>t<"row"<"col-lg-6"i><"col-lg-6"p>>',
+                        buttons: [
+                            'copy', 'excel', 'pdf'
+                        ]
+                    });
+
+                },
+                error:function(){
+                    console.log("error")
+                }
+            });
+
+            if($("#geneensemblid").text()!="Not available" && $("#geneensemblid").text()!="-"){
+                var text=$("#geneensemblid").text().split(",");
+                $("#geneensemblid").empty();
+                for (i=0;i<text.length;i++){
+                    $("#geneensemblid").append(
+                        "<a class='idlink' target='_blank' href='http://www.ensembl.org/id/"+text[i]+"'>"+text[i]+"</a><br>"
+                    )
+                }
+
+            }
+
+            if($("#entrezid").text()!="Not available" && $("#entrezid").text()!="-") {
+                text = $("#entrezid").text().split(",");
+                $("#entrezid").empty();
+
+                for (i = 0; i < text.length; i++) {
+                    $("#entrezid").append(
+                        "<a class='idlink' id='entrez_id' target='_blank' href='https://www.ncbi.nlm.nih.gov/gene/" + text[i] + "'>" + text[i] + "</a><br>"
+                    )
+                }
+            }
+            if($("#uniprot").text()!="Not available" && $("#uniprot").text()!="-") {
+
+                text = $("#uniprot").text().split(",");
+                $("#uniprot").empty();
+
+                for (i = 0; i < text.length; i++) {
+                    $("#uniprot").append(
+                        "<a class='idlink' target='_blank' href='https://www.uniprot.org/uniprot/" + text[i] + "'>" + text[i] + "</a><br>"
+                    )
+                }
+            }
+            if($("#PFAM").text()!="Not available" && $("#PFAM").text()!="-") {
+
+                text = $("#PFAM").text().split(",");
+                $("#PFAM").empty();
+
+                for (i = 0; i < text.length; i++) {
+                    $("#PFAM").append(
+                        "<a class='idlink' target='_blank' href='http://pfam.xfam.org/family/" + text[i] + "'>" + text[i] + "</a><br>"
+                    )
+                }
+            }
+
+
+
+
+
+            $.ajax({
+                url:"/celltaxonomy/marker_cell_markerDE",
+                type:"post",
+                dataType:'json',
+                async:false,
+                data:{
+                    "marker":[[${markername}]]
+                },
+                success:function(result) {
+
+
+                    var results=result['plot']
+
+                    if(results.length==0){
+                        $("#detail8").css("display","none")
+                        $("#summary3").css("display","none")
+                    }
+                    else{
+                        DE_plot=results
+                        var fc=[]
+                        var temp=eval(results).filter(function(e){
+                            if(e.Cell_standard===summary_celltype){
+                                fc.push(e.avg_log2FC)
+                            }
+                            return cell_list.indexOf(e.Cell_standard)>=0
+                        })
+                        if(temp.length>0){
+                            fc=fc.sort()
+                            if(fc.length%2===0){
+                                $("#summary3_fc").text(
+                                    ((fc[fc.length/2]+fc[fc.length/2+1])/2).toPrecision(2)
+                                )
+                            }
+                            else{
+                                $("#summary3_fc").text(
+                                    fc[
+                                    (fc.length+1)/2
+                                        ].toPrecision(2)
+                                )
+                            }
+                            DE=temp
+                            var temp2=eval(temp).filter(function(e){
+                                return e.p_val_adj*1<$("#cell_markerDE_fdr").val()*1
+                            })
+
+                            getboxplot("cell_markerDE_plot",temp2)
+                            $("#cell_marker_DE_table").DataTable({
+                                data:results,
+                                columns:
+                                    [
+                                        {data:"Species"},
+
+                                        {
+                                            data:"ID",
+                                            render:function(data,type,row){
+                                                if(data.indexOf("_SRS")>=0){
+                                                    if(row.PubmedID.indexOf("doi")>=0){
+                                                        return '<a target="_blank" href="/celltaxonomy/study/'+row.ID+'">'+data.split("_")[1]+'</a>'
+
+                                                    }
+                                                    else{
+                                                        return '<a target="_blank" href="/celltaxonomy/study/'+row.PubmedID+'">'+data.split("_")[1]+'</a>'
+                                                    }
+                                                }
+                                                else{
+                                                    if(row.PubmedID.indexOf("doi")>=0){
+                                                        return '<a target="_blank" href="/celltaxonomy/study/'+row.ID+'">'+data+'</a>'
+                                                    }
+                                                    else{
+                                                        return '<a target="_blank" href="/celltaxonomy/study/'+row.PubmedID+'">'+data+'</a>'
+                                                    }
+
+                                                }
+                                            }
+                                        },
+
+                                        {
+                                            data:"Cell_standard",
+                                            render:function(data,type,row){
+                                                if(row.CT_ID!="-" && row.CT_ID!=null && row.CT_ID!="NA"){
+                                                    return '<a target="_blank" href="/celltaxonomy/celltype/'+row.CT_ID+'">'+data+'</a>'
+                                                }
+                                                else{
+                                                    return data
+                                                }
+                                            }
+                                        },
+
+                                        {
+                                            data:"avg_log2FC",
+                                            render:function(data,type,row){
+                                                return (data*1).toPrecision(2)
+                                            }
+                                        },
+                                        {
+                                            data:"pct_1",
+                                            render:function(data,type,row){
+                                                return (row.pct_1*1).toPrecision(2)
+                                            }
+                                        },
+                                        {
+                                            data:"pct_2",
+                                            render:function(data,type,row){
+                                                return (row.pct_2*1).toPrecision(2)
+                                            }
+                                        },
+                                        {
+                                            data:"p_val",
+                                            render:function(data,type,row){
+                                                return (row.p_val*1).toPrecision(2)
+                                            }
+                                        },
+                                        {
+                                            data:"p_val_adj",
+                                            render:function(data,type,row){
+                                                return (row.p_val_adj*1).toPrecision(2)
+                                            }
+                                        },
+
+                                    ],
+                                destroy:true,
+                                dom: '<"row"<"col-lg-4"l><"col-lg-4"B><"col-lg-4"f>>t<"row"<"col-lg-6"i><"col-lg-6"p>>',
+                                order:[3,'desc'],
+                                buttons: [
+                                    'copy', 'excel', 'pdf'
+                                ],
+                            })
+                        }
+                        else{
+                            $("#summary3").css("display","none")
+
+                            var temp2=eval(results).filter(function(e){
+                                return e.p_val_adj*1<$("#cell_markerDE_fdr").val()*1
+                            })
+
+                            getboxplot("cell_markerDE_plot",temp2)
+
+                        }
+
+
+                    }
+
+
+
+                }
+            });
+            $.ajax({
+                url:"/celltaxonomy/marker_cell_ss",
+                type:"post",
+                data:{
+                    marker:[[${markername}]],
+                    species:"All",
+                    tissue:"All"
+                },
+                success:function(result){
+                    var score=result["score"]
+                    if (score.length==0){
+                        $("#cell_marker_ss_plot").parent().parent().parent().css("display","none")
+                        $("#cell_marker_ss_plot").parent().parent().parent().next().next().css("display","none")
+                        $("#cell_marker_ss_plot").parent().parent().parent().next().css("display","none")
+
+                    }
+                    else{
+                        DE_score=score
+                        var ss=[]
+                        var results=eval(score).filter(function(e){
+                            if(e.Cell_standard===summary_celltype){
+                                ss.push(e.Cell_specific_score)
+                            }
+                            return cell_list.indexOf(e.Cell_standard)>=0
+                        })
+
+                        ss=ss.sort()
+                        if(ss.length==0){
+                            $("#summary4").css("display","none")
+                        }
+                        else{
+                            if(ss.length%2===0){
+                                $("#summary4").text(
+                                    "The median cell specificity score of "+[[${markername}]]+" in "+summary_celltype+" is "+((ss[ss.length/2]+ss[ss.length/2+1])/2).toPrecision(2)+"."
+                                )
+                            }
+                            else{
+                                $("#summary4").text(
+                                    "The median cell specificity score of "+[[${markername}]]+" in "+summary_celltype+" is "+
+                                    (ss[
+                                    (ss.length+1)/2
+                                        ]*1).toPrecision(2)
+
+                                    +"."
+                                )
+                            }
+                        }
+
+
+                        if(results.length>0){
+                            $("#cell_marker_se_table").DataTable({
+                                data:results,
+                                columns:[
+                                    {data:"Species"},
+                                    {
+                                        data:"ID",
+                                        render:function(data,type,row){
+                                            if(data.indexOf("_SRS")>=0){
+                                                return "<a target='_blank' href='/celltaxonomy/study/"+row.PMID+"'>"+data.split("_")[1]+"</a>"
+                                            }
+                                            else{
+                                                return "<a target='_blank' href='/celltaxonomy/study/"+row.PMID+"'>"+data+"</a>"
+                                            }
+                                        }
+                                    },
+
+                                    {data:"Cell_standard"},
+                                    {
+                                        data:"Cell_specific_score",
+                                        render:function(data){
+                                            return (data*1).toPrecision(2)
+                                        }
+
+                                    }
+                                ],
+                                destroy:true,
+                                order:[3,"desc"]
+                            })
+                            getboxplotSS("cell_marker_ss_plot",results)
+                        }
+                        else{
+
+                            getboxplotSS("cell_marker_ss_plot",score)
+
+                        }
+
+                    }
+
+                }
+            })
+
+            $.ajax({
+                url:"/celltaxonomy/marker_cell_markerDE_bar",
+                type:"post",
+                dataType:'json',
+                async:false,
+
+                data:{
+                    "marker":[[${markername}]],
+                    "tissue":"All",
+                    "threshold":"0.25",
+                    "fdr":$("#cell_markerDE_barplot_FDR").val()
+                },
+                success:function(data){
+
+                    if(data.length==0){
+
+                    }
+                    else{
+                        DE_bar=data
+                        var results={}
+                        var de=0
+                        var ee=0
+                        results["result"]=eval(data["result"]).filter(function(e){
+                            if(e.Cell_standard===summary_celltype){
+                                de=e.counts*1
+                            }
+                            return cell_list.indexOf(e.Cell_standard)>=0
+                        })
+                        results["total"]=eval(data["total"]).filter(function(e){
+                            if(e.Cell_standard===summary_celltype){
+                                ee=e.counts*1
+                            }
+                            return cell_list.indexOf(e.Cell_standard)>=0
+                        })
+                        if(results["result"].length>0){
+                            $("#summary3_celltype").text(summary_celltype)
+                            if(! isNaN(de/ee)){
+                                $("#summary3_ratio").text((de/ee).toPrecision(2))
+                            }
+                            else{
+                                $("#summary3").css("display","none")
+                            }
+
+                            getbarplotDE("cell_markerDE_barplot",results)
+                        }
+                        else{
+                            $("input[type='checkbox'].switch").attr("checked",false)
+                            $("input[type='checkbox'].switch").attr("disabled","disabled")
+
+                            getbarplotDE("cell_markerDE_barplot",data)
+
+                        }
+
+                    }
+
+                }
+            });
+
+
+            setTimeout(function(){
+                if([[${type}]]!=null){
+                    var a = document.createElement('a');
+                    a.href = "#"+[[${type}]];
+                    a.click();
+                }
+            },1000)
+            $("#cell_tissue_enrichment_heatmap").css("width",$("#width").width())
+            $("#cell_tissue_enrichment_LS_heatmap").css("width",$("#width").width())
+
+        });
+        function sortLS(a,b){
+            return b.marker_cell_number-a.marker_cell_number
+        }
+        window.onload=function(){
+            nav_side_bar_set()
+        }
+        window.onscroll=function(){
+            nav_side_bar_scroll()
+        }
+
+        $("input[type='checkbox']").change(function(){
+            if(!$("input[type='checkbox']").is(":checked")){
+                $.ajax({
+                    url:"/celltaxonomy/marker_cell_markerDE_bar",
+                    type:"post",
+                    dataType:'json',
+                    async:false,
+
+                    data:{
+                        "marker":[[${markername}]],
+                        "threshold":$("#cell_markerDE_barplot_threshold").val(),
+                        "fdr":$("#cell_markerDE_barplot_FDR").val()
+                    },
+                    success:function(data){
+
+                        if(data["result"].length==0){
+                            $("#cell_markerDE_barplot").css("display","none")
+                            $("#warn").css("display","block")
+                        }
+                        else{
+                            $("#cell_markerDE_barplot").css("display","block")
+                            $("#warn").css("display","none")
+
+                            getbarplotDE("cell_markerDE_barplot",data)
+
+                        }
+                    }
+                });
+
+
+                var results=eval(DE_plot).filter(function(e){
+                    return e.p_val_adj*1<$("#cell_markerDE_fdr").val()*1
+                })
+
+                $("#cell_marker_DE_table").DataTable({
+                    data:results,
+                    columns:
+                        [
+                            {data:"Species"},
+                            {
+                                data:"ID",
+                                render:function(data,type,row){
+                                    if(data.indexOf("_SRS")>=0){
+                                        if(row.PubmedID.indexOf("doi")>=0){
+                                            return '<a target="_blank" href="/celltaxonomy/study/'+row.ID+'">'+data.split("_")[1]+'</a>'
+
+                                        }
+                                        else{
+                                            return '<a target="_blank" href="/celltaxonomy/study/'+row.PubmedID+'">'+data.split("_")[1]+'</a>'
+                                        }
+                                    }
+                                    else{
+                                        if(row.PubmedID.indexOf("doi")>=0){
+                                            return '<a target="_blank" href="/celltaxonomy/study/'+row.ID+'">'+data+'</a>'
+                                        }
+                                        else{
+                                            return '<a target="_blank" href="/celltaxonomy/study/'+row.PubmedID+'">'+data+'</a>'
+                                        }
+
+                                    }
+                                }
+                            },
+                            {
+                                data:"Cell_standard",
+                                render:function(data,type,row){
+                                    if(row.CT_ID!="-" && row.CT_ID!=null && row.CT_ID!="NA"){
+                                        return '<a target="_blank" href="/celltaxonomy/celltype/'+row.CT_ID+'">'+data+'</a>'
+                                    }
+                                    else{
+                                        return data
+                                    }
+                                }
+                            },
+                            {
+                                data:"avg_log2FC",
+                                render:function(data,type,row){
+                                    return (data*1).toPrecision(2)
+                                }
+                            },
+                            {
+                                data:"pct_1",
+                                render:function(data,type,row){
+                                    return (row.pct_1*1).toPrecision(2)
+                                }
+                            },
+                            {
+                                data:"pct_2",
+                                render:function(data,type,row){
+                                    return (row.pct_2*1).toPrecision(2)
+                                }
+                            },
+                            {
+                                data:"p_val",
+                                render:function(data,type,row){
+                                    return (row.p_val*1).toPrecision(2)
+                                }
+                            },
+                            {
+                                data:"p_val_adj",
+                                render:function(data,type,row){
+                                    return (row.p_val_adj*1).toPrecision(2)
+                                }
+                            },
+
+                        ],
+                    destroy:true,
+                    dom: '<"row"<"col-lg-4"l><"col-lg-4"B><"col-lg-4"f>>t<"row"<"col-lg-6"i><"col-lg-6"p>>',
+                    order:[3,'desc'],
+                    buttons: [
+                        'copy', 'excel', 'pdf'
+                    ],
+                })
+                getboxplot("cell_markerDE_plot",results)
+                $("#cell_marker_se_table").DataTable({
+                    data:DE_score,
+                    columns:[
+                        {data:"Species"},
+                        {
+                            data:"ID",
+                            render:function(data,type,row){
+                                if(data.indexOf("_SRS")>=0){
+                                    return "<a target='_blank' href='/celltaxonomy/study/"+row.PMID+"'>"+data.split("_")[1]+"</a>"
+                                }
+                                else{
+                                    return "<a target='_blank' href='/celltaxonomy/study/"+row.PMID+"'>"+data+"</a>"
+                                }
+                            }
+                        },
+
+                        {data:"Cell_standard"},
+                        {
+                            data:"Cell_specific_score",
+                            render:function(data){
+                                return (data*1).toPrecision(2)
+                            }
+
+                        }
+                    ],
+                    destroy:true,
+                    order:[3,"desc"]
+                })
+
+                getboxplotSS("cell_marker_ss_plot",DE_score)
+            }
+            else{
+                var data=DE_bar
+                var results={}
+                results["result"]=eval(data["result"]).filter(function(e){
+                    return cell_list.indexOf(e.Cell_standard)>=0
+                })
+                results["total"]=eval(data["total"]).filter(function(e){
+                    return cell_list.indexOf(e.Cell_standard)>=0
+                })
+                getbarplotDE("cell_markerDE_barplot",results)
+
+
+                results=eval(DE).filter(function(e){
+                    return e.p_val_adj*1<$("#cell_markerDE_fdr").val()*1
+                })
+                $("#cell_marker_DE_table").DataTable({
+                    data:results,
+                    columns:
+                        [
+                            {data:"Species"},
+
+                            {
+                                data:"ID",
+                                render:function(data,type,row){
+                                    if(data.indexOf("_SRS")>=0){
+                                        if(row.PubmedID.indexOf("doi")>=0){
+                                            return '<a target="_blank" href="/celltaxonomy/study/'+row.ID+'">'+data.split("_")[1]+'</a>'
+
+                                        }
+                                        else{
+                                            return '<a target="_blank" href="/celltaxonomy/study/'+row.PubmedID+'">'+data.split("_")[1]+'</a>'
+                                        }
+                                    }
+                                    else{
+                                        if(row.PubmedID.indexOf("doi")>=0){
+                                            return '<a target="_blank" href="/celltaxonomy/study/'+row.ID+'">'+data+'</a>'
+                                        }
+                                        else{
+                                            return '<a target="_blank" href="/celltaxonomy/study/'+row.PubmedID+'">'+data+'</a>'
+                                        }
+
+                                    }
+                                }
+                            },
+
+                            {
+                                data:"Cell_standard",
+                                render:function(data,type,row){
+                                    if(row.CT_ID!="-" && row.CT_ID!=null && row.CT_ID!="NA"){
+                                        return '<a target="_blank" href="/celltaxonomy/celltype/'+row.CT_ID+'">'+data+'</a>'
+                                    }
+                                    else{
+                                        return data
+                                    }
+                                }
+                            },
+
+                            {
+                                data:"avg_log2FC",
+                                render:function(data,type,row){
+                                    return (data*1).toPrecision(2)
+                                }
+                            },
+                            {
+                                data:"pct_1",
+                                render:function(data,type,row){
+                                    return (row.pct_1*1).toPrecision(2)
+                                }
+                            },
+                            {
+                                data:"pct_2",
+                                render:function(data,type,row){
+                                    return (row.pct_2*1).toPrecision(2)
+                                }
+                            },
+                            {
+                                data:"p_val",
+                                render:function(data,type,row){
+                                    return (row.p_val*1).toPrecision(2)
+                                }
+                            },
+                            {
+                                data:"p_val_adj",
+                                render:function(data,type,row){
+                                    return (row.p_val_adj*1).toPrecision(2)
+                                }
+                            },
+
+                        ],
+                    destroy:true,
+                    dom: '<"row"<"col-lg-4"l><"col-lg-4"B><"col-lg-4"f>>t<"row"<"col-lg-6"i><"col-lg-6"p>>',
+                    order:[3,'desc'],
+                    buttons: [
+                        'copy', 'excel', 'pdf'
+                    ],
+                })
+
+                getboxplot("cell_markerDE_plot",results)
+
+
+                var score=eval(DE_score).filter(function(e){
+                    return cell_list.indexOf(e.Cell_standard)>=0
+                })
+                $("#cell_marker_se_table").DataTable({
+                    data:score,
+                    columns:[
+                        {data:"Species"},
+                        {
+                            data:"ID",
+                            render:function(data,type,row){
+                                if(data.indexOf("_SRS")>=0){
+                                    return "<a target='_blank' href='/celltaxonomy/study/"+row.PMID+"'>"+data.split("_")[1]+"</a>"
+                                }
+                                else{
+                                    return "<a target='_blank' href='/celltaxonomy/study/"+row.PMID+"'>"+data+"</a>"
+                                }
+                            }
+                        },
+
+                        {data:"Cell_standard"},
+                        {
+                            data:"Cell_specific_score",
+                            render:function(data){
+                                return (data*1).toPrecision(2)
+                            }
+
+                        }
+                    ],
+                    destroy:true,
+                    order:[3,"desc"]
+                })
+
+                getboxplotSS("cell_marker_ss_plot",score)
+
+
+
+            }
+
+
+        })
+
+
+
+        $("#cell_markerDE_fdr").change(function(){
+            var results;
+            if($("input[type='checkbox']").is(":checked")){
+                results=eval(DE).filter(function(e){
+                    return e.p_val_adj*1<$("#cell_markerDE_fdr").val()*1
+                })
+            }
+            else{
+                results=eval(DE_plot).filter(function(e){
+                    return e.p_val_adj*1<$("#cell_markerDE_fdr").val()*1
+                })
+            }
+
+
+
+            getboxplot("cell_markerDE_plot",results)
+
+            $("#cell_marker_DE_table").DataTable({
+                data:results,
+                columns:
+                    [
+                        {data:"Species"},
+
+                        {
+                            data:"ID",
+                            render:function(data,type,row){
+                                if(data.indexOf("_SRS")>=0){
+                                    if(row.PubmedID.indexOf("doi")>=0){
+                                        return '<a target="_blank" href="/celltaxonomy/study/'+row.ID+'">'+data.split("_")[1]+'</a>'
+
+                                    }
+                                    else{
+                                        return '<a target="_blank" href="/celltaxonomy/study/'+row.PubmedID+'">'+data.split("_")[1]+'</a>'
+                                    }
+                                }
+                                else{
+                                    if(row.PubmedID.indexOf("doi")>=0){
+                                        return '<a target="_blank" href="/celltaxonomy/study/'+row.ID+'">'+data+'</a>'
+                                    }
+                                    else{
+                                        return '<a target="_blank" href="/celltaxonomy/study/'+row.PubmedID+'">'+data+'</a>'
+                                    }
+
+                                }
+                            }
+                        },
+
+                        {
+                            data:"Cell_standard",
+                            render:function(data,type,row){
+                                if(row.CT_ID!="-" && row.CT_ID!=null && row.CT_ID!="NA"){
+                                    return '<a target="_blank" href="/celltaxonomy/celltype/'+row.CT_ID+'">'+data+'</a>'
+                                }
+                                else{
+                                    return data
+                                }
+                            }
+                        },
+
+                        {
+                            data:"avg_log2FC",
+                            render:function(data,type,row){
+                                return (data*1).toPrecision(2)
+                            }
+                        },
+                        {
+                            data:"pct_1",
+                            render:function(data,type,row){
+                                return (row.pct_1*1).toPrecision(2)
+                            }
+                        },
+                        {
+                            data:"pct_2",
+                            render:function(data,type,row){
+                                return (row.pct_2*1).toPrecision(2)
+                            }
+                        },
+                        {
+                            data:"p_val",
+                            render:function(data,type,row){
+                                return (row.p_val*1).toPrecision(2)
+                            }
+                        },
+                        {
+                            data:"p_val_adj",
+                            render:function(data,type,row){
+                                return (row.p_val_adj*1).toPrecision(2)
+                            }
+                        },
+
+                    ],
+                destroy:true,
+                dom: '<"row"<"col-lg-4"l><"col-lg-4"B><"col-lg-4"f>>t<"row"<"col-lg-6"i><"col-lg-6"p>>',
+                order:[3,'desc'],
+                buttons: [
+                    'copy', 'excel', 'pdf'
+                ],
+            })
+
+        })
+        $("#cell_enrichment_species_select").change(function(){
+            $.ajax({
+                url:"/celltaxonomy/cell_type_enrichment",
+                type:"post",
+                dataType:'json',
+                data:{
+                    marker:$(".marker-description").find("span").text(),
+                    entrezid:$("#entrez_id").text()
+                },
+                success:function(result){
+                    var results;
+                    $("#cell_marker_table").DataTable({
+                        data:result,
+                        initComplete: function () {
+                            var r = $('#cell_marker_table tfoot tr');
+                            r.find('th').each(function(){
+                                $(this).css('padding', '8px 0')
+                                $(this).css('border-top', '1px solid #ddd');
+                                $(this).css('border-bottom', '1px solid #ddd');
+                            });
+                            $('#cell_marker_table thead').append(r);
+                            $('#search_0').css('text-align', 'center');
+
+                            this.api().columns([0,1,2,3,4]).every( function () {
+                                var column = this;
+                                var select = $('<select style="width:80%;height:auto;padding: 0 5px;margin: 0;font-size: 13px"><option value="">Show All</option></select>')
+                                    .appendTo( $(column.footer()).empty() )
+                                    .on( 'change', function () {
+                                        var val = $.fn.dataTable.util.escapeRegex(
+                                            $(this).val()
+                                        );
+
+                                        column
+                                            .search( val ? '^'+val+'$' : '', true, false )
+                                            .draw();
+                                    } );
+
+                                column.data().unique().sort().each( function ( d, j ) {
+                                    select.append( '<option value="'+d+'">'+d+'</option>' )
+                                } );
+                            } );
+                        },
+
+                        columns:[
+                            {data:"Species"},
+                            {
+                                data:"Cell_standard",
+                                render:function(data,type,row){
+                                    // return "<a class='celltype'>"+row.Cell_standard.replace(/_/g," ")+"</a>"
+                                    return "<a target='_blank' href='/celltaxonomy/celltype/"+row.CT_ID+"'>"+row.Cell_standard.replace(/_/g," ")+"</a>"
+
+                                }
+                            },
+                            // {data:"marker_cell_number"},
+                            {
+                                data:"OR_value",
+                                render:function(data,type,row){
+                                    if(row.OR_value!="Inf"){
+                                        return (row.OR_value*1).toPrecision(2)
+                                    }
+                                    else{
+                                        return row.OR_value
+                                    }
+                                }
+                            },
+                            {data:"P_value"},
+                            {data:"FDR"},
+
+                        ],
+                        destroy: true,
+                        deferRender:true,
+                        order:[2,"desc"],
+                        dom: '<"row"<"col-lg-4"l><"col-lg-4"B><"col-lg-4"f>>t<"row"<"col-lg-6"i><"col-lg-6"p>>',
+                        buttons: [
+                            'copy', 'excel', 'pdf'
+                        ],
+                        "aoColumnDefs":[
+                            {"sType":'num-html','aTargets':[2]}
+                        ]
+
+                    });
+
+                    results=eval(result).filter(function(e){
+                        return e.Species==$("#cell_enrichment_species_select").val()
+                    })
+                    results=eval(results).filter(function(e){
+                        return e.FDR<0.05
+                    })
+                    results=eval(results).filter(function(e){
+                        return e.marker_cell_number>1
+                    })
+
+                    getplotly("cell_enrichment_or",results,$("#marker-name").text()+": reported cell-type association odds ratio of "+$("#cell_enrichment_species_select").val(),"OR2","Cell_standard")
+                    getplotlystat("cell_enrichment_stat",results,$("#marker-name").text()+": reported cell-type association significance of "+$("#cell_enrichment_species_select").val(),"Cell_standard")
+
+                },
+                error:function(){
+                    console.log("error")
+                }
+
+            })
+
+        })
+        $("#cell_tissue_enrichment_select select").change(function(){
+            $.ajax({
+                url:"/celltaxonomy/cell_type_enrichment",
+                type:"post",
+                dataType:'json',
+                data:{
+                    marker:$(".marker-description").find("span").text(),
+                    entrezid:$("#entrez_id").text()
+                },
+                success:function(result){
+                    var results;
+
+                    if ($("#shownumber2").val()!="all"){
+                        results=result.slice(0,$("#shownumber2").val());
+                    }
+                    else{
+                        results=result.slice(0,30)
+                    }
+                    // ceLS(results)
+                    getbarplot("cell_enrichment_literature_support",results,$("#marker-name").text()+": number of supported publications","No. of publications","","Cell_standard","marker_cell_number")
+
+                },
+                error:function(){
+                    console.log("error")
+                }
+
+            })
+
+        })
+        $("#cell_tissue_enrichment_select select").change(function(){
+            $.ajax({
+                url:"/celltaxonomy/cell_type_enrichment",
+                type:"post",
+                dataType:'json',
+                data:{
+                    marker:$(".marker-description").find("span").text(),
+                    entrezid:$("#entrez_id").text()
+                },
+                success:function(result){
+                    var results;
+                    result=eval(result).filter(function(e){
+                        return e.Species==$("#cell_enrichment_species_select").val()
+                    })
+                    if ($("#shownumber2").val()!="all"){
+                        results=result.slice(0,$("#shownumber2").val());
+                    }
+                    else{
+                        results=result.slice(0,30)
+                    }
+                    // ceLS(results)
+                    getbarplot("cell_enrichment_literature_support",results,$("#marker-name").text()+": number of supported publications","No. of publications","","Cell_standard","marker_cell_number")
+
+                },
+                error:function(){
+                    console.log("error")
+                }
+
+            })
+        })
+
+
+
+
+
+
+
+        $("#cell_markerDE_barplot_threshold,#cell_markerDE_barplot_FDR").change(function(){
+            $.ajax({
+                url:"/celltaxonomy/marker_cell_markerDE_bar",
+                type:"post",
+                dataType:'json',
+                async:false,
+
+                data:{
+                    "marker":[[${markername}]],
+                    "threshold":$("#cell_markerDE_barplot_threshold").val(),
+                    "fdr":$("#cell_markerDE_barplot_FDR").val()
+                },
+                success:function(data){
+
+                    if(data["result"].length==0){
+                        $("#cell_markerDE_barplot").css("display","none")
+                        $("#warn").css("display","block")
+                    }
+                    else{
+                        var results={}
+                        $("#cell_markerDE_barplot").css("display","block")
+                        $("#warn").css("display","none")
+                        if($("input[type='checkbox'].switch").is(":checked")){
+                            results["result"]=eval(data["result"]).filter(function(e){
+                                return cell_list.indexOf(e.Cell_standard)>=0
+                            })
+                            results["total"]=eval(data["total"]).filter(function(e){
+                                return cell_list.indexOf(e.Cell_standard)>=0
+                            })
+                            getbarplotDE("cell_markerDE_barplot",results)
+
+                        }
+                        else{
+
+
+                            getbarplotDE("cell_markerDE_barplot",data)
+
+                        }
+
+
+                    }
+                }
+            });
+
+
+
+        })
+
+        $(".figure-li").click(function(){
+            $(this).siblings().removeClass("active");
+            $(this).addClass("active");
+            let params1 = {
+                "tissue":$("#select1").val(),
+                "value_type":$(".figure-li.active").text(),
+                "marker":"TNFSF13"
+            };
+            let params2 = {
+                "tissue":$("#select2").val(),
+                "value_type":$(".figure-li.active").text(),
+                "marker":"TNFSF13"
+            };
+            $.ajax({
+                url:"/celltaxonomy/marker_figure",
+                data:params1,
+                type:"post",
+                success:function(marker_figure){
+                    function unpack(rows, key) {
+                        return rows.map(function(row) { return row[key]; });
+                    };
+                    var data = [{
+                        type: 'violin',
+                        x: unpack(marker_figure, 'cell_type'),
+                        y: unpack(marker_figure, 'value'),
+                        points: 'none',
+                        box: {
+                            visible: true
+                        },
+                        line: {
+                            color: 'green',
+                        },
+                        meanline: {
+                            visible: true
+                        },
+                        transforms: [{
+                            type: 'groupby',
+                            groups: unpack(marker_figure, 'cell_type'),
+                            styles: [
+                                {target: 'type1', value: {line: {color: 'blue'}}},
+                                {target: 'type2', value: {line: {color: 'orange'}}}
+                            ]
+                        }]
+                    }];
+
+                    var layout = {
+                        title: "Multiple Traces Violin Plot",
+                        yaxis: {
+                            zeroline: false
+                        }
+                    };
+
+                    Plotly.newPlot('Tissue1', data, layout);
+                },
+                error:function(){
+                    console.log("error")
+                }
+            });
+            $.ajax({
+                url:"/celltaxonomy/marker_figure",
+                data:params2,
+                type:"post",
+                success:function(marker_figure){
+                    function unpack(rows, key) {
+                        return rows.map(function(row) { return row[key]; });
+                    };
+                    var data = [{
+                        type: 'violin',
+                        x: unpack(marker_figure, 'cell_type'),
+                        y: unpack(marker_figure, 'value'),
+                        points: 'none',
+                        box: {
+                            visible: true
+                        },
+                        line: {
+                            color: 'green',
+                        },
+                        meanline: {
+                            visible: true
+                        },
+                        transforms: [{
+                            type: 'groupby',
+                            groups: unpack(marker_figure, 'cell_type'),
+                            styles: [
+                                {target: 'type1', value: {line: {color: 'blue'}}},
+                                {target: 'type2', value: {line: {color: 'orange'}}}
+                            ]
+                        }]
+                    }];
+
+                    var layout = {
+                        title: "Multiple Traces Violin Plot",
+                        yaxis: {
+                            zeroline: false
+                        }
+                    };
+
+                    Plotly.newPlot('Tissue2', data, layout);
+                },
+                error:function(){
+                    console.log("error")
+                }
+            });
+        });
+
+        $("#genecard").click(function(){
+
+            $("#card").css("visibility","visible");
+            $("#card").css("width","300px");
+            $("#card").css("height","530px");
+
+
+            $("#genecard").css("display","none");
+
+            $("#card").on("transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd",function () {
+                $("#card_content").css("display","block");
+
+            });
+        });
+
+        function post(URL,params) {
+            var temp_form = document.createElement("form");
+            temp_form .action = URL;
+            temp_form .target = "_blank";
+            temp_form .method = "post";
+            temp_form .style.display = "none";
+            for (var x in params){
+                var opt = document.createElement("textarea");
+                opt.name = x;
+                opt.value = params[x];
+                temp_form .appendChild(opt);
+            }
+
+
+            document.body.appendChild(temp_form);
+            temp_form .submit();
+        };
+        $("#table-marker").on("click",".SHOGoiN",function(){
+            var row = $(this).closest("tr");
+            var data = $('#table-marker').DataTable().row(row).data();
+            post("https://stemcellinformatics.org/cell_marker/literatures",{"keyword":data["Cell_standard"],"marker_name":[[${markername}]]})
+        })
+        $("#table-marker").on("click",".celltype",function(){
+            var row = $(this).closest("tr");
+            var data = $('#table-marker').DataTable().row(row).data();
+            post("/celltaxonomy/celltype",{"name":$(this).text(),"id":data["Specific_Cell_Ontology_ID"]})
+        })
+        $("#table-marker").on("click",".ctid",function(){
+            var row = $(this).closest("tr");
+            var data = $('#table-marker').DataTable().row(row).data();
+            post("/celltaxonomy/celltype",{"name":data["Cell_standard"],"id":data["Specific_Cell_Ontology_ID"]})
+        })
+        $("#table-marker").on("click",".tissue",function(){
+            var row = $(this).closest("tr");
+            var data = $('#table-marker').DataTable().row(row).data();
+            post("/celltaxonomy/tissue",{"name":data["Tissue_standard"],"id":data["Tissue_UberonOntology_ID"]})
+        });
+        $("#cell_tissue_marker_table").on("click",".celltype",function(){
+            var row = $(this).closest("tr");
+            var data = $('#cell_tissue_marker_table').DataTable().row(row).data();
+            post("/celltaxonomy/celltype",{"name":data["Cell_standard"],"id":data["Specific_Cell_Ontology_ID"]})
+        })
+        $("#cell_tissue_marker_table").on("click",".tissue",function(){
+            var row = $(this).closest("tr");
+            var data = $('#cell_tissue_marker_table').DataTable().row(row).data();
+            post("/celltaxonomy/tissue",{"name":data["Tissue_standard"],"id":data["Tissue_UberonOntology_ID2_x"]})
+        });
+        $("#cell_marker_table").on("click",".celltype",function(){
+            var row = $(this).closest("tr");
+            var data = $('#cell_marker_table').DataTable().row(row).data();
+            post("/celltaxonomy/celltype",{"name":data["Cell_standard"],"id":data["Specific_Cell_Ontology_ID"]})
+        })
+        $(".icon").hover(function(){
+            var X = $(this).position().top;//元素在当前视窗距离顶部的位置
+            var Y = $(this).offset().left;
+            var height=$(this).height();
+            var delta=$(window).width()-Y;
+            $(this).siblings(".tooltiptext").css("top",X+height+5)
+
+            if($(this).siblings("span").text().length>100){
+                $(this).siblings("span").css("width",300)
+                $(this).siblings(".tooltiptext").css("margin-left",-150)
+
+            }
+
+            if(delta<110){
+                $(this).siblings("span").css("width",delta*2)
+                $(this).siblings(".tooltiptext").css("margin-left",-1*delta)
+            }
+
+        })
+        jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+            "num-html-pre": function ( a ) {
+                if(a=="Inf"){
+                    a=10000000000
+                }
+                else{
+                    a=a*1
+                }
+                return a
+            },
+
+            "num-html-asc": function ( a, b ) {
+                return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+            },
+
+            "num-html-desc": function ( a, b ) {
+                return ((a < b) ? 1 : ((a > b) ? -1 : 0));
+            }});
+
+    </script>
+</body>
+</html>

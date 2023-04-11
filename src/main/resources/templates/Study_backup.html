@@ -1,0 +1,1479 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Study-Cell Taxonomy-CNCB-NGDC</title>
+    <link rel="icon" href="/celltaxonomy/static/img/CellTaxonomy v3.png">
+
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/celltaxonomy/static/css/ionicons.min.css">
+
+    <script src="/celltaxonomy/static/js/jquery.min.js"></script>
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <script src="/celltaxonomy/static/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/celltaxonomy/static/css/bootstrap.min.css" >
+    <link rel="stylesheet" href="/celltaxonomy/static/css/dataTables.bootstrap.min.css" >
+    <script src="/celltaxonomy/static/js/jquery.dataTables.min.js"></script>
+    <script src="/celltaxonomy/static/js/dataTables.buttons.min.js"></script>
+    <script src="/celltaxonomy/static/js/dataTables.bootstrap.min.js"></script>
+    <link href="/celltaxonomy/static/css/dataTables.colVis.css" rel="stylesheet">
+    <link href="/celltaxonomy/static/css/select2.min.css" rel="stylesheet" />
+    <script src="/celltaxonomy/static/js/select2.min.js"></script>
+    <link href="/celltaxonomy/static/css/bow.ui.min.css" rel="stylesheet">
+    <script type="text/javascript" src="/celltaxonomy/static/js/headerfooter-full.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="/celltaxonomy/static/css/my/my.css">
+
+    <title>Title</title>
+    <style>
+        .celllink{
+            color:#2487ce;
+            cursor: pointer;
+        }
+        li{
+            display: inline-block;
+        }
+        .tissue-remove{
+            cursor: pointer;
+        }
+        .pagenumber{
+            padding:0;
+            margin: 0 7px 0 7px;
+            font-size: 17px;
+            cursor: pointer;
+            width: 25px;
+            text-align: center;
+        }
+        .pagenumber.active{
+            border-bottom:1px solid #666 ;
+        }
+        .indexes{
+            display: flex;
+            padding: 10px;
+            width: 100%;
+            justify-content: center;
+            margin:0 auto;
+        }
+        .index{
+            padding:0 1.35% 0 1.35%;
+            font-size: 17px;
+            border-bottom: 1px solid #ddd;
+        }
+        .index.active{
+
+            border: 1px solid #ddd;
+            border-bottom-color: transparent;
+            border-radius: 4px 4px 0 0;
+        }
+        .index a,.pagenumber a{
+            color:#333;
+            text-decoration: none;
+        }
+        .tissue-name{
+            padding:0 15px 0 15px;
+            font-size: 15px;
+            text-transform: capitalize;
+            width: 33%;
+            cursor: pointer;
+
+        }
+        .tissue-name:hover{
+            background: #eae9e9;
+        }
+        .tissue-name.active{
+            background: #eae9e9;
+        }
+        .tissue-name a{
+            color: #666;
+            text-decoration: none;
+        }
+        .filter-title,#speciess{
+            height: 35px;
+            line-height: 35px;
+            transition: 0.3s;
+        }
+
+
+        #filter-card-tissue{
+            border-bottom: 1px solid rgb(246, 246, 246);
+            -webkit-box-shadow:0 1px 10px rgb(18 18 18 / 10%);
+            box-shadow:0 1px 10px rgb(18 18 18 / 10%);
+        }
+        .Browser{
+            border-radius: 2px;
+            -webkit-box-shadow:0 1px 10px rgb(18 18 18 / 10%);
+            box-shadow:0 1px 10px rgb(18 18 18 / 10%);
+            -webkit-box-sizing:border-box;
+            box-sizing:border-box;
+            background: #ffffff;
+        }
+        .study-card{
+            padding: 20px 10px 10px 10px;
+            border-bottom: 1px solid rgb(246, 246, 246);;
+        }
+        .library{
+            border-radius: 10px;
+            background: #c393a5;
+            padding:5px 10px 5px 10px;
+            color:white;
+            font-weight: 700;
+
+        }
+        .journal{
+            border-radius: 10px;
+            background: #aec387;
+            padding:5px 10px 5px 10px;
+            color:white;
+            font-weight: 700;
+
+        }
+        .tissue{
+            border-radius: 10px;
+            background: #84a3c3;
+            padding:5px 10px 5px 10px;
+            color:white;
+            font-weight: 700;
+        }
+        .pmid{
+            border-radius: 10px;
+            background: #8aafc3;
+            padding:5px 10px 5px 10px;
+            color:white;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .years{
+            border-radius: 10px;
+            background: #b9a6c3;
+            padding:5px 10px 5px 10px;
+            color:white;
+            font-weight: 700;
+        }
+        .species{
+            border-radius: 10px;
+            background: #61cbc5;
+            padding:5px 10px 5px 10px;
+            color:white;
+            font-weight: 700;
+        }
+        .dataset{
+            border-radius: 10px;
+            background: #abad65;
+            padding:5px 10px 5px 10px;
+            color:white;
+            font-weight: 700;
+        }
+
+        .celltype{
+            margin-right: 10px;
+        }
+        .study-title{
+            margin: 0 0 22.4px 20px;
+        }
+        .Descriptions,.CellTypes{
+            font-weight: 700;
+        }
+        .fa-chevron-circle-down{
+            cursor: pointer;
+        }
+        .panel-body::-webkit-scrollbar{
+            /*滚动条整体样式*/
+            width : 15px;  /*高宽分别对应横竖滚动条的尺寸*/
+            height: 12px;
+        }
+        .panel-body::-webkit-scrollbar-thumb{
+            /*滚动条里面小方块*/
+            border-radius   : 10px;
+            background-color: #2487ce;
+            background-image: -webkit-linear-gradient(
+                    45deg,
+                    rgba(255, 255, 255, 0.2) 25%,
+                    transparent 25%,
+                    transparent 50%,
+                    rgba(255, 255, 255, 0.2) 50%,
+                    rgba(255, 255, 255, 0.2) 75%,
+                    transparent 75%,
+                    transparent
+            );
+        }
+        .panel-body::-webkit-scrollbar-track {
+            /*滚动条里面轨道*/
+            box-shadow   : 0 0 1px rgba(0, 0, 0, 0.2);
+            background   : #ededed;
+            border-radius: 10px;
+        }
+        textarea{
+            margin:0 !important
+        }
+        .select2-selection__rendered{
+            margin:0 !important
+        }
+        .select2 {
+            width: 90% !important;
+        }
+        input::placeholder {
+            font-size: 10px;
+        }
+        .species_list{
+            padding: 5px;
+        }
+        .species_list.active{
+            background: #2487ce;
+            color: white;
+        }
+        .table>tbody>tr>td, .table>thead>tr>th{
+            background: transparent;
+        }
+        .filter-title{
+            font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",sans-serif;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <nav th:replace="common/topbar::topbar"></nav>
+</header>
+<!--    <div style="overflow: hidden;height:150px;width: 100%;background-image: url(/celltaxonomy/static/img/B1415360227.jpeg)">-->
+<!--        <div class="col-lg-offset-1" style="display: flex;align-items: center;height: 100%;">-->
+<!--            <h1 style="text-align: left;color: white;width:100%;font-size: 76px">Study Browser</h1>-->
+<!--        </div>-->
+<!--    </div>-->
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/celltaxonomy/">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Dataset</li>
+    </ol>
+</nav>
+    <div class="container" style="background: #f4f7f6;margin-bottom: 50px">
+
+        <div class="page">
+            <div class="col-lg-12 col-sm-12">
+                <div style="display: flex;justify-content: center">
+                    <input style="margin:0;width:60%;flex:0 0 auto;height: 45px" id="search" type="search" placeholder="PMID or project ID or sample ID">
+                </div>
+            </div>
+            <div class="col-lg-12 col-sm-12" >
+                <div class="panel-default">
+                    <div class="panel-body" style="padding-right: 0">
+                        <table class="table" style="table-layout: fixed">
+                            <tr style="border-bottom:1px solid rgba(34,36,38,.15)">
+                                <td style="width: 6%">
+                                    <h4 class="filter-title"  id="species" >SPECIES</h4>
+                                </td>
+                                <td style="width: 25%">
+                                    <ul id="speciess" style="margin:0"></ul>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 6%">
+                                    <h4 class="filter-title"  id="tissue">TISSUE</h4>
+                                </td>
+                                <td style="width: 20%">
+                                    <select class="js-example-basic-multiple" multiple="multiple" id="tissuename"></select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 6%">
+                                    <h4 class="filter-title" id="cell_type" >CELL TYPE</h4>
+                                </td>
+                                <td style="width: 20%">
+                                    <select class="js-example-basic-multiple" multiple="multiple" id="celltypename"></select>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-12" style="padding-left: 20px">
+                <div class="Browser"  style="margin-top: 10px">
+                    <div id="filter-card-tissue" style="display: none;padding: 10px">
+
+                        <ul class="page-change" style="top: 450px;position: absolute">
+
+                        </ul>
+                    </div>
+                    <div class="study-cards">
+                        <div class="study-card" >
+                            <div>
+                                <h3 class="study-title"></h3>
+                            </div>
+                            <div>
+                                <ul>
+                                    <li class="journal">Journal: ASDF</li>
+                                    <li class="years">Year: xxxx</li>
+                                    <li class="pmid">PMID: 123456</li>
+                                    <li class="dataset">Dataset: xxxx</li>
+
+                                </ul>
+
+                            </div>
+                            <div>
+                                <ul >
+                                    <li class="Descriptions">Abstract:</li>
+                                    <li class="Descriptions-content"></li>
+                                </ul>
+
+                            </div>
+
+                            <div>
+
+                                <ul>
+                                    <li class="library">Library: 6666</li>
+                                    <li class="tissue">Tissue: Brain</li>
+                                    <li class="species">Species: xxxx</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="study-card" >
+                            <div>
+                                <h3 class="study-title"></h3>
+                            </div>
+                            <div>
+                                <ul>
+                                    <li class="journal">Journal: ASDF</li>
+                                    <li class="years">Year: xxxx</li>
+                                    <li class="pmid">PMID: 123456</li>
+                                    <li class="dataset">Dataset: xxxx</li>
+                                </ul>
+
+                            </div>
+                            <div>
+                                <ul >
+                                    <li class="Descriptions">Abstract:</li>
+                                    <li class="Descriptions-content"></li>
+                                </ul>
+
+                            </div>
+
+                            <div>
+
+                                <ul>
+                                    <li class="library">Library: 6666</li>
+                                    <li class="tissue">Tissue: Brain</li>
+                                    <li class="species">Species: xxxx</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="study-card" >
+                            <div>
+                                <h3 class="study-title"></h3>
+                            </div>
+                            <div>
+                                <ul>
+                                    <li class="journal">Journal: ASDF</li>
+                                    <li class="years">Year: xxxx</li>
+                                    <li class="pmid">PMID: 123456</li>
+                                    <li class="dataset">Dataset: xxxx</li>
+
+                                </ul>
+
+                            </div>
+                            <div>
+                                <ul >
+                                    <li class="Descriptions">Abstract:</li>
+                                    <li class="Descriptions-content"></li>
+                                </ul>
+
+                            </div>
+
+                            <div>
+
+                                <ul>
+                                    <li class="library">Library: 6666</li>
+                                    <li class="tissue">Tissue: Brain</li>
+                                    <li class="species">Species: xxxx</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="study-card" >
+                            <div>
+                                <h3 class="study-title"></h3>
+                            </div>
+                            <div>
+                                <ul>
+                                    <li class="journal">Journal: ASDF</li>
+                                    <li class="years">Year: xxxx</li>
+                                    <li class="pmid">PMID: 123456</li>
+                                    <li class="dataset">Dataset: xxxx</li>
+
+                                </ul>
+
+                            </div>
+                            <div>
+                                <ul >
+                                    <li class="Descriptions">Abstract:</li>
+                                    <li class="Descriptions-content"></li>
+                                </ul>
+
+                            </div>
+
+                            <div>
+
+                                <ul>
+                                    <li class="library">Library: 6666</li>
+                                    <li class="tissue">Tissue: Brain</li>
+                                    <li class="species">Species: xxxx</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="study-card" >
+                            <div>
+                                <h3 class="study-title"></h3>
+                            </div>
+                            <div>
+                                <ul>
+                                    <li class="journal">Journal: ASDF</li>
+                                    <li class="years">Year: xxxx</li>
+                                    <li class="pmid">PMID: 123456</li>
+                                    <li class="dataset">Dataset: xxxx</li>
+
+                                </ul>
+
+                            </div>
+                            <div>
+                                <ul >
+                                    <li class="Descriptions">Abstract:</li>
+                                    <li class="Descriptions-content"></li>
+                                </ul>
+
+                            </div>
+
+                            <div>
+
+                                <ul>
+                                    <li class="library">Library: 6666</li>
+                                    <li class="tissue">Tissue: Brain</li>
+                                    <li class="species">Species: xxxx</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="study-card" >
+                            <div>
+                                <h3 class="study-title"></h3>
+                            </div>
+                            <div>
+                                <ul>
+                                    <li class="journal">Journal: ASDF</li>
+                                    <li class="years">Year: xxxx</li>
+                                    <li class="pmid">PMID: 123456</li>
+                                    <li class="dataset">Dataset: xxxx</li>
+
+                                </ul>
+
+                            </div>
+                            <div>
+                                <ul >
+                                    <li class="Descriptions">Abstract:</li>
+                                    <li class="Descriptions-content"></li>
+                                </ul>
+
+                            </div>
+
+                            <div>
+
+                                <ul>
+                                    <li class="library">Library: 6666</li>
+                                    <li class="tissue">Tissue: Brain</li>
+                                    <li class="species">Species: xxxx</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="study-card" >
+                            <div>
+                                <h3 class="study-title"></h3>
+                            </div>
+                            <div>
+                                <ul>
+                                    <li class="journal">Journal: ASDF</li>
+                                    <li class="years">Year: xxxx</li>
+                                    <li class="pmid">PMID: 123456</li>
+                                    <li class="dataset">Dataset: xxxx</li>
+
+                                </ul>
+
+                            </div>
+                            <div>
+                                <ul >
+                                    <li class="Descriptions">Abstract:</li>
+                                    <li class="Descriptions-content"></li>
+                                </ul>
+
+                            </div>
+
+                            <div>
+
+                                <ul>
+                                    <li class="library">Library: 6666</li>
+                                    <li class="tissue">Tissue: Brain</li>
+                                    <li class="species">Species: xxxx</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="study-card" >
+                            <div>
+                                <h3 class="study-title"></h3>
+                            </div>
+                            <div>
+                                <ul>
+                                    <li class="journal">Journal: ASDF</li>
+                                    <li class="years">Year: xxxx</li>
+                                    <li class="pmid">PMID: 123456</li>
+                                    <li class="dataset">Dataset: xxxx</li>
+
+                                </ul>
+
+                            </div>
+                            <div>
+                                <ul >
+                                    <li class="Descriptions">Abstract:</li>
+                                    <li class="Descriptions-content"></li>
+                                </ul>
+
+                            </div>
+
+                            <div>
+
+                                <ul>
+                                    <li class="library">Library: 6666</li>
+                                    <li class="tissue">Tissue: Brain</li>
+                                    <li class="species">Species: xxxx</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="study-card" >
+                            <div>
+                                <h3 class="study-title"></h3>
+                            </div>
+                            <div>
+                                <ul>
+                                    <li class="journal">Journal: ASDF</li>
+                                    <li class="years">Year: xxxx</li>
+                                    <li class="pmid">PMID: 123456</li>
+                                    <li class="dataset">Dataset: xxxx</li>
+
+                                </ul>
+
+                            </div>
+                            <div>
+                                <ul >
+                                    <li class="Descriptions">Abstract:</li>
+                                    <li class="Descriptions-content"></li>
+                                </ul>
+
+                            </div>
+
+                            <div>
+
+                                <ul>
+                                    <li class="library">Library: 6666</li>
+                                    <li class="tissue">Tissue: Brain</li>
+                                    <li class="species">Species: xxxx</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="study-card" >
+                            <div>
+                                <h3 class="study-title"></h3>
+                            </div>
+                            <div>
+                                <ul>
+                                    <li class="journal">Journal: ASDF</li>
+                                    <li class="years">Year: xxxx</li>
+                                    <li class="pmid">PMID: 123456</li>
+                                    <li class="dataset">Dataset: xxxx</li>
+
+                                </ul>
+
+                            </div>
+                            <div>
+                                <ul >
+                                    <li class="Descriptions">Abstract:</li>
+                                    <li class="Descriptions-content"></li>
+                                </ul>
+
+                            </div>
+
+                            <div>
+
+                                <ul>
+                                    <li class="library">Library: 6666</li>
+                                    <li class="tissue">Tissue: Brain</li>
+                                    <li class="species">Species: xxxx</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+                <div style="text-align: center">
+                    <i class="fa fa-chevron-circle-down" style="font-size: 40px;line-height: 0;color: #666"></i>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+
+
+        var list;
+        var studypagenumber=0;
+        function getoptions(url,title,id,tissue,species,celltype){
+            $("#"+id).select2({
+                ajax: {
+                    url: "/celltaxonomy"+url,
+                    dataType: 'json',
+                    type: "post",
+                    data:function(params){
+                        var search={
+                            term:params.term,
+                            tissue:tissue,
+                            species:species,
+                            celltype:celltype
+                        }
+                        return search
+                    },
+                    processResults: function (data) {
+                        var res = data[title].map(function (item) {
+                            return {id: item[title],text:item[title].replace(/"/g,"")};
+                        });
+                        return {
+                            results: res
+                        };
+                    }
+                }
+
+
+            });
+        };
+
+        $(document).ready(function(){
+
+            $.ajax({
+                url:"/celltaxonomy/static/file/marker_cell_type_list",
+                type:'get',
+                success:function(results){
+                    list=results.replace(/\r/g,"").toLowerCase().split("\n");
+                }
+            });
+            getoptions("/study_tissue_list","Tissue","tissuename");
+            $("#celltypename").select2({
+                ajax: {
+                    url: "/celltaxonomy/study_celltype_list",
+                    dataType: 'json',
+                    type: "post",
+                    data:function(params){
+                        var search={
+                            term:params.term,
+                            tissue:$("#tissuename").val(),
+                            journal:$("#journalname").val(),
+                            species:$("#speciesname").val()
+                        }
+                        return search
+                    },
+                    processResults: function (data) {
+                        var res = data["Cell_ID"].map(function (item) {
+                            return {id: item["Cell_ID"],text:item["Cell_standard"].replace(/"/g,"")};
+                        });
+                        return {
+                            results: res
+                        };
+                    }
+                }
+
+
+            });
+            $.ajax({
+                url: '/celltaxonomy/getdatasetspecieslist',
+                type: 'post',
+                success:function(results){
+                    results.map(function(d){
+                        $("#speciess").append("<li  style='margin-right:10px;display: inline-block'><a class='species_list'>"+d["Species"]+"("+d["counts"]+")</a></li>")
+
+                    })
+                }
+            })
+            $.ajax({
+                url:"/celltaxonomy/study_list",
+                type:"post",
+                data:{
+                    "pagenumber":studypagenumber
+                },
+                success:function(results){
+                    for (var i=0;i<results.length;i++){
+                        $(".study-card").eq(i).find("li.Descriptions-content").html(results[i].Abstract);
+                        $(".study-card").eq(i).find("li.library").text("Library: "+results[i].Library);
+                        $(".study-card").eq(i).find("li.journal").text("Journal: "+results[i].Journal);
+                        if(results[i].PubmedID.indexOf("doi")>=0){
+                            $(".study-card").eq(i).find("h3.study-title").append(
+                                "<a href='/celltaxonomy/study/"+results[i].GEOID+"'>"+results[i].Title+"</a>"
+                            );
+                            $(".study-card").eq(i).find("li.pmid").text("DOI: "+results[i].PubmedID.split(" ")[1])
+                        }
+                        else{
+                            $(".study-card").eq(i).find("h3.study-title").append(
+                                "<a href='/celltaxonomy/study/"+results[i].PubmedID+"'>"+results[i].Title+"</a>"
+                            );
+                            $(".study-card").eq(i).find("li.pmid").text("PMID: "+results[i].PubmedID);
+                        }
+                        $(".study-card").eq(i).find("li.years").text("Year: "+results[i].Years);
+                        $(".study-card").eq(i).find("li.dataset").text("Dataset: "+results[i].GEOID);
+                        // $(".study-card").eq(i).find("li.CellTypes-content").text(results[i].Cell_types.replace(/;/g,"; "));
+                        $(".study-card").eq(i).find("li.tissue").text("Tissue: "+results[i].Tissue.replace(/,/g,", ").replace(/\r/g,""));
+                        $(".study-card").eq(i).find("li.species").text("Species: "+results[i].Species.replace(/,/g,", ").replace(/\r/g,""));
+                    }
+
+                },
+                error:function(){
+                    console.log("error")
+                }
+            });
+        });
+        $(".fa-chevron-circle-down").click(function(){
+            studypagenumber+=1;
+            var species=$("#speciesname").val();
+            var tissues=$("#tissuename").val();
+            var journal=$("#journalname").val();
+            $.ajax({
+                url:'/celltaxonomy/study_list',
+                type:'post',
+                data:{
+                    "pagenumber":studypagenumber,
+                    "tissues":JSON.stringify(tissues),
+                    "journal":JSON.stringify(journal),
+                    "species":JSON.stringify(species)
+                },
+                success:function(results){
+                    for (var i=0;i<results.length;i++){
+
+                        if(results[0].PubmedID.indexOf("doi")>=0) {
+                            $(".study-cards").append(
+                                "<div class=\"study-card\" >\n" +
+                                "                        <div>\n" +
+                                "                            <h3 class=\"study-title\"><a href='/celltaxonomy/study/"+results[i].GEOID+"'>"+results[i].Title+"</a></h3>\n" +
+                                "                        </div>\n" +
+                                "                        <div>\n" +
+                                "                            <ul>\n" +
+                                "                               <li class=\"journal\">Journal: "+results[i].Journal+"</li>\n" +
+                                "                               <li class=\"years\">Year: "+results[i].Years+"</li>\n" +
+                                "                               <li class=\"pmid\">DOI: "+results[i].PubmedID.split(" ")[1]+"</li>\n" +
+                                "                               <li class=\"dataset\">Dataset: "+results[i].GEOID+"</li>\n" +
+
+                                "                            </ul>\n" +
+                                "                        </div>\n" +
+                                "                        <div>\n" +
+                                "                            <ul>\n" +
+                                "                                <li class=\"Descriptions\">Abstract:</li>\n" +
+                                "                                <li class=\"Descriptions-content\">"+results[i].Abstract+"</li>\n" +
+                                "\n" +
+                                "                            </ul>\n" +
+                                "\n" +
+                                "                        </div>\n" +
+
+                                "                        <div>\n" +
+                                "                            <ul>\n" +
+                                "                                <li class=\"library\">Library: "+results[i].Library+"</li>\n" +
+
+                                "                                <li class=\"tissue\">Tissue: "+results[i].Tissue.replace(/\r/g,"").replace(/,/g,", ")+"</li>\n" +
+                                "                                <li class=\"species\">Species: "+results[i].Species.replace(/,/g,", ")+"</li>\n" +
+                                "                            </ul>\n" +
+                                "                        </div>\n" +
+                                "                    </div>"
+                            )
+                        }
+                        else{
+                            $(".study-cards").append(
+                                "<div class=\"study-card\" >\n" +
+                                "                        <div>\n" +
+                                "                            <h3 class=\"study-title\"><a href='/celltaxonomy/study/"+results[i].PubmedID+"'>"+results[i].Title+"</a></h3>\n" +
+                                "                        </div>\n" +
+                                "                        <div>\n" +
+                                "                            <ul>\n" +
+                                "                               <li class=\"journal\">Journal: "+results[i].Journal+"</li>\n" +
+                                "                               <li class=\"years\">Year: "+results[i].Years+"</li>\n" +
+                                "                               <li class=\"pmid\">PMID: "+results[i].PubmedID+"</li>\n" +
+                                "                               <li class=\"dataset\">Dataset: "+results[i].GEOID+"</li>\n" +
+
+                                "                            </ul>\n" +
+                                "                        </div>\n" +
+                                "                        <div>\n" +
+                                "                            <ul>\n" +
+                                "                                <li class=\"Descriptions\">Abstract:</li>\n" +
+                                "                                <li class=\"Descriptions-content\">"+results[i].Abstract+"</li>\n" +
+                                "\n" +
+                                "                            </ul>\n" +
+                                "\n" +
+                                "                        </div>\n" +
+
+                                "                        <div>\n" +
+                                "                            <ul>\n" +
+                                "                                <li class=\"library\">Library: "+results[i].Library+"</li>\n" +
+
+                                "                                <li class=\"tissue\">Tissue: "+results[i].Tissue.replace(/\r/g,"").replace(/,/g,", ")+"</li>\n" +
+                                "                                <li class=\"species\">Species: "+results[i].Species.replace(/,/g,", ")+"</li>\n" +
+                                "                            </ul>\n" +
+                                "                        </div>\n" +
+                                "                    </div>"
+                            )
+                        }
+
+                    }
+
+                },
+                error:function(){
+                    console.log("error")
+                }
+            })
+        });
+        $(".js-example-basic-multiple").change(function(){
+            $('#search').val("")
+            studypagenumber=0;
+            var species=$(".species_list.active").text().replace(/\(\d+\)/g,"\t").split("\t")
+            species.pop()
+            var tissues=$("#tissuename").val();
+            var celltype=$("#celltypename").val();
+            var speciess2=""
+            var tissuename2=""
+            var celltype2=""
+            if(species!=null){
+                speciess2=species.toString()
+            }
+            if(tissues!=null){
+                tissuename2=tissues.toString()
+            }
+            if(celltype!=null){
+                celltype2=celltype.toString()
+            }
+            getoptions("/study_tissue_list","Tissue","tissuename",tissuename2,speciess2,celltype2);
+
+            $("#celltypename").select2({
+                ajax: {
+                    url: "/celltaxonomy/study_celltype_list",
+                    dataType: 'json',
+                    type: "post",
+                    data:function(params){
+                        var search={
+                            term:params.term,
+                            tissue:tissuename2,
+                            species:speciess2
+                        }
+                        return search
+                    },
+                    processResults: function (data) {
+                        var res = data["Cell_ID"].map(function (item) {
+                            return {id: item["Cell_ID"],text:item["Cell_standard"].replace(/"/g,"")};
+                        });
+                        return {
+                            results: res
+                        };
+                    }
+                }
+            });
+
+            if(species==null && tissues==null && celltype==null){
+                $.ajax({
+                    url:"/celltaxonomy/study_list",
+                    type:"post",
+                    data:{
+                        "pagenumber":studypagenumber
+                    },
+                    success:function(results){
+                        if(results.length<10){
+                            $(".fa-chevron-circle-down").css("display","none")
+                        }
+                        else{
+                            $(".fa-chevron-circle-down").css("display","block")
+                        }
+                        $(".study-cards").empty()
+                        for (var i=0;i<results.length;i++){
+
+                            if(results[0].PubmedID.indexOf("doi")>=0) {
+                                $(".study-cards").append(
+                                    "<div class=\"study-card\" >\n" +
+                                    "                        <div>\n" +
+                                    "                            <h3 class=\"study-title\"><a href='/celltaxonomy/study/"+results[i].GEOID+"'>"+results[i].Title+"</a></h3>\n" +
+                                    "                        </div>\n" +
+                                    "                        <div>\n" +
+                                    "                            <ul>\n" +
+                                    "                               <li class=\"journal\">Journal: "+results[i].Journal+"</li>\n" +
+                                    "                               <li class=\"years\">Year: "+results[i].Years+"</li>\n" +
+                                    "                               <li class=\"pmid\">DOI: "+results[i].PubmedID.split(" ")[1]+"</li>\n" +
+                                    "                               <li class=\"dataset\">Dataset: "+results[i].GEOID+"</li>\n" +
+
+                                    "                            </ul>\n" +
+                                    "                        </div>\n" +
+                                    "                        <div>\n" +
+                                    "                            <ul>\n" +
+                                    "                                <li class=\"Descriptions\">Abstract:</li>\n" +
+                                    "                                <li class=\"Descriptions-content\">"+results[i].Abstract+"</li>\n" +
+                                    "\n" +
+                                    "                            </ul>\n" +
+                                    "\n" +
+                                    "                        </div>\n" +
+
+                                    "                        <div>\n" +
+                                    "                            <ul>\n" +
+                                    "                                <li class=\"library\">Library: "+results[i].Library+"</li>\n" +
+
+                                    "                                <li class=\"tissue\">Tissue: "+results[i].Tissue.replace(/\r/g,"").replace(/,/g,", ")+"</li>\n" +
+                                    "                                <li class=\"species\">Species: "+results[i].Species.replace(/,/g,", ")+"</li>\n" +
+                                    "                            </ul>\n" +
+                                    "                        </div>\n" +
+                                    "                    </div>"
+                                )
+                            }
+                            else{
+                                $(".study-cards").append(
+                                    "<div class=\"study-card\" >\n" +
+                                    "                        <div>\n" +
+                                    "                            <h3 class=\"study-title\"><a href='/celltaxonomy/study/"+results[i].PubmedID+"'>"+results[i].Title+"</a></h3>\n" +
+                                    "                        </div>\n" +
+                                    "                        <div>\n" +
+                                    "                            <ul>\n" +
+                                    "                               <li class=\"journal\">Journal: "+results[i].Journal+"</li>\n" +
+                                    "                               <li class=\"years\">Year: "+results[i].Years+"</li>\n" +
+                                    "                               <li class=\"pmid\">PMID: "+results[i].PubmedID+"</li>\n" +
+                                    "                               <li class=\"dataset\">Dataset: "+results[i].GEOID+"</li>\n" +
+
+                                    "                            </ul>\n" +
+                                    "                        </div>\n" +
+                                    "                        <div>\n" +
+                                    "                            <ul>\n" +
+                                    "                                <li class=\"Descriptions\">Abstract:</li>\n" +
+                                    "                                <li class=\"Descriptions-content\">"+results[i].Abstract+"</li>\n" +
+                                    "\n" +
+                                    "                            </ul>\n" +
+                                    "\n" +
+                                    "                        </div>\n" +
+
+                                    "                        <div>\n" +
+                                    "                            <ul>\n" +
+                                    "                                <li class=\"library\">Library: "+results[i].Library+"</li>\n" +
+
+                                    "                                <li class=\"tissue\">Tissue: "+results[i].Tissue.replace(/\r/g,"").replace(/,/g,", ")+"</li>\n" +
+                                    "                                <li class=\"species\">Species: "+results[i].Species.replace(/,/g,", ")+"</li>\n" +
+                                    "                            </ul>\n" +
+                                    "                        </div>\n" +
+                                    "                    </div>"
+                                )
+                            }
+                        }
+
+                    },
+                    error:function(){
+                        console.log("error")
+                    }
+                });
+
+            }
+            else{
+
+                $.ajax({
+                    url:'/celltaxonomy/study_list',
+                    type:'post',
+                    data:{
+                        "pagenumber":studypagenumber,
+                        "tissues":JSON.stringify(tissues),
+                        "species":JSON.stringify(species),
+                        "celltype":JSON.stringify(celltype)
+
+                    },
+                    success:function(results){
+                        if(results.length<10){
+                            $(".fa-chevron-circle-down").css("display","none")
+                        }
+                        else{
+                            $(".fa-chevron-circle-down").css("display","block")
+                        }
+                        $(".study-cards").empty()
+                        for (var i=0;i<results.length;i++){
+
+                            if(results[i].PubmedID.indexOf("doi")>=0) {
+                                $(".study-cards").append(
+                                    "<div class=\"study-card\" >\n" +
+                                    "                        <div>\n" +
+                                    "                            <h3 class=\"study-title\"><a href='/celltaxonomy/study/"+results[i].GEOID+"'>"+results[i].Title+"</a></h3>\n" +
+                                    "                        </div>\n" +
+                                    "                        <div>\n" +
+                                    "                            <ul>\n" +
+                                    "                               <li class=\"journal\">Journal: "+results[i].Journal+"</li>\n" +
+                                    "                               <li class=\"years\">Year: "+results[i].Years+"</li>\n" +
+                                    "                               <li class=\"pmid\">DOI: "+results[i].PubmedID.split(" ")[1]+"</li>\n" +
+                                    "                               <li class=\"dataset\">Dataset: "+results[i].GEOID+"</li>\n" +
+
+                                    "                            </ul>\n" +
+                                    "                        </div>\n" +
+                                    "                        <div>\n" +
+                                    "                            <ul>\n" +
+                                    "                                <li class=\"Descriptions\">Abstract:</li>\n" +
+                                    "                                <li class=\"Descriptions-content\">"+results[i].Abstract+"</li>\n" +
+                                    "\n" +
+                                    "                            </ul>\n" +
+                                    "\n" +
+                                    "                        </div>\n" +
+
+                                    "                        <div>\n" +
+                                    "                            <ul>\n" +
+                                    "                                <li class=\"library\">Library: "+results[i].Library+"</li>\n" +
+
+                                    "                                <li class=\"tissue\">Tissue: "+results[i].Tissue.replace(/\r/g,"").replace(/,/g,", ")+"</li>\n" +
+                                    "                                <li class=\"species\">Species: "+results[i].Species.replace(/,/g,", ")+"</li>\n" +
+                                    "                            </ul>\n" +
+                                    "                        </div>\n" +
+                                    "                    </div>"
+                                )
+                            }
+                            else{
+                                $(".study-cards").append(
+                                    "<div class=\"study-card\" >\n" +
+                                    "                        <div>\n" +
+                                    "                            <h3 class=\"study-title\"><a href='/celltaxonomy/study/"+results[i].PubmedID+"'>"+results[i].Title+"</a></h3>\n" +
+                                    "                        </div>\n" +
+                                    "                        <div>\n" +
+                                    "                            <ul>\n" +
+                                    "                               <li class=\"journal\">Journal: "+results[i].Journal+"</li>\n" +
+                                    "                               <li class=\"years\">Year: "+results[i].Years+"</li>\n" +
+                                    "                               <li class=\"pmid\">PMID: "+results[i].PubmedID+"</li>\n" +
+                                    "                               <li class=\"dataset\">Dataset: "+results[i].GEOID+"</li>\n" +
+
+                                    "                            </ul>\n" +
+                                    "                        </div>\n" +
+                                    "                        <div>\n" +
+                                    "                            <ul>\n" +
+                                    "                                <li class=\"Descriptions\">Abstract:</li>\n" +
+                                    "                                <li class=\"Descriptions-content\">"+results[i].Abstract+"</li>\n" +
+                                    "\n" +
+                                    "                            </ul>\n" +
+                                    "\n" +
+                                    "                        </div>\n" +
+
+                                    "                        <div>\n" +
+                                    "                            <ul>\n" +
+                                    "                                <li class=\"library\">Library: "+results[i].Library+"</li>\n" +
+
+                                    "                                <li class=\"tissue\">Tissue: "+results[i].Tissue.replace(/\r/g,"").replace(/,/g,", ")+"</li>\n" +
+                                    "                                <li class=\"species\">Species: "+results[i].Species.replace(/,/g,", ")+"</li>\n" +
+                                    "                            </ul>\n" +
+                                    "                        </div>\n" +
+                                    "                    </div>"
+                                )
+                            }
+                        }
+
+                    },
+                    error:function(){
+                        console.log("error")
+                    }
+                })
+            }
+        });
+
+
+        $(".study-cards").on("click",".pmid",function(){
+            var link=$(this).text().split(": ")[1];
+            if($(this).text().indexOf("DOI")>=0){
+                window.open("https://doi.org/"+link)
+            }
+            else{
+                window.open("https://pubmed.ncbi.nlm.nih.gov/"+link+"/")
+            }
+        })
+        $('#search').bind('input propertychange', function() {
+            studypagenumber=0;
+            $.ajax({
+                url:'/celltaxonomy/study_list',
+                type:'post',
+                data:{
+                    "pagenumber":studypagenumber,
+                    "query":$('#search').val()
+                },
+                success:function(results){
+
+
+                    if($(".js-example-basic-multiple").val()!=null){
+                        $(".js-example-basic-multiple").val(null).trigger("change");
+                    }
+                    $(".species_list.active").removeClass("active")
+                    $(".species_list").css("color","#2C75C9")
+
+                    if(results.length<10){
+                        $(".fa-chevron-circle-down").css("display","none")
+                    }
+                    else{
+                        $(".fa-chevron-circle-down").css("display","block")
+                    }
+                    $(".study-cards").empty()
+                    for (var i=0;i<results.length;i++){
+
+                        if(results[i].PubmedID.indexOf("doi")>=0) {
+                            $(".study-cards").append(
+                                "<div class=\"study-card\" >\n" +
+                                "                        <div>\n" +
+                                "                            <h3 class=\"study-title\"><a href='/celltaxonomy/study/"+results[i].GEOID+"'>"+results[i].Title+"</a></h3>\n" +
+                                "                        </div>\n" +
+                                "                        <div>\n" +
+                                "                            <ul>\n" +
+                                "                               <li class=\"journal\">Journal: "+results[i].Journal+"</li>\n" +
+                                "                               <li class=\"years\">Year: "+results[i].Years+"</li>\n" +
+                                "                               <li class=\"pmid\">DOI: "+results[i].PubmedID.split(" ")[1]+"</li>\n" +
+                                "                               <li class=\"dataset\">Dataset: "+results[i].GEOID+"</li>\n" +
+
+                                "                            </ul>\n" +
+                                "                        </div>\n" +
+                                "                        <div>\n" +
+                                "                            <ul>\n" +
+                                "                                <li class=\"Descriptions\">Abstract:</li>\n" +
+                                "                                <li class=\"Descriptions-content\">"+results[i].Abstract+"</li>\n" +
+                                "\n" +
+                                "                            </ul>\n" +
+                                "\n" +
+                                "                        </div>\n" +
+
+                                "                        <div>\n" +
+
+                                "                            <ul>\n" +
+                                "                                <li class=\"library\">Library: "+results[i].Library+"</li>\n" +
+
+                                "                                <li class=\"tissue\">Tissue: "+results[i].Tissue.replace(/\r/g,"").replace(/,/g,", ")+"</li>\n" +
+                                "                                <li class=\"species\">Species: "+results[i].Species.replace(/,/g,", ")+"</li>\n" +
+                                "                            </ul>\n" +
+                                "                        </div>\n" +
+                                "                    </div>"
+                            )
+                        }
+                        else{
+                            $(".study-cards").append(
+                                "<div class=\"study-card\" >\n" +
+                                "                        <div>\n" +
+                                "                            <h3 class=\"study-title\"><a href='/celltaxonomy/study/"+results[i].PubmedID+"'>"+results[i].Title+"</a></h3>\n" +
+                                "                        </div>\n" +
+                                "                        <div>\n" +
+                                "                            <ul>\n" +
+                                "                               <li class=\"journal\">Journal: "+results[i].Journal+"</li>\n" +
+                                "                               <li class=\"years\">Year: "+results[i].Years+"</li>\n" +
+                                "                               <li class=\"pmid\">PMID: "+results[i].PubmedID+"</li>\n" +
+                                "                               <li class=\"dataset\">Dataset: "+results[i].GEOID+"</li>\n" +
+
+                                "                            </ul>\n" +
+                                "                        </div>\n" +
+                                "                        <div>\n" +
+                                "                            <ul>\n" +
+                                "                                <li class=\"Descriptions\">Abstract:</li>\n" +
+                                "                                <li class=\"Descriptions-content\">"+results[i].Abstract+"</li>\n" +
+                                "\n" +
+                                "                            </ul>\n" +
+                                "\n" +
+                                "                        </div>\n" +
+
+                                "                        <div>\n" +
+                                "                            <ul>\n" +
+                                "                                <li class=\"library\">Library: "+results[i].Library+"</li>\n" +
+
+                                "                                <li class=\"tissue\">Tissue: "+results[i].Tissue.replace(/\r/g,"").replace(/,/g,", ")+"</li>\n" +
+                                "                                <li class=\"species\">Species: "+results[i].Species.replace(/,/g,", ")+"</li>\n" +
+                                "                            </ul>\n" +
+                                "                        </div>\n" +
+                                "                    </div>"
+                            )
+                        }
+                    }
+
+                },
+                error:function(){
+                    console.log("error")
+                }
+            })
+
+        });
+
+        function post(URL,params) {
+            var temp_form = document.createElement("form");
+            temp_form .action = "/celltaxonomy"+URL;
+            temp_form .target = "_blank";
+            temp_form .method = "post";
+            temp_form .style.display = "none";
+            for (var x in params){
+                var opt = document.createElement("textarea");
+                opt.name = x;
+                opt.value = params[x];
+                temp_form .appendChild(opt);
+            }
+
+
+            document.body.appendChild(temp_form);
+            temp_form .submit();
+        };
+        $(".study-cards").on("click",".celllink",function(){
+            $.ajax({
+                url:"/celltaxonomy/idcard",
+                type:'post',
+                data:{"id":$(this).text()},
+                success:function(results){
+                    window.open("/celltaxonomy/celltype/"+results[0].CT_ID)
+                }
+            })
+
+
+        })
+        $("#speciess").on("click",".species_list",function(){
+            $('#search').val("")
+
+            if($(this).hasClass("active")){
+                $(this).removeClass("active")
+                $(this).css("color","#2C75C9")
+
+            }
+            else{
+                $(this).addClass("active")
+                $(this).css("color","white")
+
+            }
+
+            var speciess=$(".species_list.active").text().replace(/\(\d+\)/g,"\t").split("\t")
+
+            speciess.pop()
+
+            var tissuename=$("#tissuename").val();
+            var celltypename=$("#celltypename").val();
+
+            if(speciess!=null){
+
+                var speciess2=speciess.toString()
+            }
+            if(tissuename!=null){
+                var tissuename2=tissuename.toString()
+            }
+
+            if(celltypename!=null){
+                var celltypename2=celltypename.toString()
+            }
+
+            getoptions("/study_tissue_list","Tissue","tissuename",tissuename2,speciess2,celltypename2);
+
+            $("#celltypename").select2({
+                ajax: {
+                    url: "/celltaxonomy/study_celltype_list",
+                    dataType: 'json',
+                    type: "post",
+                    data:function(params){
+                        var search={
+                            term:params.term,
+                            tissue:tissuename2,
+                            species:speciess2
+                        }
+                        return search
+                    },
+                    processResults: function (data) {
+                        var res = data["Cell_ID"].map(function (item) {
+                            return {id: item["Cell_ID"],text:item["Cell_standard"].replace(/"/g,"")};
+                        });
+                        return {
+                            results: res
+                        };
+                    }
+                }
+            });
+
+            if(speciess==null && tissuename==null && celltypename==null){
+                $.ajax({
+                    url:"/celltaxonomy/study_list",
+                    type:"post",
+                    data:{
+                        "pagenumber":studypagenumber
+                    },
+                    success:function(results){
+                        if(results.length<10){
+                            $(".fa-chevron-circle-down").css("display","none")
+                        }
+                        else{
+                            $(".fa-chevron-circle-down").css("display","block")
+                        }
+                        $(".study-cards").empty()
+                        for (var i=0;i<results.length;i++){
+
+                            if(results[0].PubmedID.indexOf("doi")>=0) {
+                                $(".study-cards").append(
+                                    "<div class=\"study-card\" >\n" +
+                                    "                        <div>\n" +
+                                    "                            <h3 class=\"study-title\"><a href='/celltaxonomy/study/"+results[i].GEOID+"'>"+results[i].Title+"</a></h3>\n" +
+                                    "                        </div>\n" +
+                                    "                        <div>\n" +
+                                    "                            <ul>\n" +
+                                    "                               <li class=\"journal\">Journal: "+results[i].Journal+"</li>\n" +
+                                    "                               <li class=\"years\">Year: "+results[i].Years+"</li>\n" +
+                                    "                               <li class=\"pmid\">DOI: "+results[i].PubmedID.split(" ")[1]+"</li>\n" +
+                                    "                               <li class=\"dataset\">Dataset: "+results[i].GEOID+"</li>\n" +
+
+                                    "                            </ul>\n" +
+                                    "                        </div>\n" +
+                                    "                        <div>\n" +
+                                    "                            <ul>\n" +
+                                    "                                <li class=\"Descriptions\">Abstract:</li>\n" +
+                                    "                                <li class=\"Descriptions-content\">"+results[i].Abstract+"</li>\n" +
+                                    "\n" +
+                                    "                            </ul>\n" +
+                                    "\n" +
+                                    "                        </div>\n" +
+
+                                    "                        <div>\n" +
+                                    "                            <ul>\n" +
+                                    "                                <li class=\"library\">Library: "+results[i].Library+"</li>\n" +
+
+                                    "                                <li class=\"tissue\">Tissue: "+results[i].Tissue.replace(/\r/g,"").replace(/,/g,", ")+"</li>\n" +
+                                    "                                <li class=\"species\">Species: "+results[i].Species.replace(/,/g,", ")+"</li>\n" +
+                                    "                            </ul>\n" +
+                                    "                        </div>\n" +
+                                    "                    </div>"
+                                )
+                            }
+                            else{
+                                $(".study-cards").append(
+                                    "<div class=\"study-card\" >\n" +
+                                    "                        <div>\n" +
+                                    "                            <h3 class=\"study-title\"><a href='/celltaxonomy/study/"+results[i].PubmedID+"'>"+results[i].Title+"</a></h3>\n" +
+                                    "                        </div>\n" +
+                                    "                        <div>\n" +
+                                    "                            <ul>\n" +
+                                    "                               <li class=\"journal\">Journal: "+results[i].Journal+"</li>\n" +
+                                    "                               <li class=\"years\">Year: "+results[i].Years+"</li>\n" +
+                                    "                               <li class=\"pmid\">PMID: "+results[i].PubmedID+"</li>\n" +
+                                    "                               <li class=\"dataset\">Dataset: "+results[i].GEOID+"</li>\n" +
+
+                                    "                            </ul>\n" +
+                                    "                        </div>\n" +
+                                    "                        <div>\n" +
+                                    "                            <ul>\n" +
+                                    "                                <li class=\"Descriptions\">Abstract:</li>\n" +
+                                    "                                <li class=\"Descriptions-content\">"+results[i].Abstract+"</li>\n" +
+                                    "\n" +
+                                    "                            </ul>\n" +
+                                    "\n" +
+                                    "                        </div>\n" +
+
+                                    "                        <div>\n" +
+                                    "                            <ul>\n" +
+                                    "                                <li class=\"library\">Library: "+results[i].Library+"</li>\n" +
+
+                                    "                                <li class=\"tissue\">Tissue: "+results[i].Tissue.replace(/\r/g,"").replace(/,/g,", ")+"</li>\n" +
+                                    "                                <li class=\"species\">Species: "+results[i].Species.replace(/,/g,", ")+"</li>\n" +
+                                    "                            </ul>\n" +
+                                    "                        </div>\n" +
+                                    "                    </div>"
+                                )
+                            }
+                        }
+
+                    },
+                    error:function(){
+                        console.log("error")
+                    }
+                });
+
+            }
+            else{
+
+                $.ajax({
+                    url:'/celltaxonomy/study_list',
+                    type:'post',
+                    data:{
+                        "pagenumber":studypagenumber,
+                        "tissues":JSON.stringify(tissuename),
+                        "species":JSON.stringify(speciess),
+                        "celltype":JSON.stringify(celltypename)
+
+                    },
+                    success:function(results){
+                        if(results.length<10){
+                            $(".fa-chevron-circle-down").css("display","none")
+                        }
+                        else{
+                            $(".fa-chevron-circle-down").css("display","block")
+                        }
+                        $(".study-cards").empty()
+                        for (var i=0;i<results.length;i++){
+
+                            if(results[i].PubmedID.indexOf("doi")>=0) {
+                                $(".study-cards").append(
+                                    "<div class=\"study-card\" >\n" +
+                                    "                        <div>\n" +
+                                    "                            <h3 class=\"study-title\"><a href='/celltaxonomy/study/"+results[i].GEOID+"'>"+results[i].Title+"</a></h3>\n" +
+                                    "                        </div>\n" +
+                                    "                        <div>\n" +
+                                    "                            <ul>\n" +
+                                    "                               <li class=\"journal\">Journal: "+results[i].Journal+"</li>\n" +
+                                    "                               <li class=\"years\">Year: "+results[i].Years+"</li>\n" +
+                                    "                               <li class=\"pmid\">DOI: "+results[i].PubmedID.split(" ")[1]+"</li>\n" +
+                                    "                               <li class=\"dataset\">Dataset: "+results[i].GEOID+"</li>\n" +
+
+                                    "                            </ul>\n" +
+                                    "                        </div>\n" +
+                                    "                        <div>\n" +
+                                    "                            <ul>\n" +
+                                    "                                <li class=\"Descriptions\">Abstract:</li>\n" +
+                                    "                                <li class=\"Descriptions-content\">"+results[i].Abstract+"</li>\n" +
+                                    "\n" +
+                                    "                            </ul>\n" +
+                                    "\n" +
+                                    "                        </div>\n" +
+
+                                    "                        <div>\n" +
+                                    "                            <ul>\n" +
+                                    "                                <li class=\"library\">Library: "+results[i].Library+"</li>\n" +
+
+                                    "                                <li class=\"tissue\">Tissue: "+results[i].Tissue.replace(/\r/g,"").replace(/,/g,", ")+"</li>\n" +
+                                    "                                <li class=\"species\">Species: "+results[i].Species.replace(/,/g,", ")+"</li>\n" +
+                                    "                            </ul>\n" +
+                                    "                        </div>\n" +
+                                    "                    </div>"
+                                )
+                            }
+                            else{
+                                $(".study-cards").append(
+                                    "<div class=\"study-card\" >\n" +
+                                    "                        <div>\n" +
+                                    "                            <h3 class=\"study-title\"><a href='/celltaxonomy/study/"+results[i].PubmedID+"'>"+results[i].Title+"</a></h3>\n" +
+                                    "                        </div>\n" +
+                                    "                        <div>\n" +
+                                    "                            <ul>\n" +
+                                    "                               <li class=\"journal\">Journal: "+results[i].Journal+"</li>\n" +
+                                    "                               <li class=\"years\">Year: "+results[i].Years+"</li>\n" +
+                                    "                               <li class=\"pmid\">PMID: "+results[i].PubmedID+"</li>\n" +
+                                    "                               <li class=\"dataset\">Dataset: "+results[i].GEOID+"</li>\n" +
+
+                                    "                            </ul>\n" +
+                                    "                        </div>\n" +
+                                    "                        <div>\n" +
+                                    "                            <ul>\n" +
+                                    "                                <li class=\"Descriptions\">Abstract:</li>\n" +
+                                    "                                <li class=\"Descriptions-content\">"+results[i].Abstract+"</li>\n" +
+                                    "\n" +
+                                    "                            </ul>\n" +
+                                    "\n" +
+                                    "                        </div>\n" +
+
+                                    "                        <div>\n" +
+                                    "                            <ul>\n" +
+                                    "                                <li class=\"library\">Library: "+results[i].Library+"</li>\n" +
+
+                                    "                                <li class=\"tissue\">Tissue: "+results[i].Tissue.replace(/\r/g,"").replace(/,/g,", ")+"</li>\n" +
+                                    "                                <li class=\"species\">Species: "+results[i].Species.replace(/,/g,", ")+"</li>\n" +
+                                    "                            </ul>\n" +
+                                    "                        </div>\n" +
+                                    "                    </div>"
+                                )
+                            }
+                        }
+
+                    },
+                    error:function(){
+                        console.log("error")
+                    }
+                })
+            }
+        })
+
+    </script>
+</body>
+</html>

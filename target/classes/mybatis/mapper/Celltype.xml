@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.ct.Mapper.CelltypeMapper">
+
+    <select id="getDescription" parameterType="String" resultType="HashMap">
+        select * from ct.individual_cell_table where Specific_Cell_Ontology_ID = #{ontology}
+    </select>
+
+    <select id="getIdCard" parameterType="String" resultType="HashMap">
+        select * from ct.cell_description where Specific_Cell_Ontology_ID = #{id} or Cell_standard =#{id}
+    </select>
+    <select id="getGO" parameterType="String" resultType="HashMap">
+        select ct.GO.Term from ct.GO inner join celltype on ct.GO.ENTREZ =ct.all_search_table.Gene_ENTREZID
+        where celltype.Cell_Marker=#{markers}
+    </select>
+    <select id="getTissueEnrichmentOR" parameterType="String" resultType="HashMap">
+        select Species,Tissue_standard,count(distinct Tissue_standard,PMID) as counts from individual_cell_table
+        where Specific_Cell_Ontology_ID=#{ontology}
+        GROUP BY Tissue_standard,Species;
+    </select>
+    <select id="getTissueEnrichmentLS" parameterType="String" resultType="HashMap">
+        select Species,Disease_Type,count(distinct Disease_Type,PMID) as counts from individual_cell_table
+        where Specific_Cell_Ontology_ID=#{ontology} and Disease_Type!="-"
+        GROUP BY Disease_Type,Species;
+    </select>
+    <select id="getOverallCellLiteratureSupport" parameterType="String" resultType="HashMap">
+        select * from ct.cell_taxonomy_paper_support_overall where Specific_Cell_Ontology_ID=#{ontology}
+        order by supported_paper_number desc
+    </select>
+    <select id="getSingleCellLiteratureSupport" parameterType="String" resultType="HashMap">
+        select distinct Gene_ENTREZID2,Species,Tissue_standard,supported_paper_number,Cell_Marker,FDR from ct.cell_taxonomy_paper_support_tissue
+        where Specific_Cell_Ontology_ID=#{ontology} and supported_paper_number != 0
+
+        order by supported_paper_number desc
+    </select>
+    <select id="getCellCompositionInTissue" parameterType="String" resultType="HashMap">
+        select Tissue,Number_of_cells/total as ratio from ct.total_cell_number
+        where cell_id=#{ontology}
+    </select>
+
+    <select id="getCellMarkerDEList" parameterType="String" resultType="HashMap">
+        select distinct Gene_ENTREZID2,Species,Tissue_standard,supported_paper_number,Cell_Marker from ct.cell_taxonomy_paper_support_tissue
+        where CT_ID=#{ontology} and Tissue_standard ="All" and Species=#{species}
+        order by supported_paper_number desc
+        limit 0,30
+    </select>
+    <select id="getCellMarkerDE" parameterType="String" resultType="HashMap">
+        select * from ${database}
+        where
+        marker_id in
+        <foreach collection="datasetlist" item="name" index="index" open="(" close=")" separator=",">
+            #{name}
+        </foreach>
+        and Cell_id=#{ontology}
+        <if test="species!='All'">
+            and Species=#{species}
+        </if>
+
+    </select>
+    <select id="getCellMarkerDESelect" parameterType="String" resultType="HashMap">
+        select distinct Species from CellMarkerDESelect
+        where CT_ID=#{ontology}
+    </select>
+    <select id="getCellMarkerDEAll" parameterType="String" resultType="HashMap">
+        select * from cell_top30_findmarker2boxplot
+        where  Cell_standard=#{ontology}
+        <if test="species!='All'">
+            and Species=#{species}
+        </if>
+        order by Q2 desc
+        limit 0,30
+    </select>
+    <select id="getCellMarkerDEtable" parameterType="String" resultType="HashMap">
+        select * from ct.table_boxplot_FC_cells
+        where Cell_standard=#{ontology}
+    </select>
+    <select id="getCellMarkerDETissueList" parameterType="String" resultType="HashMap">
+        select distinct Tissue from ct.total_findmarkers
+        where Cell_id=#{ontology} and Species=#{species}
+    </select>
+    <select id="getCellMarkerDEBar" parameterType="String" resultType="HashMap">
+        select Gene_id,markers,${database} as counts,Species from total_findmarkers_count
+        where  Gene_id in
+        <foreach collection="datasetlist" item="name" index="index" open="(" close=")" separator=",">
+            #{name}
+        </foreach>
+        and CT_ID=#{ontology}
+        <if test="species!='All'">
+            and Species=#{species}
+        </if>
+        order by ${database} desc
+    </select>
+
+    <select id="getCellMarkerDEBarAll" parameterType="String" resultType="HashMap">
+        select markers,${database} as counts from total_findmarkers_count
+        where Cell_standard=#{ontology}  and Species=#{species}
+        order by ${database} desc
+        limit 0,20
+    </select>
+    <select id="getCellMarkerTotalBar" resultType="HashMap">
+        select Gene,counts,Species from ${database}
+        where
+        Gene_id in ${genelist}
+<!--        <foreach collection="datasetlist" item="name" index="index" open="(" close=")" separator=",">-->
+<!--            #{name}-->
+<!--        </foreach>-->
+        and
+        Cell_id =#{id}
+        <if test="species!='All'">
+            and Species=#{species}
+        </if>
+    </select>
+
+
+    <select id="getCellSEScore" parameterType="String" resultType="HashMap">
+        select * from ${database}
+        where
+         Gene_id in
+        <foreach collection="datasetlist" item="name" index="index" open="(" close=")" separator=",">
+            #{name}
+        </foreach>
+        and Cell_type_id =#{id}
+        <if test="species!='All'">
+            and Species=#{species}
+        </if>
+    </select>
+    <select id="getCellSEScoreSelect" parameterType="String" resultType="HashMap">
+        select distinct Species from CellSEScoreSelect
+        where CT_ID =#{id}
+
+    </select>
+    <select id="getCellSEScoreAll" parameterType="String" resultType="HashMap">
+        select * from cell_top30_specificity2boxplot
+        where Cell_standard =#{id}
+        <if test="species!='All'">
+            and Species=#{species}
+        </if>
+        order by Min desc
+        limit 0,30
+    </select>
+
+    <select id="getCellTypeStatistic" resultType="HashMap">
+        select * from ct.cell_browse_statistics
+        order by Marker_num desc
+    </select>
+
+    <select id="getSummary" resultType="HashMap">
+        select * from ct.cell_browse_statistics
+        where Specific_Cell_Ontology_ID=#{id}
+        order by Marker_num desc
+    </select>
+
+    <select id="getCellTypeStatistic2" resultType="HashMap">
+        select * from ct.cell_without_markers
+    </select>
+    <select id="getSimilarity" resultType="HashMap">
+        select Species,Tissue_standard,Tissue_UberonOntology_ID2,Other_Cell_standard,CT_ID_y,score from ct.cell_cell_similarity
+        where Specific_Cell_Ontology_ID=#{id} and score!=0
+        order by score desc
+    </select>
+
+    <select id="getSpeciesSimilarity" resultType="HashMap">
+        select Gene_ENTREZID,Species1,Tissue_standard,Cell_Marker,Species2,Ortholog,Ortholog_ID,Ortholog_publication from common_marker_table
+        where CT_ID=#{id} and score !=0
+    </select>
+    <select id="getSameCellSimilarity" resultType="HashMap">
+        select Species1,Species2,Tissue_standard,score,common_marker_number,Tissue_UberonOntology_ID2 from same_cell_similarity_species
+        where CT_ID=#{id} and score !=0
+    </select>
+    <select id="getStudyTable" resultType="HashMap">
+        select * from ct.cell_id_ref
+        where Cell_ID=#{id}
+    </select>
+    <select id="getCellByCT" resultType="HashMap">
+        select * from ct.cell_description
+        where CT_ID=#{id}
+    </select>
+    <select id="getCellByName" resultType="HashMap">
+        select * from ct.cell_description
+        where Cell_standard=#{id}
+    </select>
+    <select id="getCME" resultType="HashMap">
+        select * from ${database}
+        where
+        ID in
+        <foreach collection="ontology" item="name" index="index" open="(" close=")" separator=",">
+            #{name}
+        </foreach>
+        and Gene=binary #{marker}
+    </select>
+    <select id="getCMEJudge" resultType="HashMap">
+        select * from boxplot_long_cell_list
+        where Cell_ID =#{ontology}
+    </select>
+    <select id="getCMEList" resultType="HashMap">
+        select distinct ID,Q2 from ${database}
+        where Cell_standard=#{ontology} and  Gene= binary #{marker}
+        order by Q2 desc
+        limit 0,10
+    </select>
+    <select id="getSurfaceMarker" resultType="HashMap">
+        select * from human_surface_marker
+        where Specific_Cell_Ontology_ID=#{id}
+
+    </select>
+
+    <select id="getRecommendDatasets" resultType="HashMap">
+        select * from recommend_datasets
+        where Cell_ID=#{id}
+        <if test="species!='All'">
+            and Species=#{species}
+        </if>
+        order by total desc,Cell_number desc
+    </select>
+
+    <select id="getRecommendMarkers" resultType="HashMap">
+        select Species,Cell_Marker,Gene_ENTREZID2,supported_paper_number,FC_median,DE_ratio,specificity_median,n_ortholog from recommend_markers
+        where Specific_Cell_Ontology_ID=#{id}
+        <if test="species!='All'">
+            and Species=#{species}
+        </if>
+    </select>
+
+    <select id="getSummaryFilter" resultType="HashMap">
+        select * from recommend_markers
+        where Specific_Cell_Ontology_ID=#{cell} and Species=#{species}
+        and (FC_median &gt;= #{fc} or specificity_median &gt;= #{ss} or supported_paper_number &gt;= #{pc} or n_ortholog &gt;= #{tc} or DE_ratio &gt;=#{dr})
+    </select>
+    <select id="getTissueDistribution" resultType="HashMap">
+        select Specific_Cell_Ontology_ID,Cell_standard,ID,Tissue,sum(Number_of_cells) as Number_of_cells from tissue_distribution
+        where Specific_Cell_Ontology_ID=#{id}
+        group by Tissue,Specific_Cell_Ontology_ID,Cell_standard,ID
+     </select>
+
+    <select id="getConservedPub" resultType="HashMap">
+        select distinct PMID,title,journal from cell_tissue_gene_species_PMID
+        where Specific_Cell_Ontology_ID=#{cellid} and Species=#{species} and Tissue_standard=#{tissue} and Gene_ENTREZID2=#{marker}
+     </select>
+
+    <select id="getCellStatistic" resultType="HashMap">
+        select distinct ${item} from all_search_table as a left join publication_for_browse as b on a.PMID=b.PMID
+        where CT_ID=#{cellid}
+     </select>
+</mapper>

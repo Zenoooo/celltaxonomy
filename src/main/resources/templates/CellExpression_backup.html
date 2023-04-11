@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Cell search - Cell Taxonomy - CNCB-NGDC</title>
+    <script src="/celltaxonomy/static/js/jquery.min.js"></script>
+    <link rel="icon" href="/celltaxonomy/static/img/CellTaxonomy v3.png">
+
+    <link rel="stylesheet" href="/celltaxonomy/static/css/bootstrap.min.css" >
+    <link rel="stylesheet" href="/celltaxonomy/static/css/dataTables.bootstrap.min.css" >
+    <link rel="stylesheet" href="/celltaxonomy/static/css/ionicons.min.css">
+    <script src="/celltaxonomy/static/js/bootstrap.min.js"></script>
+
+    <script src="/celltaxonomy/static/js/plotly-latest.min.js"></script>
+    <script type="text/javascript" src="/celltaxonomy/static/js/headerfooter-full.js"></script>
+    <script src="/celltaxonomy/static/js/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet"  href="/celltaxonomy/static/css/buttons.bootstrap.min.css">
+    <script src="/celltaxonomy/static/js/dataTables.buttons.min.js"></script>
+    <script src="/celltaxonomy/static/js/buttons.bootstrap.min.js"></script>
+
+    <link href="/celltaxonomy/static/css/select2.min.css" rel="stylesheet" />
+    <script src="/celltaxonomy/static/js/select2.min.js"></script>
+
+    <script src="/celltaxonomy/static/js/dataTables.bootstrap.min.js"></script>
+    <link href="/celltaxonomy/static/css/bow.ui.min.css" rel="stylesheet">
+
+    <script type="text/javascript" src="/celltaxonomy/static/js/echarts.min.js"></script>
+    <script src="/celltaxonomy/static/js/highcharts.js"></script>
+    <script src="/celltaxonomy/static/js/venn.js"></script>
+    <script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-core.min.js"></script>
+    <script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-venn.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/celltaxonomy/static/css/my/my.css">
+
+    <style>
+
+        .selects li{
+            list-style: none;
+        }
+        .selects li select{
+            width: 200px;
+        }
+        input::placeholder {
+            font-size: 14px;
+        }
+        @media (max-width: 1024px) {
+
+        }
+
+        /* 中等屏幕（桌面显示器，大于等于 992px） */
+        @media screen and (max-width: 1400px) and (min-width: 1024px) {
+            #example{
+                margin-left: 5px;
+            }
+        }
+        @media screen and (min-width: 1400px) {
+            #example{
+                margin-left: 25px;
+            }
+        }
+        .ion-stats-bars{
+            cursor: pointer;
+        }
+    </style>
+
+</head>
+<body>
+<nav th:replace="common/topbar::topbar"></nav>
+<div class="container" style="background: #f4f7f6">
+    <div class="row">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/celltaxonomy">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">CellExpression</li>
+            </ol>
+        </nav>
+        <div style="padding: 5px 5%;background: transparent">
+            <span style="font-size:30px;font-weight:700;margin: 30px 0;color: rgb(115,129,159)">CellExpression: </span>
+            <span style="font-size:30px;color: rgb(115,129,159)">view of cell marker expression in cell types</span>
+        </div>
+        <div class="col-lg-12" style="display: flex;justify-content: space-between;margin-top: 50px;padding:0 5%">
+            <div class="mypanel-body col-lg-3" style="list-style: none;margin:0 15px 0 0;padding-top: 25px">
+                <ul class="selects" style="margin-left:30px">
+                    <p style="font-size: 16px;font-weight: 700;margin-bottom: 10px">Select cell types</p>
+                    <li style="margin-bottom: 20px">
+                        <label style="color: rgb(115,129,159);font-weight: 700">Cell type</label>
+                        <select id="celltype"></select>
+                    </li>
+                    <p style="font-size: 16px;font-weight: 700;margin-bottom: 10px">Select cell markers</p>
+                    <li style="margin-bottom: 20px">
+                        <label style="color: rgb(115,129,159);font-weight: 700">Marker</label>
+                        <select id="marker"></select>
+                    </li>
+
+                    <label for="input2" style="font-size: 16px;font-weight: 700;margin: 20px 0 10px 0">
+                        <input type="radio" name="additional" id="input2" checked>
+                        Additional filters
+                    </label>
+                    <li style="margin-bottom: 20px">
+                        <label style="color: rgb(115,129,159);font-weight: 700">Species</label>
+                        <select id="species">
+
+                        </select>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="mypanel-body col-lg-8" style="list-style: none;margin:0 0 0 15px;padding-top: 20px">
+                <div style="margin-bottom: 10px">
+                    <span style="font-size: 19px">Title</span>
+                </div>
+                <div style="display: flex;justify-content: space-between">
+                    <div id="plot1" style="height: 300px">
+
+                    </div>
+                    <div id="plot2" style="height: 300px">
+
+                    </div>
+                </div>
+
+                <div style="position:absolute;top:50%;right:50%">
+                    <i class="fa fa-spinner fa-pulse" id="loading" style="font-size: 40px;"></i>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-lg-12" style="display: flex;justify-content: flex-start;padding:0 5%;margin: 10px 0">
+            <button class="btn" style="background: rgb(84,123,182);color:white;" id="example"><i class="icon ion-clipboard"></i> Example</button>
+
+            <button class="btn" id="reset" style="margin-left: 20px;background: rgb(60,141,188);color:white;"><i class="icon ion-refresh"></i> Reset</button>
+            <button class="btn" id="inputbtn" style="margin-left: 20px;background: rgb(0,166,90);color:white;"><i class="icon ion-card"></i> Run</button>
+        </div>
+        <div class="col-lg-12" hidden style="margin-top: 20px;padding:0 5%">
+            <div class="mypanel-body" style="padding:2%">
+                <table class="table table-striped table-hover"  id="exp_table">
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th>Dataset</th>
+                        <th>PMID</th>
+                        <th>Title</th>
+                        <th>Library</th>
+                        <th>Cell number</th>
+                    </tr>
+                    </thead>
+                </table>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="col-lg-12" id="results" style="margin-top: 20px;padding:0 5%;display: none" >
+
+        </div>
+        <div style="position: fixed;top: 80%;right: 1%">
+                <a class="btn" href="#exp_table" style="display: block;background: black;border-radius: 25px;width: 50px;height:50px">
+                    <i class="icon ion-arrow-up-c" style="color: white;font-size: 30px;"></i>
+                </a>
+        </div>
+    </div>
+</div>
+
+<script>
+    function unpack(rows, key) {
+        return rows.map(function(row) { return row[key]; });
+    }
+    function getboxplot2(id,results){
+        var plotwidth=$("#results").width();
+
+        $("#"+id).css("width",plotwidth-40)
+        var chartDom = document.getElementById(id);
+        var myChart = echarts.init(chartDom);
+        var option;
+        var marker=$.unique(unpack(results,"Cell_standard").sort());
+        var tissue=$.unique(unpack(results,"Tissue").sort());
+        var title;
+        if(id.indexOf("_SRS")>=0){
+            title=id.split("_")[1]
+        }
+        else{
+            title=id
+        }
+        function makeData() {
+            var data = [];
+            var datas=[];
+            for(var t=0;t<tissue.length;t++){
+                data=[];
+
+                for (var i = 0; i < marker.length; i++) {
+
+                    var result;
+                    result=eval(results).filter(function(e){
+                        return e.Cell_standard===marker[i]
+                    });
+                    result=eval(result).filter(function(e){
+                        return e.Tissue===tissue[t]
+                    });
+                    if (result.length==0){
+                        data.push([]);
+                    }
+                    else{
+                        data.push(
+                            [
+                                (result[0]["Max"]*1).toPrecision(2)*1,(result[0]["Min"]*1).toPrecision(2)*1,(result[0]["Q1"]*1).toPrecision(2)*1,(result[0]["Q2"]*1).toPrecision(2)*1,(result[0]["Q3"]*1).toPrecision(2)*1
+                            ]
+                        );
+                    }
+
+                }
+                datas.push(data);
+            }
+            return datas;
+        }
+        var datas = makeData();
+
+        var dataset=[];
+        var series=[];
+        for (var i=0;i<datas.length;i++){
+            dataset.push(
+                {
+                    dimension:['Max','Min','Q1','Q2','Q3'],
+                    source:datas[i]
+                }
+            );
+        }
+        for(i=0;i<datas.length;i++){
+            dataset.push({
+                fromDatasetIndex: i,
+                transform: [
+                    {
+                        type: 'boxplot',
+                        config:{
+                            itemNameFormatter:function(params){
+                                return marker[params.value]
+                            }
+                        }
+                    },
+                    {
+                        type:'sort',
+                        config:{dimension:'Q2',order:'desc'}
+                    }
+                ]
+            })
+        }
+        for(i=0;i<datas.length;i++){
+            series.push(
+                {
+                    name: tissue[i],
+                    type: 'boxplot',
+                    datasetIndex: i+datas.length
+                }
+            )
+        }
+
+
+
+        option = {
+            dataset: [],
+            legend: {
+                top: '10%',
+                textStyle:{
+                    fontFamily:'Arial'
+                }
+            },
+            title:{
+                text:title,
+                link:"/celltaxonomy/study/"+results[0].PMID,
+                textStyle:{
+                  color:"#2C75C9",
+                  fontFamily:'Arial'
+
+                },
+                right:'center',
+            },
+            tooltip: {
+                trigger: 'item',
+                axisPointer: {
+                    type: 'shadow'
+                },
+                formatter:function(params){
+                    return `
+                            Cell type: ${params.data[0]}<br/>
+                            Max: ${params.data[5].toPrecision(2)}<br/>
+                            Q3: ${params.data[4].toPrecision(2)}<br/>
+                            Median: ${params.data[3].toPrecision(2)}<br/>
+                            Q1: ${params.data[2].toPrecision(2)}<br/>
+                            Min: ${params.data[1].toPrecision(2)}<br/>
+                            `
+                }
+            },
+            grid: {
+                left: '10%',
+                top: '20%',
+                right: '10%',
+                bottom: '15%',
+                height:'60%'
+            },
+            xAxis: {
+                type: 'category',
+                axisLabel:{
+                    interval:0,
+                    rotate: 15,
+                    fontSize:11,
+                    fontFamily:"Arial"
+
+                },
+                name:'Cell type',
+                nameTextStyle:{
+                    fontSize:12,
+                    fontWeight:'bold',
+                    fontFamily:"Arial"
+                },
+                boundaryGap: true,
+                nameGap: 30,
+                splitArea: {
+                    show: true
+                },
+                splitLine: {
+                    show: false
+                }
+            },
+            yAxis: {
+                type: 'value',
+                name: 'TPM or CPM',
+                nameTextStyle:{
+                    fontSize:12,
+                    fontWeight:'bold',
+                    fontFamily:"Arial"
+                },
+                axisLabel:{
+                    fontSize:11,
+                    fontFamily:"Arial"
+
+                },
+                splitArea: {
+                    show: false
+                }
+            },
+
+            series: []
+        };
+        option.dataset=dataset;
+        option.series=series;
+
+        option && myChart.setOption(option);
+    }
+    function getoptions(url,title,id){
+        $("#"+id).select2({
+
+            ajax: {
+                url: "/celltaxonomy"+url,
+                dataType: 'json',
+                type: "post",
+                data:function(params){
+                    var search={
+                        term:params.term,
+                        title:title,
+                        species:$("#species").val(),
+                        celltype:$("#celltype").val()
+                    }
+                    return search
+                },
+                processResults: function (data) {
+                    var res = data.map(function (item) {
+                        return {id: item[title],text:item[title]};
+                    });
+                    return {
+                        results: res
+                    };
+                }
+            }
+
+
+        });
+    };
+    function getbarplot(id,data){
+        var plotwidth=$("#"+id).parent().width();
+        var title=""
+        var total=data["table"].length
+        $("#"+id).css("width",plotwidth/2)
+        data=data["plot1"]
+        var chartDom = document.getElementById(id);
+        var myChart = echarts.init(chartDom);
+        var ytick=["Total","0.25-0.5","0.5-1","1-2",">2"]
+
+
+        var app = {};
+
+
+        var option;
+        option = {
+            color:['#8bc6ec'],
+            title:{
+                text:"",
+                left:'center',
+                textStyle: {
+                    fontSize:15,
+                    fontFamily:"Arial"
+                }
+            },
+
+            yAxis: [
+                {
+                    type: 'value',
+                    name:"Number of samples",
+
+                    nameTextStyle:{
+                        fontWeight:'bold',
+                        fontSize:12,
+                        fontFamily: "Arial",
+                    },
+                    axisLabel:{
+                        fontSize:11,
+                        fontFamily:"Arial"
+                    }
+                },
+
+
+            ],
+            tooltip:{},
+            grid:{
+                width:"70%",
+                height:"60%",
+                right:"10%",
+                top:'10%'
+            },
+            xAxis: {
+                type: 'category',
+                data:ytick,
+                nameTextStyle:{
+                    fontWeight:'bold',
+                    fontSize:12,
+                    fontFamily:"Arial"
+
+                },
+                name:"Average log2FC",
+                nameLocation: "center",
+                nameGap: 50,
+                minInterval: 1,
+                axisLabel:{
+                    rotate:45,
+                    fontSize:11,
+                    fontFamily:"Arial"
+                }
+            },
+            series: [
+                {
+                    name:"Number of samples",
+                    type:"bar",
+                    data:[
+                        {
+                            value:total,
+                            itemStyle:{
+                                color:"#9599e2",
+                                borderRadius:[5,5,0,0]
+                            }
+                        },
+                        {
+                            value:data[0]["A"],
+                            itemStyle:{
+                                borderRadius:[5,5,0,0]
+                            }
+                        },
+                        {
+                            value:data[0]["B"],
+                            itemStyle:{
+                                borderRadius:[5,5,0,0]
+                            }
+                        },
+                        {
+                            value:data[0]["C"],
+                            itemStyle:{
+                                borderRadius:[5,5,0,0]
+                            }
+                        },
+                        {
+                            value:data[0]["D"],
+                            itemStyle:{
+                                borderRadius:[5,5,0,0]
+                            }
+                        }
+                    ]
+                }
+
+            ]
+        };
+        myChart.clear()
+        option && myChart.setOption(option);
+    }
+    function getbarplot2(id,data){
+        var plotwidth=$("#"+id).parent().width();
+        var title=""
+        var total=data["table"].length
+
+        $("#"+id).css("width",plotwidth/2)
+        data=data["plot2"]
+
+        var chartDom = document.getElementById(id);
+        var myChart = echarts.init(chartDom);
+        var ytick=["Total","0-0.25","0.25-0.5","0.5-0.75",">0.75"]
+
+
+        var app = {};
+
+
+        var option;
+        option = {
+            color:['#8bc6ec'],
+            title:{
+                text:"",
+                left:'center',
+                textStyle: {
+                    fontSize:15,
+                    fontFamily:"Arial"
+                }
+            },
+
+            xAxis: [
+                {
+                    type: 'category',
+                    data: ytick,
+                    name:"Specificity score",
+                    nameTextStyle:{
+                        fontWeight:'bold',
+                        fontSize:12,
+                        fontFamily:"Arial"
+                    },
+
+                    nameLocation:"center",
+                    nameGap:50,
+                    axisLabel:{
+                        rotate:45,
+                        fontSize:11,
+                        fontFamily:"Arial"
+                    }
+                },
+
+
+
+            ],
+            tooltip:{},
+            grid:{
+                width:"70%",
+                height:"60%",
+                right:"10%",
+                top:'10%'
+            },
+            yAxis: {
+                type: 'value',
+                name:"Number of samples",
+                nameTextStyle:{
+                    fontWeight:'bold',
+                    fontSize:12,
+                    fontFamily:"Arial"
+                },
+                minInterval: 1,
+                axisLabel:{
+                    fontSize:11,
+                    fontFamily:"Arial"
+                }
+
+            },
+            series: [
+                {
+                    name:"Number of samples",
+                    type:"bar",
+                    data:[
+                        {
+                            value:total,
+                            itemStyle:{
+                                color:"#9599e2",
+                                borderRadius:[5,5,0,0]
+                            }
+                        },
+                        {
+                            value:data[0]["A"],
+                            itemStyle:{
+                                borderRadius:[5,5,0,0]
+                            }
+                        },
+                        {
+                            value:data[0]["B"],
+                            itemStyle:{
+                                borderRadius:[5,5,0,0]
+                            }
+                        },
+                        {
+                            value:data[0]["C"],
+                            itemStyle:{
+                                borderRadius:[5,5,0,0]
+                            }
+                        },
+                        {
+                            value:data[0]["D"],
+                            itemStyle:{
+                                borderRadius:[5,5,0,0]
+                            }
+                        }
+                    ]
+                },
+
+            ]
+        };
+        myChart.clear()
+        option && myChart.setOption(option);
+    }
+
+
+    getoptions("/tool/exp_list","Species","species")
+    getoptions("/tool/exp_marker_list","Gene","marker")
+
+    $("#celltype").select2({
+        ajax: {
+            url: "/celltaxonomy/tool/exp_celltype_list",
+            dataType: 'json',
+            type: "post",
+            data:function(params){
+                var query={
+                    term:params.term,
+                    species:$("#species").val(),
+                    celltype:$("#celltype").val()
+                }
+                return query
+            },
+            processResults: function (data) {
+                var res = data.map(function (item) {
+                    return {id: item["Cell_standard"],text:item["Cell_standard"]};
+                });
+                return {
+                    results: res
+                };
+            }
+        }
+
+
+    });
+
+    $("#species").change(function(){
+
+        $("#celltype").select2({
+            ajax: {
+                url: "/celltaxonomy/tool/exp_celltype_list",
+                dataType: 'json',
+                type: "post",
+                data:function(params){
+                    var query={
+                        term:params.term,
+                        species:$("#species").val(),
+                        celltype:$("#celltype").val()
+                    }
+                    return query
+                },
+                processResults: function (data) {
+                    var res = data.map(function (item) {
+                        return {id: item["Cell_standard"],text:item["Cell_standard"]};
+                    });
+                    return {
+                        results: res
+                    };
+                }
+            }
+
+
+        });
+    })
+    $("#celltype").change(function(){
+        getoptions("/tool/exp_list","Species","species")
+    })
+
+
+    $("#inputbtn").click(function(){
+        $("#results").empty()
+        $("#exp_table_wrapper").parent().parent().attr("hidden","true")
+        $("#loading").css("display","block")
+        $("#plot1").parent().css("visibility","hidden")
+        $.ajax({
+            url:"/celltaxonomy/tool/tool_expression",
+            type:'post',
+            data:{
+                species:$("#species").val(),
+                celltype:$("#celltype").val(),
+                "marker":$("#marker").val(),
+                expression:false
+            },
+            success:function(data){
+                var dataset=data["list"]
+                getbarplot("plot1",data)
+                getbarplot2("plot2",data)
+                $("#exp_table").parent().parent().removeAttr("hidden")
+                $("#exp_table_wrapper").parent().parent().removeAttr("hidden")
+
+                $("#exp_table").DataTable({
+                    data:data["table"],
+                    columns:[
+                        {
+                          render:function(data,type,row){
+                              return "<i class=\"icon ion-stats-bars\" style='font-size: 20px' id='"+row.DatasetsID+"'></i>"
+                          }
+                        },
+                        {
+                            data:"DatasetsID",
+                            render:function(data){
+                                if(data.indexOf("_SRS")>=0){
+                                    return "<a href='#"+data+"'>"+data.split("_")[1]+"</a>"
+                                }
+                                else{
+                                    return "<a href='#"+data+"'>"+data+"</a>"
+                                }
+                            }
+                        },
+                        {
+                            data:"PubmedID",
+                            render:function(data){
+                                return "<a target='_blank' href='https://pubmed.ncbi.nlm.nih.gov/"+data.replace("\r","")+"'>"+data.replace("\r","")+"</a>"
+                            }
+                        },
+                        {
+                            data:"Title"
+
+                        },
+                        {
+                            data:"Library"
+                        },
+                        {data:"Number_of_cells"}
+
+                    ],
+                    destroy:true,
+                    order:[3,'desc']
+                })
+                $.when(function() {
+                    $("#results").append(
+                        "<div id='" + dataset[0] + "' style='height: 400px'></div>"
+                    )
+                    var temp = eval(results).filter(function (f) {
+                        return f.ID == dataset[0]
+                    })
+                    getboxplot2(dataset[0], temp)
+                }).done(function(){
+                    $("#plot1").parent().css("visibility","visible")
+                    $("#loading").css("display","none")
+                })
+
+            }
+        })
+
+    })
+    $("#example").click(function(){
+        $("#input2").click()
+        var species = new Option("Mus musculus", "Mus musculus", true, true);
+        $("#species").empty()
+        $("#species").append(species).trigger('change')
+
+        var celltype = new Option("Endothelial cell", "Endothelial cell", true, true);
+        $("#celltype").empty()
+        $("#celltype").append(celltype).trigger('change')
+        var marker = new Option("Pecam1", "Pecam1", true, true);
+        $("#marker").empty()
+        $("#marker").append(marker).trigger('change')
+    })
+    $("#reset").click(function(){
+
+        $("#species").val(null).trigger('change')
+        $("#celltype").val(null).trigger('change')
+        $("#marker").val(null).trigger('change')
+        $("#input2").removeAttr("checked")
+        $("#species").attr("disabled",true)
+
+    })
+    $("input[type=radio][name=additional]").change(function(){
+        $("#species").removeAttr("disabled")
+    })
+
+    $(".icon").hover(function(){
+        var X = $(this).position().top;
+        var Y = $(this).offset().left;
+        var height=$(this).height();
+        var delta=$(window).width()-Y;
+        $(this).siblings(".tooltiptext").css("top",X+height+5)
+        if($(this).siblings("span").text().length>100){
+            $(this).siblings("span").css("width",350)
+            if(delta<175){
+                $(this).siblings(".tooltiptext").css("margin-left",-1*(180+175-delta+20))
+            }
+            else{
+                $(this).siblings(".tooltiptext").css("margin-left",-180)
+            }
+
+        }
+
+    })
+    $("#exp_table").on('click','.ion-stats-bars',function(){
+        $.ajax({
+            url:"/celltaxonomy/tool/tool_expression",
+            type:'post',
+            data:{
+                species:$("#species").val(),
+                celltype:$("#celltype").val(),
+                "marker":$("#marker").val(),
+                expression:true,
+                dataset:$(this).attr("id")
+            },
+            success:function(data){
+                $("#results").css("display","block")
+                var results=[]
+                data["results"].map(function(e){
+                    var tissue = e.Tissue.split(",")
+                    var Cell_standard = e.Cell_standard.split(",")
+                    var Min=e.Min.split(",")
+                    var Q1=e.Q1.split(",")
+                    var Q2=e.Q2.split(",")
+                    var Q3=e.Q3.split(",")
+                    var Max=e.Max.split(",")
+                    var pmid=e.PMID.split(",")
+                    for (i=0;i<tissue.length;i++){
+                        results.push(
+                            {
+                                Tissue:tissue[i],
+                                Cell_standard:Cell_standard[i],
+                                Min:Min[i],
+                                Q1:Q1[i],
+                                Q2:Q2[i],
+                                Q3:Q3[i],
+                                Max:Max[i],
+                                PMID:pmid[i],
+                                ID:e.ID,
+                                Species:e.Species,
+                                Gene:e.Gene
+                            }
+                        )
+                    }
+                })
+                var dataset=data["results"][0].ID
+
+                $("#results").append(
+                    "<div id='plot_" + dataset + "' style='height: 250px'></div>"
+                )
+                var temp = eval(results).filter(function (f) {
+                    return f.ID == dataset
+                })
+                getboxplot2("plot_"+dataset, temp)
+                window.location.hash="#plot_"+dataset
+
+
+            }
+        })
+    })
+    $(document).ready(function(){
+        $("#example").click()
+        $("#inputbtn").click()
+    })
+</script>
+</body>
+</html>

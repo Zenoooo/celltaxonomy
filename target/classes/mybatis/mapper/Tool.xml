@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.ct.Mapper.ToolMapper">
+    <select id="getTissueList" resultType="HashMap">
+        select distinct ${title} from ${database}
+        <where>
+            <if test="term!=null">
+                and ${title} like concat('%',#{term},'%')
+            </if>
+            <if test="species!=null and species.length>0">
+                and Species = #{species}
+            </if>
+            <if test="cellA!=null and cellA.length>0">
+                and CT_ID =#{cellA}
+            </if>
+            <if test="(cellB!=null and cellB.length>0)">
+                and CT_ID =#{cellB}
+            </if>
+            <if test="condition!=null and condition.length>0">
+                and Disease_Type =#{condition}
+            </if>
+            and ${title} != "-"
+        </where>
+
+        order by length(${title})
+        limit 0,100;
+    </select>
+    <select id="getDiseaseList" resultType="HashMap">
+        select distinct ${title} from ${database}
+        <where>
+            <if test="term!=null">
+                and ${title} like concat('%',#{term},'%')
+            </if>
+            <if test="species!=null and species.length>0">
+                and Species = #{species}
+            </if>
+            <if test="tissue!=null and tissue.length>0">
+                and Tissue_standard = #{tissue}
+            </if>
+            <if test="cellA!=null and cellA.length>0">
+                and CT_ID =#{cellA}
+            </if>
+            <if test="(cellB!=null and cellB.length>0)">
+                and CT_ID =#{cellB}
+            </if>
+            and ${title} != "-"
+        </where>
+
+        ORDER BY length(${title})
+        limit 0,100;
+
+    </select>
+    <select id="getSpeciesList" resultType="HashMap">
+        select distinct Species from ${database}
+        <where>
+            <if test="term!=null">
+                and Species like concat('%',#{term},'%')
+            </if>
+
+            <if test="cellA!=null and cellA.length>0">
+                and CT_ID =#{cellA}
+            </if>
+            <if test="(cellB!=null and cellB.length>0)">
+                and CT_ID =#{cellB}
+            </if>
+            <if test="tissue!=null and tissue.length>0">
+                and Tissue_standard =#{tissue}
+            </if>
+            <if test="condition!=null and condition.length>0">
+                and Disease_Type =#{condition}
+            </if>
+
+            and Species != "-"
+        </where>
+        ORDER BY length(Species)
+        limit 0,100;
+
+    </select>
+    <select id="getCelltypeList" resultType="HashMap">
+        select distinct Cell_standard,CT_ID from ct.all_search_table
+        <where>
+            <if test="term!=null">
+                and ${title} like concat('%',#{term},'%')
+            </if>
+            <if test="species!=null and species.length>0">
+                and Species = #{species}
+            </if>
+            <if test="tissue!=null and tissue.length>0">
+                and Tissue_standard = #{tissue}
+            </if>
+            <if test="condition!=null and condition.length>0">
+                and Disease_Type = #{condition}
+            </if>
+        </where>
+
+        ORDER BY length(${title})
+        limit 0,100;
+
+    </select>
+
+    <select id="getTissueList2" resultType="HashMap">
+        select distinct Tissue_standard,Tissue_UberonOntology_ID2 from ${database}
+        <where>
+            <if test="term!=null">
+                and Tissue_standard like concat('%',#{term},'%')
+            </if>
+            <if test="species!=null and species.length>0">
+                and Species = #{species}
+            </if>
+            <if test="cell!=null and cell.length>0">
+                and CT_ID =#{cell}
+            </if>
+            <if test="condition!=null and condition.length>0">
+                and Disease_Type =#{condition}
+            </if>
+            and ${title} != "-"
+        </where>
+
+        order by length(${title})
+        limit 0,100;
+    </select>
+    <select id="getDiseaseList2" resultType="HashMap">
+        select distinct ${title} from ${database}
+        <where>
+            <if test="term!=null">
+                and ${title} like concat('%',#{term},'%')
+            </if>
+            <if test="species!=null and species.length>0">
+                and Species = #{species}
+            </if>
+            <if test="cell!=null and cell.length>0">
+                and CT_ID = #{cell}
+            </if>
+            <if test="tissueA!=null and tissueA.length>0">
+                and Tissue_standard =#{tissueA}
+            </if>
+            <if test="(tissueB!=null and tissueB.length>0)">
+                and Tissue_standard =#{tissueB}
+            </if>
+            and ${title} != "-"
+        </where>
+
+        ORDER BY length(${title})
+        limit 0,100;
+
+    </select>
+    <select id="getSpeciesList2" resultType="HashMap">
+        select distinct Species from ${database}
+        <where>
+            <if test="term!=null">
+                and Species like concat('%',#{term},'%')
+            </if>
+
+            <if test="tissueA!=null and tissueA.length>0">
+                and Tissue_standard =#{tissueA}
+            </if>
+            <if test="(tissueB!=null and tissueB.length>0)">
+                and Tissue_standard =#{tissueB}
+            </if>
+            <if test="cell!=null and cell.length>0">
+                and CT_ID =#{cell}
+            </if>
+            <if test="condition!=null and condition.length>0">
+                and Disease_Type =#{condition}
+            </if>
+
+            and Species != "-"
+        </where>
+        ORDER BY length(Species)
+        limit 0,100;
+
+    </select>
+    <select id="getCelltypeList2" resultType="HashMap">
+        select distinct Cell_standard,CT_ID from ct.all_search_table
+        <where>
+            <if test="term!=null">
+                and ${title} like concat('%',#{term},'%')
+            </if>
+            <if test="species!=null and species.length>0">
+                and Species = #{species}
+            </if>
+            <if test="tissueA!=null and tissueA.length>0">
+                and Tissue_standard = #{tissueA}
+            </if>
+            <if test="tissueB!=null and tissueB.length>0">
+                and Tissue_standard = #{tissueB}
+            </if>
+            <if test="condition!=null and condition.length>0">
+                and Disease_Type = #{condition}
+            </if>
+        </where>
+
+        ORDER BY length(${title})
+        limit 0,100;
+
+    </select>
+
+
+    <select id="getCompare" resultType="HashMap">
+        select Cell_Marker,count(distinct PMID) as counts,Gene_ENTREZID2
+        from all_search_table
+
+        <where>
+            <if test="cellA!=null and cellB==null">
+                and CT_ID =#{cellA}
+            </if>
+            <if test="cellA==null and cellB!=null">
+                and CT_ID =#{cellB}
+            </if>
+            <if test="cellA!=null and cellB!=null">
+                and (CT_ID =#{cellA} or CT_ID =#{cellB})
+            </if>
+
+            <if test="species.length()>0">
+                and Species = #{species}
+            </if>
+            <if test="tissue.length()>0">
+                and Tissue_standard = #{tissue}
+            </if>
+            <if test="condition.length()>0">
+                and Disease_Type = #{condition}
+            </if>
+        </where>
+        GROUP BY Cell_Marker,Gene_ENTREZID2
+        order by counts desc
+
+    </select>
+    <select id="getCompare2" resultType="HashMap">
+        select Cell_Marker,count(distinct PMID) as counts,Gene_ENTREZID2
+        from all_search_table
+
+        <where>
+            <if test="tissueA!=null and tissueB==null">
+                and Tissue_standard =#{tissueA}
+            </if>
+            <if test="tissueA==null and tissueB!=null">
+                and Tissue_standard =#{tissueB}
+            </if>
+            <if test="tissueA!=null and tissueB!=null">
+                and (Tissue_standard =#{tissueA} or Tissue_standard =#{tissueB})
+            </if>
+
+            <if test="species.length()>0">
+                and Species = #{species}
+            </if>
+            <if test="cell.length()>0">
+                and CT_ID = #{cell}
+            </if>
+            <if test="condition.length()>0">
+                and Disease_Type = #{condition}
+            </if>
+        </where>
+        GROUP BY Cell_Marker,Gene_ENTREZID2
+        order by counts desc
+
+    </select>
+    <select id="getCellSearch" resultType="HashMap">
+        select CT_ID,Cell_standard,
+        GROUP_CONCAT(distinct Cell_Marker) as Cell_Marker,
+        GROUP_CONCAT(distinct Gene_ENTREZID2) as Gene_ENTREZID2,
+        COUNT(distinct Cell_Marker) as counts
+        from high_quality_marker
+        <where>
+            and Gene_ENTREZID2 in
+            <foreach collection="genes" item="name" index="index" open="(" close=")" separator=",">
+                #{name}
+            </foreach>
+            <if test="species.length>0 and species!='null'">
+                and Species=#{species}
+            </if>
+        </where>
+        group by CT_ID,Cell_standard
+        order by counts desc;
+    </select>
+    <select id="getMarkerByCT" resultType="HashMap">
+        select count(distinct Gene_ENTREZID2) as MarkerNumber, group_concat(distinct Gene_ENTREZID2) as Markers from ct.high_quality_marker
+        where CT_ID=#{id} and Species=#{species}
+        group by CT_ID
+    </select>
+    <select id="getExpList" resultType="HashMap">
+        select distinct ${title} from ct.total_cell_number
+        <where>
+            <if test="term!=null">
+                and ${title} like concat('%',#{term},'%')
+            </if>
+            <if test="species!=null and species.length>0">
+                and Species = #{species}
+            </if>
+            <if test="tissue!=null and tissue.length>0">
+                and Tissue = #{tissue}
+            </if>
+            <if test="celltype!=null and celltype.length>0">
+                and cell_id = #{celltype}
+            </if>
+        </where>
+
+        limit 0,10
+    </select>
+    <select id="getExpCelltypeList" resultType="HashMap">
+        select distinct Cell_standard,cell_id from ct.total_cell_number
+        <where>
+            <if test="term!=null">
+                and Cell_standard like concat('%',#{term},'%')
+            </if>
+            <if test="species!=null and species.length>0">
+                and Species = #{species}
+            </if>
+            <if test="tissue!=null and tissue.length>0">
+                and Tissue = #{tissue}
+            </if>
+        </where>
+
+
+    </select>
+
+
+
+    <select id="getDatasetList" resultType="HashMap">
+        select distinct ID from ct.total_boxplot_long_cell_datasets_relationship
+        <where>
+            <if test="tissue!=null and tissue.length>0">
+                and Tissue = #{tissue}
+            </if>
+            <if test="celltype!=null and celltype.length>0">
+                and cell_id = #{celltype}
+            </if>
+            <if test="species!=null and species.length>0">
+                and Species = #{species}
+            </if>
+        </where>
+    </select>
+    <select id="getDatasetList2" resultType="HashMap">
+        select distinct Gene from ct.total_boxplot_long_gene
+        <where>
+            <if test="celltype!=null and celltype.length>0">
+                and cell_id = #{celltype}
+            </if>
+            <if test="species!=null and species.length>0">
+                and Species = #{species}
+            </if>
+            <if test="term!=null and term.length>0">
+                and Gene like concat(#{term},'%')
+            </if>
+        </where>
+        limit 0,10
+
+    </select>
+    <select id="getExpMarkerList" resultType="HashMap">
+        select distinct Gene from ct.total_boxplot_long
+        <where>
+            <if test="term!=null">
+                and Gene like concat(#{term},'%')
+            </if>
+            and ID in
+            <foreach collection="datasetlist" item="name" index="index" open="(" close=")" separator=",">
+                #{name}
+            </foreach>
+            and Q2!=0
+
+        </where>
+        limit 0,10
+    </select>
+
+
+
+    <select id="getExpression" resultType="HashMap">
+        select * from total_boxplot_short
+        where ID =#{dataset}
+        and Gene=binary #{marker}
+    </select>
+    <select id="getFCPlot" resultType="HashMap">
+        select * from ct.total_findmarker_short
+        where Species=#{species}  and Cell_id=#{celltype} and markers=binary #{marker}
+
+
+    </select>
+    <select id="getSSPlot" resultType="HashMap">
+        select * from total_cell_specificities_short
+        where Species=#{species}  and Cell_type_id=#{celltype} and Gene=binary #{marker}
+
+
+    </select>
+
+    <select id="getDatasets" resultType="HashMap">
+        select distinct DatasetsID,PubmedID,Journal,Years,Title,Library,Number_of_cells,total from study as a left join total_cell_number  as b
+        on DatasetsID=ID and a.Species=b.Species and a.Tissue=b.Tissue
+        <where>
+            <if test="tissue!=null">
+                and a.Tissue=#{tissue}
+            </if>
+            <if test="species!=null and species.length>0">
+                and a.Species = #{species}
+            </if>
+            and cell_id = #{celltype}
+            and DatasetsID in
+            <foreach collection="datasetlist" item="name" index="index" open="(" close=")" separator=",">
+                #{name}
+            </foreach>
+        </where>
+    </select>
+    <select id="getMarkerByName" resultType="HashMap">
+        select * from data_for_cellsearch
+        <where>
+            Cell_Marker=#{id} and species=#{species}
+        </where>
+    </select>
+</mapper>

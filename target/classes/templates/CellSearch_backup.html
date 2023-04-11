@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Cell search - Cell Taxonomy - CNCB-NGDC</title>
+    <script src="/celltaxonomy/static/js/jquery.min.js"></script>
+    <link rel="icon" href="/celltaxonomy/static/img/CellTaxonomy v3.png">
+
+    <link rel="stylesheet" href="/celltaxonomy/static/css/bootstrap.min.css" >
+    <link rel="stylesheet" href="/celltaxonomy/static/css/dataTables.bootstrap.min.css" >
+    <link rel="stylesheet" href="/celltaxonomy/static/css/ionicons.min.css">
+    <link rel="stylesheet" href="/celltaxonomy/static/css/font-awesome.min.css">
+    <script src="/celltaxonomy/static/js/bootstrap.min.js"></script>
+
+    <script src="/celltaxonomy/static/js/plotly-latest.min.js"></script>
+    <script type="text/javascript" src="/celltaxonomy/static/js/headerfooter-full.js"></script>
+    <script src="/celltaxonomy/static/js/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet"  href="/celltaxonomy/static/css/buttons.bootstrap.min.css">
+    <script src="/celltaxonomy/static/js/dataTables.buttons.min.js"></script>
+    <script src="/celltaxonomy/static/js/buttons.bootstrap.min.js"></script>
+
+    <link href="/celltaxonomy/static/css/select2.min.css" rel="stylesheet" />
+    <script src="/celltaxonomy/static/js/select2.min.js"></script>
+
+    <script src="/celltaxonomy/static/js/dataTables.bootstrap.min.js"></script>
+    <link href="/celltaxonomy/static/css/bow.ui.min.css" rel="stylesheet">
+
+    <script type="text/javascript" src="/celltaxonomy/static/js/echarts.min.js"></script>
+    <script src="/celltaxonomy/static/js/highcharts.js"></script>
+    <script src="/celltaxonomy/static/js/venn.js"></script>
+
+    <script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-core.min.js"></script>
+    <script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-venn.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/celltaxonomy/static/css/my/my.css">
+
+    <style>
+
+        .selects li{
+            list-style: none;
+        }
+        .selects li select{
+            width: 150px;
+        }
+        input::placeholder {
+            font-size: 14px;
+        }
+    </style>
+
+</head>
+<body>
+    <nav th:replace="common/topbar::topbar"></nav>
+    <div class="container" style="background: #f4f7f6">
+        <div class="row">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/celltaxonomy">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">CellSearch</li>
+                </ol>
+            </nav>
+            <div style="padding: 5px 5%;background: transparent">
+                <span style="font-size:30px;font-weight:700;margin: 30px 0;color: rgb(115,129,159)">CellSearch: </span>
+                <span style="font-size:30px;color: rgb(115,129,159)">search of similar cell types according to user-uploaded cell marker list</span>
+            </div>
+            <div class="col-lg-12" style="display: flex;justify-content: space-between;margin-top: 50px;padding:0 5%">
+                    <div class="mypanel-body col-lg-3" style="list-style: none;height: 300px;margin:0 15px 0 0;padding-top: 20px">
+                        <h4 style="margin-left: 10px;">Guide</h4>
+                        <ul  style="padding: 10px; margin:0">
+                            <li style="margin-bottom: 20px">
+                                Step1: Paste the gene list text or upload a file
+                            </li>
+                            <li style="margin-bottom: 20px">
+                                Step2: Select additional filters of species, tissue or condition (optional)
+                            </li>
+                            <li>
+                                Step3: Click “Run” button to search cell types in Cell Taxonomy
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="mypanel-body col-lg-6" style="list-style: none;height: 300px;display: flex;padding: 20px 0 0 100px;margin:0 15px">
+                        <div>
+                            <div style="margin-bottom: 20px" class="radio">
+                                <label for="input1" style="font-size: 14px;font-weight: 700;">
+                                    <input type="radio" name="input" id="input1" checked>
+                                    Input gene list of your interest
+                                </label>
+                            </div>
+                            <textarea type="text" id="uploadlist" style="min-height: 100px;min-width: 500px;margin:0"></textarea>
+
+                            <div class="radio">
+                                <label style="font-size: 14px;font-weight: 700;" for="input2">
+                                    <input  type="radio" name="input" id="input2">
+                                    Or load if from disk:
+                                </label>
+                            </div>
+                            <div style="display: flex;justify-content: flex-start">
+                                <button class="btn" id="uploadbtn" style="color:rgb(154,160,169);border: 1px solid rgb(216,222,226);">Browse</button>
+                                <input style="margin:0;width:auto;border:0;background: white;box-shadow: none" type="text" id="uploadname" placeholder="No files selected" readonly="readonly" disabled>
+                                <!--                                <button class="btn btn-primary" id="inputbtn2">Search</button>-->
+                                <input type="file" id="uploadfile" style="width: 0;height: 0">
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="mypanel-body col-lg-2" style="list-style: none;height: 300px;margin:0 0 0 15px;padding-top: 20px">
+
+                        <label style="margin-left: 20px;font-size: 14px;font-weight: 700;">
+                            <input  type="radio" name="additional" id="input3">
+                            Additional filters
+                        </label>
+
+                        <ul class="selects">
+                            <li style="margin-bottom: 20px">
+                                <label style="color: rgb(115,129,159);font-weight: 700">Species</label>
+                                <select id="species" disabled></select>
+                            </li>
+                            <li style="margin-bottom: 20px">
+                                <label style="color: rgb(115,129,159);font-weight: 700">Tissue name</label>
+                                <select id="tissue" disabled></select>
+                            </li>
+                            <li >
+                                <label style="color: rgb(115,129,159);font-weight: 700">Condition</label>
+                                <select id="condition" disabled></select>
+                            </li>
+                        </ul>
+                    </div>
+
+            </div>
+            <div class="col-lg-12" style="display: flex;justify-content: flex-end;padding:0 5%;margin: 10px 0">
+                <button class="btn" style="background: rgb(84,123,182);color:white;" id="example"><i class="icon ion-clipboard"></i> Example</button>
+
+                <button class="btn" id="reset" style="margin-left: 20px;background: rgb(60,141,188);color:white;"><i class="icon ion-refresh"></i> Reset</button>
+                <button class="btn" id="inputbtn" style="margin-left: 20px;background: rgb(0,166,90);color:white;"><i class="icon ion-card"></i> Run</button>
+            </div>
+
+
+            <div class="col-lg-12" style="padding:0 5%;display: none" >
+                <div class="mypanel-body" style="padding:30px 20px">
+                    <table class="table table-hover table-striped " id="results" >
+                        <thead>
+                        <tr>
+                            <th>Cell Taxonomy ID</th>
+                            <th>Cell type</th>
+                            <th>
+                                Similarity score
+                                <div class="wrapper" style="margin-left: 5px">
+                                    <i class="icon ion-help-circled"></i>
+                                    <span class="tooltiptext" style="display: block;white-space: normal">The similarity between cell types in marker composition was measured by a similarity score (0-1). The similarity score was calculated between two cell types by the number of shared markers divided by the union of marker set sizes.</span>
+                                </div>
+                            </th>
+                            <th>
+                                Cell Taxonomy %
+                                <div class="wrapper" style="margin-left: 5px">
+                                    <i class="icon ion-help-circled"></i>
+                                    <span class="tooltiptext" style="display: block;white-space: normal">
+                                        Matching percentage for markers in cell types of Cell Taxonomy.
+                                    </span>
+                                </div>
+                            </th>
+                            <th>
+                                User list %
+                                <div class="wrapper" style="margin-left: 5px">
+                                    <i class="icon ion-help-circled"></i>
+                                    <span class="tooltiptext" style="display: block;white-space: normal">
+                                        Matching percentage for markers in user-defined list.
+                                    </span>
+                                </div>
+                            </th>
+
+                            <th>Matched genes</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function getoptions(url,title,id){
+            $("#"+id).select2({
+                ajax: {
+                    url: "/celltaxonomy"+url,
+                    dataType: 'json',
+                    type: "post",
+                    data:function(params){
+                        var query={
+                            term:params.term,
+                            title:title,
+                            species:$("#species").val(),
+                            tissue:$("#tissue").val(),
+                            condition:$("#condition").val()
+                        }
+                        return query
+                    },
+                    processResults: function (data) {
+                        var res = data.map(function (item) {
+                            return {id: item[title],text:item[title]};
+                        });
+                        return {
+                            results: res
+                        };
+                    }
+                }
+
+
+            });
+        }
+        $("#uploadname").css("height",'40px')
+        $("#uploadbtn").siblings("span").css("height",'40px')
+        $("#uploadbtn").css("height",'40px')
+
+
+        getoptions("/tool/species_list","Species","species");
+        getoptions("/tool/tissue_list","Tissue_Standard","tissue");
+        getoptions("/tool/disease_list","Disease_Type","condition");
+        $("#species").change(function(){
+
+            getoptions("/tool/tissue_list","Tissue_Standard","tissue");
+            getoptions("/tool/disease_list","Disease_Type","condition");
+
+
+        })
+        $("#tissue").change(function(){
+            getoptions("/tool/disease_list","Disease_Type","condition");
+            getoptions("/tool/species_list","Species","species");
+        })
+        $("#condition").change(function(){
+            getoptions("/tool/species_list","Species","species");
+            getoptions("/tool/tissue_list","Tissue_Standard","tissue");
+        })
+
+        $("#uploadbtn").click(function(){
+            $("#uploadfile").trigger('click')
+        })
+        $("#uploadfile").change(function(){
+            $("#uploadname").val(document.getElementById("uploadfile").files[0].name)
+            $("#uploadlist").val(null);
+            $("#uploadlist").attr("disabled","disabled")
+        })
+        $("#inputbtn").click(function(){
+            if($("#uploadname").val().length>0){
+                var formData=new FormData();
+                formData.append('file',document.getElementById("uploadfile").files[0])
+                $("#results").parent().parent().css("display","block")
+
+                $.ajax({
+                    url:'/celltaxonomy/tool/cellsearch_file',
+                    type:"post",
+                    data:formData,
+                    processData : false,
+                    contentType : false,
+                    success:function(results){
+                        var len=results['listlength'];
+                        var dict=results['marker'];
+                        $("#results").DataTable({
+                            data:results['results'],
+                            columns:[
+                                {
+                                    data:"CT_ID",
+                                    render:function(data,type,row){
+                                        return "<a target='_blank' href='/celltaxonomy/celltype/"+row.CT_ID+"'>"+row.CT_ID+"</a>"
+                                    }
+                                },
+                                {
+                                    data:"Cell_standard",
+                                    render:function(data,type,row){
+                                        return "<a target='_blank' href='/celltaxonomy/celltype/"+row.CT_ID+"'>"+row.Cell_standard+"</a>"
+                                    }
+                                },
+                                {
+                                    data:"TotalNumber",
+                                    render:function(data,type,row){
+                                        return (row.counts/row.TotalNumber).toPrecision(3)
+                                    }
+                                },
+
+
+                                {
+                                    data:"MarkerNumber",
+                                    render:function(data,type,row){
+                                        return (row.counts/row.MarkerNumber*100).toPrecision(3)+'%'
+                                    }
+                                },
+                                {
+                                    data:"counts",
+                                    render:function(data,type,row){
+                                        return (row.counts/len*100).toPrecision(3)+'%'
+                                    }
+                                },
+                                {
+                                    data:"Cell_Marker",
+                                    render:function(data,type,row){
+                                        var genes=row.Cell_Marker.split(",");
+                                        var pastes=""
+                                        for(var i=0;i<genes.length;i++){
+
+
+                                            if (i==0){
+                                                pastes=pastes+"<a target='_blank' href='/celltaxonomy/marker/"+dict[genes[i]]+"'>"+genes[i]+"</a>"
+                                            }
+                                            else{
+                                                pastes=pastes+", "+"<a target='_blank' href='/celltaxonomy/marker/"+dict[genes[i]]+"'>"+genes[i]+"</a>"
+
+                                            }
+                                        }
+                                        return pastes
+                                    }
+                                },
+
+                            ],
+                            destroy:true,
+                            order:[
+                                [2,'desc'],
+                                [3,'desc'],
+                                [4,'desc']
+                            ]
+                        })                },
+                    error:function(){
+                        alert("Upload Failed!")
+                    }
+                })
+            }
+            else if($("#uploadlist").val().length>0){
+                $("#results").parent().parent().css("display","block")
+                $.ajax({
+                    url:'/celltaxonomy/tool/cellsearch_list',
+                    type:"post",
+                    data:{
+                        "list":$("#uploadlist").val(),
+                        "species":$("#species").val(),
+                        "tissue":$("#tissue").val(),
+                        "condition":$("#condition").val()
+                    },
+                    success:function(results){
+                        var len=results['listlength'];
+                        var dict=results['marker'];
+                        $("#results").DataTable({
+                            data:results['results'],
+                            columns:[
+                                {
+                                    data:"CT_ID",
+                                    render:function(data,type,row){
+                                        return "<a target='_blank' href='/celltaxonomy/celltype/"+row.CT_ID+"'>"+row.CT_ID+"</a>"
+                                    }
+                                },
+                                {
+                                    data:"Cell_standard",
+                                    render:function(data,type,row){
+                                        return "<a target='_blank' href='/celltaxonomy/celltype/"+row.CT_ID+"'>"+row.Cell_standard+"</a>"
+                                    }
+                                },
+                                {
+                                    data:"TotalNumber",
+                                    render:function(data,type,row){
+                                        return (row.counts/row.TotalNumber).toPrecision(3)
+                                    }
+                                },
+
+
+                                {
+                                    data:"MarkerNumber",
+                                    render:function(data,type,row){
+                                        return (row.counts/row.MarkerNumber*100).toPrecision(3)+'%'
+                                    }
+                                },
+                                {
+                                    data:"counts",
+                                    render:function(data,type,row){
+                                        return (row.counts/len*100).toPrecision(3)+'%'
+                                    }
+                                },
+                                {
+                                    data:"Cell_Marker",
+                                    render:function(data,type,row){
+                                        var genes=row.Cell_Marker.split(",");
+                                        var pastes=""
+                                        for(var i=0;i<genes.length;i++){
+
+
+                                            if (i==0){
+                                                pastes=pastes+"<a target='_blank' href='/celltaxonomy/marker/"+dict[genes[i]]+"'>"+genes[i]+"</a>"
+                                            }
+                                            else{
+                                                pastes=pastes+", "+"<a target='_blank' href='/celltaxonomy/marker/"+dict[genes[i]]+"'>"+genes[i]+"</a>"
+
+                                            }
+                                        }
+                                        return pastes
+                                    }
+                                },
+
+                            ],
+                            destroy:true,
+                            order:[
+                                [2,'desc'],
+                                [3,'desc'],
+                                [4,'desc']
+
+                            ]
+                        })
+                    },
+                    error:function(){
+                        alert("Upload Failed!")
+                    }
+                })
+            }
+            else{
+                alert("Please enter a gene list!")
+            }
+
+        })
+        $("#example").click(function(){
+            $("#uploadlist").attr("disabled",false)
+            $("#uploadname").val(null)
+
+            $("#uploadlist").val("CD8A\n" +
+                "PD-1\n" +
+                "HAVCR2\n" +
+                "CXCL13\n" +
+                "CTLA-4")
+            $('#input1').click()
+            $('#input3').click()
+
+            var species = new Option("Homo sapiens", "Homo sapiens", true, true);
+            $("#species").empty()
+            $("#species").append(species).trigger('change')
+            // var tissue = new Option("Blood", "Blood", true, true);
+            // $("#tissue").empty()
+            // $("#tissue").append(tissue).trigger('change')
+            // var condition = new Option("Normal", "Normal", true, true);
+            // $("#condition").empty()
+            // $("#condition").append(condition).trigger('change')
+        })
+        $("#reset").click(function(){
+            $("#uploadlist").attr("disabled",false)
+            $("#uploadlist").val(null)
+            $("#input1").click()
+            $("#input3").removeAttr("checked")
+            $("#species").attr("disabled",true)
+            $("#tissue").attr("disabled",true)
+            $("#condition").attr("disabled",true)
+            $("#uploadname").val(null)
+            $("#species").val(null).trigger('change')
+            $("#tissue").val(null).trigger('change')
+            $("#condition").val(null).trigger('change')
+        })
+
+        $(".icon").hover(function(){
+            var X = $(this).position().top;
+            var Y = $(this).offset().left;
+            var height=$(this).height();
+            var delta=$(window).width()-Y;
+            $(this).siblings(".tooltiptext").css("top",X+height+5)
+            if($(this).siblings("span").text().length>100){
+                $(this).siblings("span").css("width",350)
+                if(delta<175){
+                    $(this).siblings(".tooltiptext").css("margin-left",-1*(180+175-delta+20))
+                }
+                else{
+                    $(this).siblings(".tooltiptext").css("margin-left",-180)
+                }
+
+            }
+
+        })
+        $('input[type=radio][name=input]').change(function(){
+            if($('input[type=radio][name=input]:checked').attr("id")=="input1"){
+                $("#uploadbtn").css("pointer-events","none")
+                $("#uploadlist").removeAttr("readonly")
+
+                $("#uploadlist").css("pointer-events","auto")
+                $("#uploadbtn").css("border","1px solid rgb(216, 222, 226)")
+                $("#uploadbtn").css("color","rgb(154, 160, 169)")
+            }
+            else{
+                $("#uploadlist").css("pointer-events","none")
+                $("#uploadlist").attr("readonly","true")
+
+                $("#uploadbtn").css("pointer-events","auto")
+                $("#uploadbtn").css("color","black")
+                $("#uploadbtn").css("border","1px solid black")
+
+            }
+        })
+        $('input[type=radio][name=additional]').change(function(){
+            if($('#input3').attr("checked")==false){
+                $("#species").attr("disabled",true)
+                $("#tissue").attr("disabled",true)
+                $("#condition").attr("disabled",true)
+            }
+            else{
+                $("#species").removeAttr("disabled")
+                $("#tissue").removeAttr("disabled")
+                $("#condition").removeAttr("disabled")
+            }
+        })
+
+    </script>
+</body>
+</html>

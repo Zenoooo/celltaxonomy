@@ -1,0 +1,1678 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+
+    <meta charset="UTF-8">
+    <title>Curation - Cell Taxonomy - CNCB-NGDC</title>
+    <script src="/celltaxonomy/static/js/jquery.min.js"></script>
+
+    <link rel="icon" href="/celltaxonomy/static/img/CellTaxonomy v3.png">
+    <script src="/celltaxonomy/static/js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" href="/celltaxonomy/static/css/bootstrap.min.css" >
+    <link rel="stylesheet" href="/celltaxonomy/static/css/dataTables.bootstrap.min.css" >
+    <link rel="stylesheet" href="/celltaxonomy/static/css/ionicons.min.css">
+
+    <script src="/celltaxonomy/static/js/plotly-latest.min.js"></script>
+    <script type="text/javascript" src="/celltaxonomy/static/js/headerfooter-full.js"></script>
+    <script src="/celltaxonomy/static/js/jquery.dataTables.min.js"></script>
+
+    <link rel="stylesheet" href="/celltaxonomy/static/css/fixedColumns.dataTables.min.css">
+    <script src="/celltaxonomy/static/js/dataTables.fixedColumns.min.js"></script>
+
+    <link rel="stylesheet"  href="/celltaxonomy/static/css/buttons.bootstrap.min.css">
+    <script src="/celltaxonomy/static/js/dataTables.buttons.min.js"></script>
+    <script src="/celltaxonomy/static/js/buttons.bootstrap.min.js"></script>
+    <script src="/celltaxonomy/static/js/buttons.html5.min.js"></script>
+    <script src="/celltaxonomy/static/js/jszip.min.js"></script>
+
+    <link href="/celltaxonomy/static/css/select2.min.css" rel="stylesheet" />
+    <script src="/celltaxonomy/static/js/select2.min.js"></script>
+
+    <script src="/celltaxonomy/static/js/dataTables.bootstrap.min.js"></script>
+    <link href="/celltaxonomy/static/css/bow.ui.min.css" rel="stylesheet">
+
+    <script type="text/javascript" src="/celltaxonomy/static/js/echarts.min.js"></script>
+
+    <script type="text/javascript" src="/celltaxonomy/static/js/my/my.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="/celltaxonomy/static/css/my/my.css">
+    <style>
+        input[type='text']{
+            margin-bottom: 16px;
+            font-size: 14px;
+        }
+        #userpanel li{
+            text-align: center;
+            padding: 10px 0;
+            list-style: none;
+            font-size: 15px;
+            border: 1px solid grey;
+            border-radius: 5px;
+            color:grey;
+            margin: 5px 0;
+        }
+        #userpanel li:hover,#userpanel li.active{
+            color: #2c75c9;
+            border: 1px solid #2c75c9;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .ion-minus{
+            line-height: 50px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .delete{
+            text-decoration: none;
+            background: #ec6a6a;
+            color: white;
+            border-radius: 6px;
+            margin: 0 2.5px;
+            padding:7px 10px
+        }
+        .delete:hover{
+            background: #ec6a6a;
+            color: white;
+        }
+        .copy{
+            text-decoration: none;
+            background: #f5d482;
+            color: white;
+            border-radius: 6px;
+            margin: 0 2.5px;
+            padding:7px 10px
+        }
+        .copy:hover{
+            background: #f5d482;
+            color: white;
+        }
+        .edit{
+            text-decoration: none;
+            background: #62a6e2;
+            color: white;
+            border-radius: 6px;
+            margin: 0 2.5px;
+            padding:7px 10px
+        }
+        .edit:hover{
+            background: #62a6e2;
+            color: white;
+        }
+        dialog{
+            border: 2px solid #2c75c9;
+            color: #2c75c9;
+            font-size: 15px;
+            font-weight: 600;
+            transition: 1.5s;
+            border-radius: 5px;
+            padding:15px 20px
+        }
+        .numebr{
+            font-size: 40px;
+        }
+        .table>tbody>tr>td{
+            white-space: nowrap;
+        }
+        #total::-webkit-scrollbar,#contribution::-webkit-scrollbar {
+            /*滚动条整体样式*/
+            width : 15px;  /*高宽分别对应横竖滚动条的尺寸*/
+            height: 12px;
+        }
+        #total::-webkit-scrollbar-thumb,#contribution::-webkit-scrollbar-thumb{
+            /*滚动条里面小方块*/
+            border-radius   : 10px;
+            background-color: #2487ce;
+            background-image: -webkit-linear-gradient(
+                    45deg,
+                    rgba(255, 255, 255, 0.2) 25%,
+                    transparent 25%,
+                    transparent 50%,
+                    rgba(255, 255, 255, 0.2) 50%,
+                    rgba(255, 255, 255, 0.2) 75%,
+                    transparent 75%,
+                    transparent
+            );
+        }
+        #total::-webkit-scrollbar-track,#contribution::-webkit-scrollbar-track{
+            /*滚动条里面轨道*/
+            box-shadow   : 0 0 1px rgba(0, 0, 0, 0.2);
+            background   : #ededed;
+            border-radius: 10px;
+        }
+        .select2-container{
+            width:200px !important
+        }
+        .disease_button,.tissue_button{
+            cursor: pointer;
+        }
+        .condition_region.active,.tissue_region.active{
+            background: #def0f8;
+        }
+    </style>
+</head>
+
+<body>
+    <nav th:replace="common/topbar::topbar"></nav>
+    <div class="container" >
+        <dialog open id="dialog" style="position: fixed;margin: 0 auto;top:35%;opacity: 0;z-index: 999">
+            Success
+        </dialog>
+        <div class="col-lg-2" style="padding:50px 10px">
+            <div style="display: flex;justify-content: center;border-bottom: 1px solid rgba(34,36,38,.15);">
+                <img src="/celltaxonomy/static/svg/user.svg" alt="">
+                <span style="align-self: center;font-size: 20px" th:text="${username}"></span>
+            </div>
+            <div style="margin-top: 20px">
+                <ul id="userpanel" style="margin: 0">
+                    <li id="pf" class="active">Profile</li>
+                    <li id="addc" >Add curation</li>
+                    <li id="ctb" >Contribution</li>
+                    <li id="tt">Total</li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-lg-10" >
+            <div id="profile" style="padding: 0 100px">
+                <div>
+                    <span style="font-size: 30px">Welcome! You have curated:</span>
+                </div>
+                <div style="display: flex;justify-content: space-between;margin: 50px 0 15px 0;padding:0 200px 10px 0">
+                    <div class="number_block">
+                        <span id="pmid_number" class="numebr" >?</span>
+                        <span>Articles</span>
+                    </div>
+                    <div class="number_block">
+                        <span id="speices_number" class="numebr">?</span>
+                        <span>Species</span>
+                    </div>
+                    <div class="number_block">
+                        <span id="tissue_number" class="numebr">?</span>
+                        <span>Tissues</span>
+                    </div>
+
+                </div>
+                <div style="display: flex;justify-content: space-between;padding:15px 200px 10px 0;border-top: 1px solid rgba(34,36,38,.15)">
+                    <div class="number_block">
+                        <span id="condition_number" class="numebr">?</span>
+                        <span>Conditions</span>
+                    </div>
+                    <div class="number_block">
+                        <span id="cell_number" class="numebr">?</span>
+                        <span>Cell types</span>
+                    </div>
+                    <div class="number_block">
+                        <span id="marker_number" class="numebr">?</span>
+                        <span>Markers</span>
+                    </div>
+                </div>
+                <div style="margin-top: 50px">
+                    <a class="details" id="change_password">Change password</a>
+                    <div id="password_region" style="display: none;width: 60%;margin: 20px 0;justify-content: flex-start">
+                        <label style="align-self: center;margin-right: 10px">New password</label>
+                        <input type="password" id="password" style="width: 10%;margin-right: 10px">
+                        <a class="details" id="password_confirm" style="margin-right: 40px">Confirm</a>
+                        <span style="align-self: center">建议用没用过的密码，后台能看到</span>
+                    </div>
+                </div>
+            </div>
+            <div id="add_curation" style="padding:0 0 0 100px;display:none" class="col-lg-12">
+                <div class="col-lg-9">
+
+                    <div>
+                        <div >
+                            <div style="display: flex;justify-content: space-between">
+                                <div>
+                                    <div>
+                                        <label>PMID</label>
+                                        <input class="inputvalue" id="pmid" type="text" oninput = "value=value.replace(/[^\d]/g,'')">
+                                    </div>
+                                    <div>
+                                        <label>Life stage</label>
+                                        <input class="inputvalue" id="life_stage" type="text">
+
+                                    </div>
+                                </div>
+                                <div>
+                                    <div>
+                                        <label>Speices</label>
+                                        <input class="inputvalue" id="species" type="text">
+                                    </div>
+                                    <div>
+                                        <label>Library</label>
+                                        <input type="text" id="library">
+                                    </div>
+                                </div>
+                                <div>
+                                    <div style="visibility: hidden">
+                                        <label></label>
+                                        <input type="text">
+                                    </div>
+                                    <div style="visibility: hidden">
+                                        <label></label>
+                                        <input type="text">
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div>
+                                <p>Condition(s)</p>
+                            </div>
+                            <div id="condition_region">
+                                <div class="condition_region active" style="display: flex;justify-content: space-between;margin-left: 20px;border-left: 1px solid rgba(34,36,38,.15);padding-left:20px">
+
+                                    <div>
+                                        <div>
+                                            <label>Condition</label>
+                                            <div>
+                                                <input class="inputvalue condition" type="text">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div>
+                                            <label>Disease ID</label>
+                                            <div style="display: flex;justify-content: space-between">
+                                                <input style="margin: 0 20px 0 0" class="inputvalue disease_id" type="text">
+                                                <i class="icon ion-plus-circled disease_button" style="align-self: center;font-size: 18px"></i>
+                                                <i class="icon ion-minus-circled disease_button" style="display:none;align-self: center;font-size: 18px"></i>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div style="visibility: hidden">
+                                            <label></label>
+                                            <input type="text">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <p>Tissue(s)</p>
+                            </div>
+                            <div id="tissue_region">
+                                <div class="tissue_region active" style="display: flex;justify-content: space-between;margin-left: 20px;border-left: 1px solid rgba(34,36,38,.15);padding-left:20px">
+                                    <div>
+                                        <div>
+                                            <label>Tissue standard</label>
+                                            <div>
+                                                <input class="inputvalue tissue" type="text">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div>
+                                            <label>Tissue ID</label>
+                                            <div style="display: flex">
+                                                <input style="margin: 0 20px 0 0" class="inputvalue tissue_id" type="text">
+                                                <i class="icon ion-plus-circled tissue_button" style="align-self: center;font-size: 18px"></i>
+                                                <i class="icon ion-minus-circled tissue_button" style="display:none;align-self: center;font-size: 18px"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div style="visibility: hidden">
+                                            <label></label>
+                                            <input type="text">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+                        <div>
+                            <p>Cell type & markers</p>
+                        </div>
+                        <div style="margin-left: 20px;border-left: 1px solid rgba(34,36,38,.15);padding-left:20px">
+                            <input type="checkbox" id="new_cell" style="margin-right: 10px">New cell
+
+                            <div id="new_cell_panel" style="display: none">
+                                <div style="display: flex;justify-content: space-between">
+                                    <div>
+                                        <label>Cell name in article</label>
+                                        <input class="inputvalue" id="new_cell_original_name" type="text" value="-">
+                                    </div>
+                                    <div>
+                                        <label>Parent cell ID</label>
+                                        <input class="inputvalue" id="new_cell_parent_cell_id" type="text" value="-">
+                                    </div>
+                                    <div>
+                                        <label>New cell description</label>
+                                        <input class="inputvalue" id="new_cell_description" type="text" value="-">
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="old_cell_panel">
+                                <div style="display: flex;justify-content: space-between">
+                                    <div>
+                                        <label>Cell name in article</label>
+                                        <input class="inputvalue" id="cell_original_name" type="text">
+                                    </div>
+                                    <div>
+                                        <label>Cell standard</label>
+                                        <input class="inputvalue" id="cell_standard" type="text">
+                                    </div>
+                                    <div style="visibility: hidden">
+                                        <label></label>
+                                        <input type="text">
+                                    </div>
+                                </div>
+                                <div style="display: flex;justify-content: space-between">
+                                    <div>
+                                        <label>Cell Ontology ID</label>
+                                        <input class="inputvalue" id="cell_id" type="text">
+                                    </div>
+                                    <div>
+                                        <label>Parent cell ID</label>
+                                        <input class="inputvalue" id="parent_cell_id" type="text">
+                                    </div>
+                                    <div style="visibility: hidden">
+                                        <label></label>
+                                        <input type="text">
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+
+                            <div>
+                                <label>Positive cell marker (split by ";")</label>
+                                <input class="inputvalue" id="positive_cell_marker" type="text">
+                            </div>
+                            <div>
+                                <label>Negative cell marker (split by ";")</label>
+                                <input class="inputvalue" id="negative_cell_marker" type="text" value="-">
+                            </div>
+                            <div>
+                                <label>Combinatorial cell marker (split by ";", eg: AA+BB-;CC+DD+)</label>
+                                <input class="inputvalue" id="combinatorial_cell_marker" type="text" value="-">
+                            </div>
+                            <div>
+                                <label>Marker description in literature</label>
+                                <textarea class="inputvalue" type="text" id="marker_description"></textarea>
+                            </div>
+                        </div>
+                        <div style="display: flex;justify-content: space-between">
+                            <div>
+                                <input type="checkbox" id="dataset">
+                                <label>Datasets ID</label>
+                                <input class="inputvalue" id="datasets_id" type="text" value="-" disabled>
+                            </div>
+                            <div>
+                                <label>Curator</label>
+                                <input class="inputvalue" disabled th:value="${username}" type="text" id="curator">
+                            </div>
+                            <div style="visibility: hidden">
+                                <label>ID</label>
+                                <input disabled id="ID" value="id" type="text">
+                            </div>
+                        </div>
+                        <div>
+                            <div>
+                                <input id="uncertain" type="checkbox"><label>Uncertain</label>
+                                <textarea class="inputvalue" id="uncertain_content" type="text" disabled>-</textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="margin: 20px 0">
+                        <a class="details" id="submit">Submit</a>
+                        <a class="details" id="edit" style="display: none">Submit</a>
+                    </div>
+
+                </div>
+                <div class="col-lg-3" >
+                    <div style="margin-bottom: 30px">
+                        <span style="font-size: 30px">Tool box</span>
+                    </div>
+                    <div>
+                        <label>Life stage</label>
+                        <select id="life_stage_search">
+                            <optgroup>
+                                <option style="display: none;"></option>
+                                <option value="Embryonic">Embryonic</option>
+                                <option value="Fetal">Fetal</option>
+                                <option value="Infant">Infant</option>
+                                <option value="Child">Child</option>
+                                <option value="Adult">Adult</option>
+                            </optgroup>
+                            <optgroup label="--------------">
+                                <option value="Unknown">Unknown</option>
+                            </optgroup>
+                        </select>
+                    </div>
+
+                    <div style="margin-bottom: 20px">
+                        <label>Species standard</label>
+                        <select id="species_standard_search"></select>
+                    </div>
+                    <div style="margin-bottom: 20px">
+                        <label>Condition standard</label>
+                        <select id="condition_standard_search"></select>
+                    </div>
+                    <div style="margin-bottom: 20px">
+                        <label>Tissue standard</label>
+                        <select id="tissue_standard_search"></select>
+                    </div>
+                    <div style="margin-bottom: 20px">
+                        <label>Library</label>
+                        <select id="library_search">
+                            <option style="display: none"></option>
+                        </select>
+                    </div>
+                    <div style="margin-bottom: 20px">
+                        <label>Cell standard</label>
+                        <select id="cell_standard_search"></select>
+                    </div>
+                    <div style="margin-top: 20px">
+                        <a target="_blank" style="display: block;" href="https://www.ebi.ac.uk/ols/ontologies/cl">Cell Ontology</a>
+                        <a target="_blank" style="display: block;" href="https://www.ebi.ac.uk/ols/ontologies/uberon">Tissue Ontology</a>
+                        <a target="_blank" style="display: block;" href="https://www.ebi.ac.uk/ols/ontologies/doid">Disease Ontology</a>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <div id="contribution" style="display: none;overflow: scroll">
+                <table id="ctb_table" class="table table-hover table-striped" style="width: 100%;">
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th>Species</th>
+                        <th>Cell original name</th>
+                        <th>Cell standard</th>
+                        <th>Cell id</th>
+                        <th>Parent cell id</th>
+                        <th>New cell description</th>
+                        <th>Tissue</th>
+                        <th>Tissue id</th>
+                        <th>Condition</th>
+                        <th>Disease id</th>
+                        <th>Positive cell marker</th>
+                        <th>Negative cell marker</th>
+                        <th>Combinatorial cell marker</th>
+                        <th style="width: 2000px">Marker description</th>
+                        <th>PMID</th>
+                        <th>Life stage</th>
+                        <th>Library</th>
+                        <th>Datasets id</th>
+                        <th>Uncertain</th>
+                    </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div id="total" style="display: none;overflow: scroll">
+                <table id="total_table" class="table table-hover table-striped" style="">
+                    <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Curator</th>
+                        <th>Species</th>
+                        <th>Cell original name</th>
+                        <th>Cell standard</th>
+                        <th>Cell id</th>
+                        <th>Parent cell id</th>
+                        <th>New cell description</th>
+                        <th>Tissue</th>
+                        <th>Tissue id</th>
+                        <th>Condition</th>
+                        <th>Disease id</th>
+                        <th>Positive cell marker</th>
+                        <th>Negative cell marker</th>
+                        <th>Combinatorial cell marker</th>
+                        <th>Marker description</th>
+                        <th>PMID</th>
+                        <th>Life stage</th>
+                        <th>Library</th>
+                        <th>Datasets id</th>
+                        <th>Uncertain</th>
+                    </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+    <script type="text/javascript" th:inline="javascript">
+        function reset(){
+            $("#pmid").val(null)
+            $("#species").val(null)
+            $("#life_stage").val(null)
+            $("#condition").val(null)
+            $("#disease_id").val(null)
+            $("#tissue").val(null)
+            $("#tissue_id").val(null)
+            if($("#new_cell").is(":checked")){
+                $("#new_cell").click()
+            }
+            $("#cell_original_name").val(null)
+            $("#cell_standard").val(null)
+            $("#cell_id").val(null)
+            $("#parent_cell_id").val(null)
+            $("#new_cell_description").val(null)
+            $("#positive_cell_marker").val(null)
+            $("#marker_description").val(null)
+            $("#datasets_id").val("-")
+            $("#ID").val("-")
+        }
+        $(document).ready(function(){
+            $.ajax({
+                url:'/celltaxonomy/profile',
+                type:'post',
+                data:{
+                    user:[[${username}]]
+                },
+                success:function(results){
+                    if(results.length>0){
+                        results=results[0]
+                        $("#speices_number").text(results.Species)
+                        $("#tissue_number").text(results.Tissue)
+                        $("#condition_number").text(results.Conditions)
+                        $("#pmid_number").text(results.PMID)
+                        $("#cell_number").text(results.Cell_standard)
+                        var markers=$.unique((results.Positive_cell_marker+";"+results.Negative_cell_marker+";"+results.Combinatorial_cell_marker).split(";").sort()).length
+
+
+                        $("#marker_number").text(markers)
+                    }
+                    else{
+                        $("#speices_number").text(0)
+                        $("#tissue_number").text(0)
+                        $("#condition_number").text(0)
+                        $("#pmid_number").text(0)
+                        $("#cell_number").text(0)
+                        $("#marker_number").text(0)
+                    }
+
+                }
+            })
+            $.ajax({
+                url:'/celltaxonomy/library_list',
+                type:'post',
+                success:function(results){
+                    results.map(function(e){
+                        $("#library_search").append(
+                            "<option value='"+e.Library+"'>"+e.Library+"</option>"
+                        )
+
+                    })
+                }
+            })
+        })
+
+        $("#submit").click(function(){
+            var judge=true
+            $(".inputvalue").each(function(){
+                if($(this).val()==""){
+                    alert($(this).siblings("label").text().split(" (")[0]+" can't be null")
+                    judge=false
+                    return false
+                }
+            })
+            if(!judge){
+                return false
+            }
+
+            if(confirm("Confirm to Submit.")){
+                if($("#new_cell").is(":checked")){
+                    $(".condition_region").each(function(){
+                        var condition=$(this).find(".condition").val()
+                        var disease_id=$(this).find(".disease_id").val()
+                        $(".tissue_region").each(function(){
+                            var tissue=$(this).find(".tissue").val()
+                            var tissue_id=$(this).find(".tissue_id").val()
+                            $.ajax({
+                                url:'/celltaxonomy/curation_submit',
+                                type:'post',
+                                data:{
+                                    Species:$("#species").val(),
+                                    Cell_original_name:$("#new_cell_original_name").val(),
+                                    Cell_standard:$("#cell_standard").val(),
+                                    Cell_id:$("#cell_id").val(),
+                                    Parent_cell_id:$("#new_cell_parent_cell_id").val(),
+                                    New_cell_description:$("#new_cell_description").val(),
+                                    Tissue:tissue,
+                                    Tissue_id:tissue_id,
+                                    Condition:condition,
+                                    Disease_id:disease_id,
+                                    Positive_cell_marker:$("#positive_cell_marker").val(),
+                                    Negative_cell_marker:$("#negative_cell_marker").val(),
+                                    Combinatorial_cell_marker:$("#combinatorial_cell_marker").val(),
+                                    Marker_description:$("#marker_description").val(),
+                                    PMID:$("#pmid").val(),
+                                    Life_stage:$("#life_stage").val(),
+                                    Library:$("#library").val(),
+                                    Datasets_id:$("#datasets_id").val(),
+                                    Curator:$("#curator").val(),
+                                    Uncertain:$("#uncertain_content").val()
+
+                                },
+                                success:function(){
+                                    $("#dialog").css("opacity","1")
+                                    setTimeout(
+                                        '$("#dialog").css("opacity","0")'
+                                        ,1500
+                                    )
+                                }
+                            })
+
+                        })
+                    })
+                }
+                else{
+                    $(".condition_region").each(function(){
+                        var condition=$(this).find(".condition").val()
+                        var disease_id=$(this).find(".disease_id").val()
+                        $(".tissue_region").each(function(){
+                            var tissue=$(this).find(".tissue").val()
+                            var tissue_id=$(this).find(".tissue_id").val()
+                            $.ajax({
+                                url:'/celltaxonomy/curation_submit',
+                                type:'post',
+                                data:{
+                                    Species:$("#species").val(),
+                                    Cell_original_name:$("#cell_original_name").val(),
+                                    Cell_standard:$("#cell_standard").val(),
+                                    Cell_id:$("#cell_id").val(),
+                                    Parent_cell_id:$("#parent_cell_id").val(),
+                                    New_cell_description:$("#new_cell_description").val(),
+                                    Tissue:tissue,
+                                    Tissue_id:tissue_id,
+                                    Condition:condition,
+                                    Disease_id:disease_id,
+                                    Positive_cell_marker:$("#positive_cell_marker").val(),
+                                    Negative_cell_marker:$("#negative_cell_marker").val(),
+                                    Combinatorial_cell_marker:$("#combinatorial_cell_marker").val(),
+                                    Marker_description:$("#marker_description").val(),
+                                    PMID:$("#pmid").val(),
+                                    Life_stage:$("#life_stage").val(),
+                                    Library:$("#library").val(),
+                                    Datasets_id:$("#datasets_id").val(),
+                                    Curator:$("#curator").val(),
+                                    Uncertain:$("#uncertain_content").val()
+
+                                },
+                                success:function(){
+                                    $("#dialog").css("opacity","1")
+                                    setTimeout(
+                                        '$("#dialog").css("opacity","0")'
+                                        ,1500
+                                    )
+                                }
+                            })
+
+                        })
+                    })
+                }
+
+            }
+        })
+
+        $("#userpanel li").click(function(){
+            if(!$(this).hasClass("active")){
+                $(this).addClass("active")
+                $(this).siblings().removeClass("active")
+            }
+        })
+        $("#ctb").click(function(){
+            if($("#edit").css("display")=="inline"){
+                if(confirm("Your editing hasn't be saved, sure to quit?")){
+                    $(".ion-plus-circled").css("display","inline-block")
+                    $("#contribution").css("display","block")
+                    $("#contribution").siblings().css("display","none")
+                    if($("#ctb_table tbody").children().length==0 || $("#ctb_table tbody tr").children().eq(0).text()==="No data available in table"){
+                        $.ajax({
+                            url:"/celltaxonomy/contributions",
+                            type:'post',
+                            data:{
+                                curator:[[${username}]]
+                            },
+                            success:function(results){
+                                $("#ctb_table").DataTable({
+                                    data:results,
+                                    columns:[
+                                        {
+                                            data:"Species",
+                                            render:function(){
+                                                return "<a class='edit'>Edit</a><a class='copy'>Copy</a><a class='delete'>Delete</a>"
+                                            }
+                                        },
+                                        {data:"Species"},
+                                        {data:"Cell_original_name"},
+                                        {data:"Cell_standard"},
+                                        {data:"Cell_id"},
+                                        {data:"Parent_cell_id"},
+                                        {data:"New_cell_description"},
+                                        {data:"Tissue"},
+                                        {data:"Tissue_id"},
+                                        {data:"Conditions"},
+                                        {data:"Disease_id"},
+                                        {data:"Positive_cell_marker"},
+                                        {data:"Negative_cell_marker"},
+                                        {data:"Combinatorial_cell_marker"},
+                                        {data:"Marker_description"},
+                                        {data:"PMID"},
+                                        {data:"Life_stage"},
+                                        {data:"Library"},
+                                        {data:"Datasets_id"},
+                                        {data:"Uncertain"}
+
+                                    ],
+                                    destroy:true,
+                                    ordering:false,
+                                    dom: '<"row"<"col-lg-4"l><"col-lg-4"B><"col-lg-4"f>>t<"row"<"col-lg-6"i><"col-lg-6"p>>',
+                                    buttons:['excel'],
+                                    fixedColumns: {
+                                        left:1
+                                    }
+                                })
+                            }
+                        })
+                    }
+                    $("#edit").css("display","none")
+                    $("#submit").css("display","inline")
+                    reset()
+
+                }
+            }
+            else{
+                $("#contribution").css("display","block")
+                $("#contribution").siblings().css("display","none")
+                $.ajax({
+                        url:"/celltaxonomy/contributions",
+                        type:'post',
+                        data:{
+                            curator:[[${username}]]
+                        },
+                        success:function(results){
+                            $("#ctb_table").DataTable({
+                                data:results,
+                                columns:[
+                                    {
+                                        data:"Species",
+
+                                        render:function(){
+                                            return "<a class='edit'>Edit</a><a class='copy'>Copy</a><a class='delete'>Delete</a>"
+                                        }
+                                    },
+                                    {data:"Species"},
+                                    {data:"Cell_original_name"},
+                                    {data:"Cell_standard"},
+                                    {data:"Cell_id"},
+                                    {data:"Parent_cell_id"},
+                                    {data:"New_cell_description"},
+                                    {data:"Tissue"},
+                                    {data:"Tissue_id"},
+                                    {data:"Conditions"},
+                                    {data:"Disease_id"},
+                                    {data:"Positive_cell_marker"},
+                                    {data:"Negative_cell_marker"},
+                                    {data:"Combinatorial_cell_marker"},
+                                    {data:"Marker_description"},
+                                    {data:"PMID"},
+                                    {data:"Life_stage"},
+                                    {data:"Library"},
+                                    {data:"Datasets_id"},
+                                    {data:"Uncertain"},
+
+                                ],
+                                destroy:true,
+                                ordering:false,
+                                dom: '<"row"<"col-lg-4"l><"col-lg-4"B><"col-lg-4"f>>t<"row"<"col-lg-6"i><"col-lg-6"p>>',
+                                buttons:['excel'],
+                                fixedColumns: {
+                                    left:1
+                                }
+                            })
+                        }
+                    })
+            }
+
+
+        })
+        $("#addc").click(function(){
+            $("#add_curation").css("display","block")
+            $("#add_curation").siblings().css("display","none")
+        })
+        $("#pf").click(function(){
+            if($("#edit").css("display")=="inline"){
+                if(confirm("Your editing hasn't be saved, sure to quit?")) {
+                    $(".ion-plus-circled").css("display","inline-block")
+                    reset()
+                    $("#edit").css("display","none")
+                    $("#submit").css("display","inline")
+                    $("#profile").css("display","block")
+                    $("#profile").siblings().css("display","none")
+                    $.ajax({
+                        url:'/celltaxonomy/profile',
+                        type:'post',
+                        data:{
+                            user:[[${username}]]
+                        },
+                        success:function(results){
+                            results=results[0]
+                            $("#speices_number").text(results.Species)
+                            $("#tissue_number").text(results.Tissue)
+                            $("#condition_number").text(results.Conditions)
+                            $("#pmid_number").text(results.PMID)
+                            $("#cell_number").text(results.Cell_standard)
+                            var markers=$.unique((results.Positive_cell_marker+";"+results.Negative_cell_marker+";"+results.Combinatorial_cell_marker).split(";").sort()).length
+                            $("#marker_number").text(markers)
+                        }
+                    })
+                }
+            }
+            else{
+                $("#profile").css("display","block")
+                $("#profile").siblings().css("display","none")
+                $.ajax({
+                    url:'/celltaxonomy/profile',
+                    type:'post',
+                    data:{
+                        user:[[${username}]]
+                    },
+                    success:function(results){
+                        results=results[0]
+                        $("#speices_number").text(results.Species)
+                        $("#tissue_number").text(results.Tissue)
+                        $("#condition_number").text(results.Conditions)
+                        $("#pmid_number").text(results.PMID)
+                        $("#cell_number").text(results.Cell_standard)
+                        var markers=$.unique((results.Positive_cell_marker+";"+results.Negative_cell_marker+";"+results.Combinatorial_cell_marker).split(";").sort()).length
+                        $("#marker_number").text(markers)
+                    }
+                })
+            }
+
+
+        })
+        $("#tt").click(function(){
+            if($("#edit").css("display")=="inline") {
+                if(confirm("Your editing hasn't be saved, sure to quit?")) {
+                    $(".ion-plus-circled").css("display","inline-block")
+                    reset()
+                    $("#edit").css("display","none")
+                    $("#submit").css("display","inline")
+                    $("#total").css("display","block")
+                    $("#total").siblings().css("display","none")
+                    $.ajax({
+                        url:"/celltaxonomy/total_curation",
+                        type:'post',
+                        success:function(results){
+                            $("#total_table").DataTable({
+                                data:results,
+                                columns:[
+                                    {
+                                        data:"Date",
+                                        render:function(data){
+                                            return data.split(" ")[0]
+                                        }
+                                    },
+                                    {data:"Curator"},
+                                    {data:"Species"},
+                                    {data:"Cell_original_name"},
+                                    {data:"Cell_standard"},
+                                    {data:"Cell_id"},
+                                    {data:"Parent_cell_id"},
+                                    {data:"New_cell_description"},
+                                    {data:"Tissue"},
+                                    {data:"Tissue_id"},
+                                    {data:"Conditions"},
+                                    {data:"Disease_id"},
+                                    {data:"Positive_cell_marker"},
+                                    {data:"Negative_cell_marker"},
+                                    {data:"Combinatorial_cell_marker"},
+                                    {
+                                        data:"Marker_description"
+                                    },
+                                    {data:"PMID"},
+                                    {data:"Life_stage"},
+                                    {data:"Library"},
+                                    {data:"Datasets_id"},
+                                    {data:"Uncertain"},
+                                ],
+                                destroy:true,
+                                ordering:false,
+                                dom: '<"row"<"col-lg-4"l><"col-lg-4"B><"col-lg-4"f>>t<"row"<"col-lg-6"i><"col-lg-6"p>>',
+                                buttons:['excel']
+                            })
+                        }
+                    })
+                }
+            }
+            else{
+                $("#total").css("display","block")
+                $("#total").siblings().css("display","none")
+                $.ajax({
+                    url:"/celltaxonomy/total_curation",
+                    type:'post',
+                    success:function(results){
+                        $("#total_table").DataTable({
+                            data:results,
+                            columns:[
+                                {
+                                    data:"Date",
+                                    render:function(data){
+                                        return data.split(" ")[0]
+                                    }
+                                },
+                                {data:"Curator"},
+                                {data:"Species"},
+                                {data:"Cell_original_name"},
+                                {data:"Cell_standard"},
+                                {data:"Cell_id"},
+                                {data:"Parent_cell_id"},
+                                {data:"New_cell_description"},
+                                {data:"Tissue"},
+                                {data:"Tissue_id"},
+                                {data:"Conditions"},
+                                {data:"Disease_id"},
+                                {data:"Positive_cell_marker"},
+                                {data:"Negative_cell_marker"},
+                                {data:"Combinatorial_cell_marker"},
+                                {
+                                    data:"Marker_description"
+                                },
+                                {data:"PMID"},
+                                {data:"Life_stage"},
+                                {data:"Library"},
+                                {data:"Datasets_id"},
+                                {data:"Uncertain"},
+                            ],
+                            destroy:true,
+                            ordering:false,
+                            dom: '<"row"<"col-lg-4"l><"col-lg-4"B><"col-lg-4"f>>t<"row"<"col-lg-6"i><"col-lg-6"p>>',
+                            buttons:['excel']
+                        })
+                    }
+                })
+            }
+
+
+
+        })
+        $("#change_password").click(function(){
+            $("#password_region").css("display","flex")
+        })
+        $("#password_confirm").click(function(){
+            $.ajax({
+                url:'/celltaxonomy/change_password',
+                type:'post',
+                data:{
+                    username:[[${username}]],
+                    password:$("#password").val()
+                },
+                success:function(){
+                    $("#dialog").css("opacity","1")
+                    setTimeout(
+                        '$("#dialog").css("opacity","0")'
+                        ,1500
+                    )
+                }
+            })
+        })
+        $("#edit").click(function(){
+            if($("#new_cell").is(":checked")){
+                if(confirm("Confirm to Submit.")){
+
+                    $.ajax({
+                        url:'/celltaxonomy/curation_edit',
+                        type:'post',
+                        async:false,
+                        data:{
+                            ID:$("#ID").val(),
+                            Species:$("#species").val(),
+                            Cell_original_name:$("#new_cell_original_name").val(),
+                            Cell_standard:$("#cell_standard").val(),
+                            Cell_id:$("#cell_id").val(),
+                            Parent_cell_id:$("#new_cell_parent_cell_id").val(),
+                            New_cell_description:$("#new_cell_description").val(),
+                            Tissue:$(".tissue").val(),
+                            Tissue_id:$(".tissue_id").val(),
+                            Condition:$(".condition").val(),
+                            Disease_id:$(".disease_id").val(),
+                            Positive_cell_marker:$("#positive_cell_marker").val(),
+                            Negative_cell_marker:$("#negative_cell_marker").val(),
+                            Combinatorial_cell_marker:$("#combinatorial_cell_marker").val(),                        Marker_description:$("#marker_description").val(),
+                            PMID:$("#pmid").val(),
+                            Life_stage:$("#life_stage").val(),
+                            Library:$("#library").val(),
+                            Datasets_id:$("#datasets_id").val(),
+                            Curator:$("#curator").val(),
+                            Uncertain:$("#uncertain_content").val()
+
+                        },
+                        success:function(){
+
+                            $("#dialog").css("opacity","1")
+                            setTimeout(
+                                '$("#dialog").css("opacity","0")'
+                                ,1500
+                            )
+                            $("#submit").css("display","inline")
+                            $("#edit").css("display","none")
+                            $("#ctb").click()
+                        }
+                    })
+                    $.ajax({
+                        url:"/celltaxonomy/contributions",
+                        type:'post',
+                        data:{
+                            curator:[[${username}]]
+                        },
+                        success:function(results){
+                            $("#ctb_table").DataTable({
+                                data:results,
+                                columns:[
+                                    {
+                                        render:function(){
+                                            return "<a class='edit'>Edit</a><a class='copy'>Copy</a><a class='delete'>Delete</a>"
+                                        }
+                                    },
+                                    {data:"Species"},
+                                    {data:"Cell_original_name"},
+                                    {data:"Cell_standard"},
+                                    {data:"Cell_id"},
+                                    {data:"Parent_cell_id"},
+                                    {data:"New_cell_description"},
+                                    {data:"Tissue"},
+                                    {data:"Tissue_id"},
+                                    {data:"Conditions"},
+                                    {data:"Disease_id"},
+                                    {data:"Positive_cell_marker"},
+                                    {data:"Negative_cell_marker"},
+                                    {data:"Combinatorial_cell_marker"},
+                                    {data:"Marker_description"},
+                                    {data:"PMID"},
+                                    {data:"Life_stage"},
+                                    {data:"Library"},
+                                    {data:"Datasets_id"},
+                                    {data:"Uncertain"},
+                                ],
+                                destroy:true,
+                                ordering:false,
+                                dom: '<"row"<"col-lg-4"l><"col-lg-4"B><"col-lg-4"f>>t<"row"<"col-lg-6"i><"col-lg-6"p>>',
+                                buttons:['excel']
+                            })
+                        }
+                    })
+                    reset()
+                    $("#edit").css("display","none")
+                    $("#submit").css("display","inline")
+                    $("#ctb").click()
+                }
+
+            }
+            else{
+                if(confirm("Confirm to Submit.")){
+                    $.ajax({
+                        url:'/celltaxonomy/curation_edit',
+                        type:'post',
+                        async:false,
+                        data:{
+                            ID:$("#ID").val(),
+                            Species:$("#species").val(),
+                            Cell_original_name:$("#cell_original_name").val(),
+                            Cell_standard:$("#cell_standard").val(),
+                            Cell_id:$("#cell_id").val(),
+                            Parent_cell_id:$("#parent_cell_id").val(),
+                            New_cell_description:$("#new_cell_description").val(),
+                            Tissue:$(".tissue").val(),
+                            Tissue_id:$(".tissue_id").val(),
+                            Condition:$(".condition").val(),
+                            Disease_id:$(".disease_id").val(),
+                            Positive_cell_marker:$("#positive_cell_marker").val(),
+                            Negative_cell_marker:$("#negative_cell_marker").val(),
+                            Combinatorial_cell_marker:$("#combinatorial_cell_marker").val(),                        Marker_description:$("#marker_description").val(),
+                            PMID:$("#pmid").val(),
+                            Life_stage:$("#life_stage").val(),
+                            Library:$("#library").val(),
+                            Datasets_id:$("#datasets_id").val(),
+                            Curator:$("#curator").val(),
+                            Uncertain:$("#uncertain_content").val()
+
+                        },
+                        success:function(){
+
+                            $("#dialog").css("opacity","1")
+                            setTimeout(
+                                '$("#dialog").css("opacity","0")'
+                                ,1500
+                            )
+                            $("#submit").css("display","inline")
+                            $("#edit").css("display","none")
+                            $("#ctb").click()
+                        }
+                    })
+                    $.ajax({
+                        url:"/celltaxonomy/contributions",
+                        type:'post',
+                        data:{
+                            curator:[[${username}]]
+                        },
+                        success:function(results){
+                            $("#ctb_table").DataTable({
+                                data:results,
+                                columns:[
+                                    {
+                                        render:function(){
+                                            return "<a class='edit'>Edit</a><a class='copy'>Copy</a><a class='delete'>Delete</a>"
+                                        }
+                                    },
+                                    {data:"Species"},
+                                    {data:"Cell_original_name"},
+                                    {data:"Cell_standard"},
+                                    {data:"Cell_id"},
+                                    {data:"Parent_cell_id"},
+                                    {data:"New_cell_description"},
+                                    {data:"Tissue"},
+                                    {data:"Tissue_id"},
+                                    {data:"Conditions"},
+                                    {data:"Disease_id"},
+                                    {data:"Positive_cell_marker"},
+                                    {data:"Negative_cell_marker"},
+                                    {data:"Combinatorial_cell_marker"},
+                                    {data:"Marker_description"},
+                                    {data:"PMID"},
+                                    {data:"Life_stage"},
+                                    {data:"Library"},
+                                    {data:"Datasets_id"},
+                                    {data:"Uncertain"},
+                                ],
+                                destroy:true,
+                                ordering:false,
+                                dom: '<"row"<"col-lg-4"l><"col-lg-4"B><"col-lg-4"f>>t<"row"<"col-lg-6"i><"col-lg-6"p>>',
+                                buttons:['excel']
+                            })
+                        }
+                    })
+                    reset()
+                    $("#edit").css("display","none")
+                    $("#submit").css("display","inline")
+                    $("#ctb").click()
+                }
+
+            }
+
+        })
+
+        $("#uncertain").click(function(){
+            if($("#uncertain").is(":checked")){
+                $("#uncertain_content").removeAttr("disabled")
+                $("#uncertain_content").val("")
+            }
+            else{
+                $("#uncertain_content").attr("disabled","true")
+                $("#uncertain_content").val("-")
+            }
+        })
+
+        $("#condition_region").on("click",".ion-plus-circled",function(){
+            $(".condition_region").removeClass("active")
+            $(
+                " <div class=\"condition_region active\" style=\"display: flex;justify-content: space-between;margin-left: 20px;border-left: 1px solid rgba(34,36,38,.15);padding-left:20px\">\n" +
+                "\n" +
+                "                                    <div>\n" +
+                "                                        <div>\n" +
+                "                                            <label>Condition</label>\n" +
+                "                                            <div>\n" +
+                "                                                <input class=\"inputvalue condition\" type=\"text\">\n" +
+                "                                            </div>\n" +
+                "                                        </div>\n" +
+                "                                    </div>\n" +
+                "                                    <div>\n" +
+                "                                        <div>\n" +
+                "                                            <label>Disease ID</label>\n" +
+                "                                            <div style=\"display: flex;justify-content: space-between\">\n" +
+                "                                                <input style=\"margin: 0 20px 0 0\" class=\"inputvalue disease_id\" type=\"text\">\n" +
+                "                                                <i class=\"icon ion-plus-circled disease_button\" style=\"align-self: center;font-size: 18px\"></i>\n" +
+                "                                                <i class=\"icon ion-minus-circled disease_button\" style=\"display:none;align-self: center;font-size: 18px\"></i>\n" +
+                "                                            </div>\n" +
+                "\n" +
+                "                                        </div>\n" +
+                "                                    </div>\n" +
+                "                                    <div>\n" +
+                "                                        <div style=\"visibility: hidden\">\n" +
+                "                                            <label></label>\n" +
+                "                                            <input type=\"text\">\n" +
+                "                                        </div>\n" +
+                "                                    </div>\n" +
+                "                                </div>"
+            ).insertAfter($(this).parent().parent().parent().parent())
+            $(this).css("display","none")
+            $(this).siblings(".ion-minus-circled").css("display","inline-block")
+        })
+        $("#condition_region").on("click",".ion-minus-circled",function(){
+            $(this).parent().parent().parent().parent().remove()
+        })
+
+        $("#tissue_region").on("click",".ion-plus-circled",function(){
+            $(".tissue_region").removeClass("active")
+            $(
+                "<div class=\"tissue_region active\" style=\"display: flex;justify-content: space-between;margin-left: 20px;border-left: 1px solid rgba(34,36,38,.15);padding-left:20px\">\n" +
+                "                                    <div>\n" +
+                "                                        <div>\n" +
+                "                                            <label>Tissue standard</label>\n" +
+                "                                            <div>\n" +
+                "                                                <input class=\"inputvalue tissue\" type=\"text\">\n" +
+                "                                            </div>\n" +
+                "                                        </div>\n" +
+                "                                    </div>\n" +
+                "                                    <div>\n" +
+                "                                        <div>\n" +
+                "                                            <label>Tissue ID</label>\n" +
+                "                                            <div style=\"display: flex\">\n" +
+                "                                                <input style=\"margin: 0 20px 0 0\" class=\"inputvalue tissue_id\" type=\"text\">\n" +
+                "                                                <i class=\"icon ion-plus-circled tissue_button\" style=\"align-self: center;font-size: 18px\"></i>\n" +
+                "                                                <i class=\"icon ion-minus-circled tissue_button\" style=\"display:none;align-self: center;font-size: 18px\"></i>\n" +
+                "                                            </div>\n" +
+                "                                        </div>\n" +
+                "                                    </div>\n" +
+                "                                    <div>\n" +
+                "                                        <div style=\"visibility: hidden\">\n" +
+                "                                            <label></label>\n" +
+                "                                            <input type=\"text\">\n" +
+                "                                        </div>\n" +
+                "                                    </div>\n" +
+                "                                </div>\n" +
+                "                            </div>"
+            ).insertAfter($(this).parent().parent().parent().parent())
+            $(this).css("display","none")
+            $(this).siblings(".ion-minus-circled").css("display","inline-block")
+        })
+        $("#tissue_region").on("click",".ion-minus-circled",function(){
+            $(this).parent().parent().parent().parent().remove()
+        })
+
+        $("#tissue_region").on("click",".tissue,.tissue_id",function(){
+            $(this).parent().parent().parent().parent().siblings().removeClass("active")
+            $(this).parent().parent().parent().parent().addClass("active")
+        })
+        $("#condition_region").on("click",".condition,.disease_id",function(){
+            $(this).parent().parent().parent().parent().siblings().removeClass("active")
+            $(this).parent().parent().parent().parent().addClass("active")
+        })
+
+
+        $("#ctb_table").on("click",".delete",function(){
+            var row = $(this).closest("tr");
+            var data = $('#ctb_table').DataTable().row(row).data();
+
+            if (confirm("Confirm to Delete.")){
+                $.ajax({
+                    url:"/celltaxonomy/delete_curation",
+                    type:'post',
+                    async:false,
+                    data:{
+                        ID:data["ID"]
+                    }
+                })
+                $.ajax({
+                    url:"/celltaxonomy/contributions",
+                    type:'post',
+                    data:{
+                        curator:[[${username}]]
+                    },
+                    success:function(results){
+                        $("#ctb_table").DataTable({
+                            data:results,
+                            columns:[
+                                {
+                                    render:function(){
+                                        return "<a class='edit'>Edit</a><a class='copy'>Copy</a><a class='delete'>Delete</a>"
+                                    }
+                                },
+                                {data:"Species"},
+                                {data:"Cell_original_name"},
+                                {data:"Cell_standard"},
+                                {data:"Cell_id"},
+                                {data:"Parent_cell_id"},
+                                {data:"New_cell_description"},
+                                {data:"Tissue"},
+                                {data:"Tissue_id"},
+                                {data:"Conditions"},
+                                {data:"Disease_id"},
+                                {data:"Positive_cell_marker"},
+                                {data:"Negative_cell_marker"},
+                                {data:"Combinatorial_cell_marker"},
+                                {data:"Marker_description"},
+                                {data:"PMID"},
+                                {data:"Life_stage"},
+                                {data:"Library"},
+                                {data:"Datasets_id"},
+                                {data:"Uncertain"},
+
+                            ],
+                            destroy:true,
+                            ordering:false,
+                            dom: '<"row"<"col-lg-4"l><"col-lg-4"B><"col-lg-4"f>>t<"row"<"col-lg-6"i><"col-lg-6"p>>',
+                            buttons:['excel']
+                        })
+                    }
+                })
+            }
+
+
+
+        })
+        $("#ctb_table").on("click",".edit",function(){
+            var row = $(this).closest("tr");
+            var data = $('#ctb_table').DataTable().row(row).data();
+
+            $("#addc").click()
+            $("#submit").css("display","none")
+            $("#edit").css("display","inline")
+            $("#condition_region").children().eq(-1).siblings().remove()
+            $("#tissue_region").children().eq(-1).siblings().remove()
+
+            $(".ion-plus-circled").css("display","none")
+            if(data["New_cell_description"]==="-"){
+                $("#pmid").val(data["PMID"])
+                $("#species").val(data["Species"])
+                $("#life_stage").val(data["Life_stage"])
+                $("#library").val(data["Library"])
+                $(".condition").val(data["Conditions"])
+                $(".disease_id").val(data["Disease_id"])
+                $(".tissue").val(data["Tissue"])
+                $(".tissue_id").val(data["Tissue_id"])
+                $("#cell_original_name").val(data["Cell_original_name"])
+                $("#cell_standard").val(data["Cell_standard"])
+                $("#cell_id").val(data["Cell_id"])
+                $("#parent_cell_id").val(data["Parent_cell_id"])
+                $("#new_cell_description").val(data["New_cell_description"])
+                $("#positive_cell_marker").val(data["Positive_cell_marker"])
+                $("#negative_cell_marker").val(data["Negative_cell_marker"])
+                $("#combinatorial_cell_marker").val(data["Combinatorial_cell_marker"])
+                $("#marker_description").val(data["Marker_description"])
+                $("#datasets_id").val(data["Datasets_id"])
+                $("#ID").val(data["ID"])
+                if(data["Uncertain"]==="-"){
+                    $("#uncertain").removeAttr("checked")
+                    $("#uncertain_content").val("-")
+                    $("#uncertain_content").attr("disabled","true")
+                }
+                else{
+                    $("#uncertain").click()
+                    $("#uncertain_content").val(data["Uncertain"])
+                }
+            }
+            else{
+                $("#new_cell").click()
+                $("#pmid").val(data["PMID"])
+                $("#species").val(data["Species"])
+                $("#life_stage").val(data["Life_stage"])
+                $("#library").val(data["Library"])
+                $(".condition").val(data["Conditions"])
+                $(".disease_id").val(data["Disease_id"])
+                $(".tissue").val(data["Tissue"])
+                $(".tissue_id").val(data["Tissue_id"])
+                $("#new_cell_original_name").val(data["Cell_original_name"])
+                $("#new_cell_parent_cell_id").val(data["Parent_cell_id"])
+                $("#new_cell_description").val(data["New_cell_description"])
+                $("#positive_cell_marker").val(data["Positive_cell_marker"])
+                $("#negative_cell_marker").val(data["Negative_cell_marker"])
+                $("#combinatorial_cell_marker").val(data["Combinatorial_cell_marker"])
+                $("#marker_description").val(data["Marker_description"])
+                $("#datasets_id").val(data["Datasets_id"])
+                $("#ID").val(data["ID"])
+                if(data["Uncertain"]==="-"){
+                    $("#uncertain").removeAttr("checked")
+                    $("#uncertain_content").val("-")
+                    $("#uncertain_content").attr("disabled","true")
+                }
+                else{
+                    $("#uncertain").click()
+                    $("#uncertain_content").val(data["Uncertain"])
+
+                }
+
+            }
+
+        })
+        $("#ctb_table").on("click",".copy",function(){
+            var row = $(this).closest("tr");
+            var data = $('#ctb_table').DataTable().row(row).data();
+
+            $("#addc").click()
+            $("#condition_region").children().eq(-1).siblings().remove()
+            $("#tissue_region").children().eq(-1).siblings().remove()
+
+            if(data["New_cell_description"]==="-"){
+                $("#pmid").val(data["PMID"])
+                $("#species").val(data["Species"])
+                $("#life_stage").val(data["Life_stage"])
+                $("#library").val(data["Library"])
+                $(".condition").val(data["Conditions"])
+                $(".disease_id").val(data["Disease_id"])
+                $(".tissue").val(data["Tissue"])
+                $(".tissue_id").val(data["Tissue_id"])
+                $("#cell_original_name").val(data["Cell_original_name"])
+                $("#cell_standard").val(data["Cell_standard"])
+                $("#cell_id").val(data["Cell_id"])
+                $("#parent_cell_id").val(data["Parent_cell_id"])
+                $("#new_cell_description").val(data["New_cell_description"])
+                $("#positive_cell_marker").val(data["Positive_cell_marker"])
+                $("#negative_cell_marker").val(data["Negative_cell_marker"])
+                $("#combinatorial_cell_marker").val(data["Combinatorial_cell_marker"])
+                $("#marker_description").val(data["Marker_description"])
+                $("#datasets_id").val(data["Datasets_id"])
+                if(data["Uncertain"]==="-"){
+
+                }
+                else{
+                    $("#uncertain").click()
+                    $("#uncertain_content").val(data["Uncertain"])
+
+                }
+
+            }
+            else{
+                $("#new_cell").click()
+                $("#pmid").val(data["PMID"])
+                $("#species").val(data["Species"])
+                $("#life_stage").val(data["Life_stage"])
+                $("#library").val(data["Library"])
+                $(".condition").val(data["Conditions"])
+                $(".disease_id").val(data["Disease_id"])
+                $(".tissue").val(data["Tissue"])
+                $(".tissue_id").val(data["Tissue_id"])
+                $("#new_cell_original_name").val(data["Cell_original_name"])
+                $("#new_cell_parent_cell_id").val(data["Parent_cell_id"])
+                $("#new_cell_description").val(data["New_cell_description"])
+                $("#positive_cell_marker").val(data["Positive_cell_marker"])
+                $("#negative_cell_marker").val(data["Negative_cell_marker"])
+                $("#combinatorial_cell_marker").val(data["Combinatorial_cell_marker"])
+                $("#marker_description").val(data["Marker_description"])
+                $("#datasets_id").val(data["Datasets_id"])
+                if(data["Uncertain"]==="-"){
+
+                }
+                else{
+                    $("#uncertain").click()
+                    $("#uncertain_content").val(data["Uncertain"])
+
+                }
+
+
+            }
+
+        })
+
+        $("#cell_standard_search").select2({
+            ajax: {
+                url: "/celltaxonomy/curation_cell_type",
+                dataType: 'json',
+                type: "post",
+                data:function(params){
+                    var search={
+                        term:params.term
+                    }
+                    return search
+                },
+                processResults: function (data) {
+                    var res = data.map(function (item) {
+                        return {id: item["Specific_Cell_Ontology_ID"],text:item["Cell_standard"].replace(/"/g,"")};
+                    });
+                    return {
+                        results: res
+                    };
+                }
+            }
+
+
+        });
+        $("#tissue_standard_search").select2({
+            ajax: {
+                url: "/celltaxonomy/curation_tissue",
+                dataType: 'json',
+                type: "post",
+                data:function(params){
+                    var search={
+                        term:params.term
+                    }
+                    return search
+                },
+                processResults: function (data) {
+                    var res = data.map(function (item) {
+                        return {id: item["Tissue_UberonOntology_ID"],text:item["Tissue_standard"].replace(/"/g,"")};
+                    });
+                    return {
+                        results: res
+                    };
+                }
+            }
+
+
+        });
+        $("#condition_standard_search").select2({
+            ajax: {
+                url: "/celltaxonomy/curation_condition",
+                dataType: 'json',
+                type: "post",
+                data:function(params){
+                    var search={
+                        term:params.term
+                    }
+                    return search
+                },
+                processResults: function (data) {
+                    var res = data.map(function (item) {
+                        return {id: item["Condition_ID"],text:item["Conditions"].replace(/"/g,"")};
+                    });
+                    return {
+                        results: res
+                    };
+                }
+            }
+
+
+        });
+        $("#species_standard_search").select2({
+            ajax: {
+                url: "/celltaxonomy/curation_species",
+                dataType: 'json',
+                type: "post",
+                data:function(params){
+                    var search={
+                        term:params.term
+                    }
+                    return search
+                },
+                processResults: function (data) {
+                    var res = data.map(function (item) {
+                        return {id: item["Species"],text:item["Species"].replace(/"/g,"")};
+                    });
+                    return {
+                        results: res
+                    };
+                }
+            }
+
+
+        });
+        $("#life_stage_search").select2();
+
+
+        $("#cell_standard_search").change(function(){
+            $.ajax({
+                url:"/celltaxonomy/curation_cell_detail",
+                type:'post',
+                data:{
+                    ID:$("#cell_standard_search").val()
+                },
+                success:function(results){
+                    if($("#new_cell").is(":checked")){
+                        // $("#new_cell_parent_cell_id").val(results[0].Parent_ID)
+                        $("#new_cell_parent_cell_id").val("-")
+                    }
+                    else{
+                        $("#cell_standard").val($("#cell_standard_search option:selected").text())
+                        $("#cell_id").val($("#cell_standard_search").val())
+                        // $("#parent_cell_id").val(results[0].Parent_ID)
+                        $("#parent_cell_id").val("-")
+                    }
+
+                }
+            })
+        })
+        $("#tissue_standard_search").change(function(){
+            $(".tissue_region.active").find(".tissue").val($("#tissue_standard_search option:selected").text())
+            $(".tissue_region.active").find(".tissue_id").val($("#tissue_standard_search").val())
+        })
+        $("#condition_standard_search").change(function(){
+            $(".condition_region.active").find(".condition").val($("#condition_standard_search option:selected").text())
+            $(".condition_region.active").find(".disease_id").val($("#condition_standard_search").val())
+        })
+        $("#species_standard_search").change(function(){
+            $("#species").val($("#species_standard_search").val())
+        })
+        $("#life_stage_search").change(function(){
+            $("#life_stage").val($("#life_stage_search").val())
+        })
+        $("#library_search").change(function(){
+            $("#library").val($("#library_search").val())
+        })
+
+        $("#new_cell").change(function(){
+            if($("#new_cell").is(":checked")){
+                $("#new_cell_panel").css("display","block")
+                $("#old_cell_panel").css("display","none")
+                $("#new_cell_panel").find("input").each(function(){
+                    $(this).val(null)
+                })
+                $("#old_cell_panel").find("input").each(function(){
+                    $(this).val("-")
+                })
+            }
+            else{
+                $("#old_cell_panel").css("display","block")
+                $("#new_cell_panel").css("display","none")
+                $("#old_cell_panel").find("input").each(function(){
+                    $(this).val(null)
+                })
+                $("#new_cell_panel").find("input").each(function(){
+                    $(this).val("-")
+                })
+
+            }
+        })
+        $("#dataset").change(function(){
+            if($("#dataset").is(":checked")){
+                $("#datasets_id").removeAttr("disabled")
+                $("#datasets_id").val(null)
+            }
+            else{
+                $("#datasets_id").attr("disabled","true")
+                $("#datasets_id").val("-")
+            }
+        })
+
+    </script>
+</body>
+</html>

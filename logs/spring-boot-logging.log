@@ -1,0 +1,399 @@
+2021-08-04 12:30:36.461  INFO 28436 --- [restartedMain] com.example.ct.CtApplication             : Starting CtApplication on 123-PC with PID 28436 (D:\Zeno\琐事\Cell Taxonomy\ct\target\classes started by 123 in D:\Zeno\琐事\Cell Taxonomy\ct)
+2021-08-04 12:30:36.464  INFO 28436 --- [restartedMain] com.example.ct.CtApplication             : No active profile set, falling back to default profiles: default
+2021-08-04 12:30:37.846  INFO 28436 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2021-08-04 12:30:37.846  INFO 28436 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.50]
+2021-08-04 12:30:38.068  INFO 28436 --- [restartedMain] org.apache.jasper.servlet.TldScanner     : At least one JAR was scanned for TLDs yet contained no TLDs. Enable debug logging for this logger for a complete list of JARs that were scanned but no TLDs were found in them. Skipping unneeded JARs during scanning can improve startup time and JSP compilation time.
+2021-08-04 12:30:38.071  INFO 28436 --- [restartedMain] o.a.c.c.C.[.[localhost].[/celltaxonomy]  : Initializing Spring embedded WebApplicationContext
+2021-08-04 12:30:38.333  INFO 28436 --- [restartedMain] c.n.z.x.MyXssFilter                      : Rich text field: textName, textName2
+2021-08-04 12:30:38.333  INFO 28436 --- [restartedMain] c.n.z.x.MyXssFilter                      : Exclude url: /static/*
+2021-08-04 12:30:38.334  INFO 28436 --- [restartedMain] c.n.z.x.HttpHostFilter                   : host=localhost
+2021-08-04 12:30:38.334  INFO 28436 --- [restartedMain] c.n.z.x.HttpHostFilter                   : host=ngdc.cncb.ac.cn
+2021-08-04 12:30:38.334  INFO 28436 --- [restartedMain] c.n.z.x.HttpHostFilter                   : host=bigd.big.ac.cn
+2021-08-04 12:30:38.334  INFO 28436 --- [restartedMain] c.n.z.x.HttpHostFilter                   : host=192.168.74.27
+2021-08-04 12:30:38.334  INFO 28436 --- [restartedMain] c.n.z.x.HttpHostFilter                   : host=192.168.164.83
+2021-08-04 12:30:39.110  INFO 28436 --- [restartedMain] com.example.ct.CtApplication             : Started CtApplication in 3.131 seconds (JVM running for 4.276)
+2021-08-04 12:30:39.232  INFO 28436 --- [http-nio-1080-exec-1] o.a.c.c.C.[.[localhost].[/celltaxonomy]  : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2021-08-04 12:30:39.439  INFO 28436 --- [RMI TCP Connection(1)-192.168.18.1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2021-08-04 12:30:39.627  INFO 28436 --- [RMI TCP Connection(1)-192.168.18.1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2021-08-04 12:30:40.435 DEBUG 28436 --- [http-nio-1080-exec-9] c.e.ct.Mapper.StudyMapper.getStudy       : ==>  Preparing: select * from study where PubmedID=? 
+2021-08-04 12:30:40.460 DEBUG 28436 --- [http-nio-1080-exec-9] c.e.ct.Mapper.StudyMapper.getStudy       : ==> Parameters: 33922959(String)
+2021-08-04 12:30:40.497 DEBUG 28436 --- [http-nio-1080-exec-9] c.e.ct.Mapper.StudyMapper.getStudy       : <==      Total: 4
+2021-08-04 12:30:40.527 DEBUG 28436 --- [http-nio-1080-exec-10] c.e.ct.Mapper.StudyMapper.getDataset     : ==>  Preparing: select * from ct.study where PubmedID=? 
+2021-08-04 12:30:40.529 DEBUG 28436 --- [http-nio-1080-exec-10] c.e.ct.Mapper.StudyMapper.getDataset     : ==> Parameters: 33922959(String)
+2021-08-04 12:30:40.549 DEBUG 28436 --- [http-nio-1080-exec-10] c.e.ct.Mapper.StudyMapper.getDataset     : <==      Total: 4
+2021-08-04 12:30:40.985 DEBUG 28436 --- [http-nio-1080-exec-1] c.e.ct.Mapper.StudyMapper.getMetadata    : ==>  Preparing: select * from ct.study_merge_cell_type_number_forthis where ID = ? order by Number_of_cells 
+2021-08-04 12:30:40.986 DEBUG 28436 --- [http-nio-1080-exec-1] c.e.ct.Mapper.StudyMapper.getMetadata    : ==> Parameters: SRA666103_SRS3038427(String)
+2021-08-04 12:30:41.006 DEBUG 28436 --- [http-nio-1080-exec-1] c.e.ct.Mapper.StudyMapper.getMetadata    : <==      Total: 2
+2021-08-04 12:30:41.380 DEBUG 28436 --- [http-nio-1080-exec-10] c.e.ct.Mapper.StudyMapper.getDimension   : ==>  Preparing: select * from ct.study_merge_cells_df where orig_ident=? 
+2021-08-04 12:30:41.381 DEBUG 28436 --- [http-nio-1080-exec-10] c.e.ct.Mapper.StudyMapper.getDimension   : ==> Parameters: SRA666103_SRS3038427(String)
+2021-08-04 12:30:41.490 DEBUG 28436 --- [http-nio-1080-exec-10] c.e.ct.Mapper.StudyMapper.getDimension   : <==      Total: 315
+2021-08-04 12:30:41.555 DEBUG 28436 --- [http-nio-1080-exec-3] c.e.ct.Mapper.StudyMapper.getHeter       : ==>  Preparing: select * from ct.study_merge_se_score where ID =? 
+2021-08-04 12:30:41.555 DEBUG 28436 --- [http-nio-1080-exec-3] c.e.ct.Mapper.StudyMapper.getHeter       : ==> Parameters: SRA666103_SRS3038427(String)
+2021-08-04 12:30:41.575 DEBUG 28436 --- [http-nio-1080-exec-3] c.e.ct.Mapper.StudyMapper.getHeter       : <==      Total: 2
+2021-08-04 12:30:41.940 DEBUG 28436 --- [http-nio-1080-exec-10] c.e.c.Mapper.StudyMapper.getMEPgenelist  : ==>  Preparing: select distinct Gene,group_concat(Q2) as Q2 from ct.study_merge_boxplot_long where ID=? and Q2!=0 group by Gene order by Gene limit 0,1000 
+2021-08-04 12:30:41.940 DEBUG 28436 --- [http-nio-1080-exec-10] c.e.c.Mapper.StudyMapper.getMEPgenelist  : ==> Parameters: SRA666103_SRS3038427(String)
+2021-08-04 12:30:42.142 DEBUG 28436 --- [http-nio-1080-exec-10] c.e.c.Mapper.StudyMapper.getMEPgenelist  : <==      Total: 567
+2021-08-04 12:30:42.143 DEBUG 28436 --- [http-nio-1080-exec-10] c.example.ct.Mapper.StudyMapper.getMEP   : ==>  Preparing: select * from ct.study_merge_boxplot_long where ID=? and Gene=? 
+2021-08-04 12:30:42.144 DEBUG 28436 --- [http-nio-1080-exec-10] c.example.ct.Mapper.StudyMapper.getMEP   : ==> Parameters: SRA666103_SRS3038427(String), 2410015M20Rik_ENSMUS(String)
+2021-08-04 12:30:42.162 DEBUG 28436 --- [http-nio-1080-exec-10] c.example.ct.Mapper.StudyMapper.getMEP   : <==      Total: 2
+2021-08-04 12:30:42.259 DEBUG 28436 --- [http-nio-1080-exec-4] c.e.c.Mapper.StudyMapper.getCTSGeneList  : ==>  Preparing: select distinct Gene from ct.study_merge_cell_specificity where ID=? limit 0,100 
+2021-08-04 12:30:42.259 DEBUG 28436 --- [http-nio-1080-exec-4] c.e.c.Mapper.StudyMapper.getCTSGeneList  : ==> Parameters: SRA666103_SRS3038427(String)
+2021-08-04 12:30:42.271 DEBUG 28436 --- [http-nio-1080-exec-4] c.e.c.Mapper.StudyMapper.getCTSGeneList  : <==      Total: 100
+2021-08-04 12:30:42.280 DEBUG 28436 --- [http-nio-1080-exec-1] c.example.ct.Mapper.StudyMapper.getCTS   : ==>  Preparing: select * from ct.study_merge_cell_specificity where ID=? and Gene=? and Tissue=? order by Cell_specific_score desc 
+2021-08-04 12:30:42.281 DEBUG 28436 --- [http-nio-1080-exec-1] c.example.ct.Mapper.StudyMapper.getCTS   : ==> Parameters: SRA666103_SRS3038427(String), 0610009O20Rik_ENSMUSG00000024442.5(String), (String)
+2021-08-04 12:30:42.287 DEBUG 28436 --- [http-nio-1080-exec-6] c.e.c.M.StudyMapper.getCTSTissueList     : ==>  Preparing: select distinct Tissue from ct.study_merge_cell_specificity where ID=? limit 0,100 
+2021-08-04 12:30:42.288 DEBUG 28436 --- [http-nio-1080-exec-6] c.e.c.M.StudyMapper.getCTSTissueList     : ==> Parameters: SRA666103_SRS3038427(String)
+2021-08-04 12:30:42.291 DEBUG 28436 --- [http-nio-1080-exec-3] c.e.c.M.StudyMapper.getCMEtable_COUNT    : ==>  Preparing: SELECT count(0) FROM ct.study_merge_findmarkers WHERE ID = ? 
+2021-08-04 12:30:42.291 DEBUG 28436 --- [http-nio-1080-exec-5] c.e.c.M.StudyMapper.getCTStable_COUNT    : ==>  Preparing: SELECT count(0) FROM ct.study_merge_cell_specificity WHERE ID = ? 
+2021-08-04 12:30:42.292 DEBUG 28436 --- [http-nio-1080-exec-5] c.e.c.M.StudyMapper.getCTStable_COUNT    : ==> Parameters: SRA666103_SRS3038427(String)
+2021-08-04 12:30:42.292 DEBUG 28436 --- [http-nio-1080-exec-3] c.e.c.M.StudyMapper.getCMEtable_COUNT    : ==> Parameters: SRA666103_SRS3038427(String)
+2021-08-04 12:30:42.304 DEBUG 28436 --- [http-nio-1080-exec-3] c.e.c.M.StudyMapper.getCMEtable_COUNT    : <==      Total: 1
+2021-08-04 12:30:42.306 DEBUG 28436 --- [http-nio-1080-exec-3] c.e.ct.Mapper.StudyMapper.getCMEtable    : ==>  Preparing: select * from ct.study_merge_findmarkers WHERE ID=? order by Tissue_tmp asc LIMIT 10 
+2021-08-04 12:30:42.307 DEBUG 28436 --- [http-nio-1080-exec-3] c.e.ct.Mapper.StudyMapper.getCMEtable    : ==> Parameters: SRA666103_SRS3038427(String)
+2021-08-04 12:30:42.349 DEBUG 28436 --- [http-nio-1080-exec-5] c.e.c.M.StudyMapper.getCTStable_COUNT    : <==      Total: 1
+2021-08-04 12:30:42.349 DEBUG 28436 --- [http-nio-1080-exec-3] c.e.ct.Mapper.StudyMapper.getCMEtable    : <==      Total: 10
+2021-08-04 12:30:42.349 DEBUG 28436 --- [http-nio-1080-exec-5] c.e.ct.Mapper.StudyMapper.getCTStable    : ==>  Preparing: select * from ct.study_merge_cell_specificity WHERE ID=? order by Cell_specific_score desc LIMIT 10 
+2021-08-04 12:30:42.350 DEBUG 28436 --- [http-nio-1080-exec-5] c.e.ct.Mapper.StudyMapper.getCTStable    : ==> Parameters: SRA666103_SRS3038427(String)
+2021-08-04 12:30:42.455 DEBUG 28436 --- [http-nio-1080-exec-1] c.example.ct.Mapper.StudyMapper.getCTS   : <==      Total: 0
+2021-08-04 12:30:42.481 DEBUG 28436 --- [http-nio-1080-exec-6] c.e.c.M.StudyMapper.getCTSTissueList     : <==      Total: 1
+2021-08-04 12:30:42.488 DEBUG 28436 --- [http-nio-1080-exec-2] c.example.ct.Mapper.StudyMapper.getCTS   : ==>  Preparing: select * from ct.study_merge_cell_specificity where ID=? and Gene=? and Tissue=? order by Cell_specific_score desc 
+2021-08-04 12:30:42.489 DEBUG 28436 --- [http-nio-1080-exec-2] c.example.ct.Mapper.StudyMapper.getCTS   : ==> Parameters: SRA666103_SRS3038427(String), 0610009O20Rik_ENSMUSG00000024442.5(String), Kidney(String)
+2021-08-04 12:30:42.489 DEBUG 28436 --- [http-nio-1080-exec-7] c.example.ct.Mapper.StudyMapper.getCTS2  : ==>  Preparing: select * from ct.study_merge_cell_specificity where ID=? and Cell_type=? and Tissue=? order by Cell_specific_score desc 
+2021-08-04 12:30:42.490 DEBUG 28436 --- [http-nio-1080-exec-7] c.example.ct.Mapper.StudyMapper.getCTS2  : ==> Parameters: SRA666103_SRS3038427(String), (String), (String)
+2021-08-04 12:30:42.492 DEBUG 28436 --- [http-nio-1080-exec-8] c.e.c.M.StudyMapper.getCTSTissueList     : ==>  Preparing: select distinct Tissue from ct.study_merge_cell_specificity where ID=? limit 0,100 
+2021-08-04 12:30:42.492 DEBUG 28436 --- [http-nio-1080-exec-8] c.e.c.M.StudyMapper.getCTSTissueList     : ==> Parameters: SRA666103_SRS3038427(String)
+2021-08-04 12:30:42.581 DEBUG 28436 --- [http-nio-1080-exec-5] c.e.ct.Mapper.StudyMapper.getCTStable    : <==      Total: 10
+2021-08-04 12:30:42.680 DEBUG 28436 --- [http-nio-1080-exec-7] c.example.ct.Mapper.StudyMapper.getCTS2  : <==      Total: 0
+2021-08-04 12:30:42.703 DEBUG 28436 --- [http-nio-1080-exec-8] c.e.c.M.StudyMapper.getCTSTissueList     : <==      Total: 1
+2021-08-04 12:30:42.713 DEBUG 28436 --- [http-nio-1080-exec-9] c.e.c.M.StudyMapper.getCTSCelltypeList   : ==>  Preparing: select distinct Cell_type from ct.study_merge_cell_specificity where ID=? limit 0,100 
+2021-08-04 12:30:42.714 DEBUG 28436 --- [http-nio-1080-exec-9] c.e.c.M.StudyMapper.getCTSCelltypeList   : ==> Parameters: SRA666103_SRS3038427(String)
+2021-08-04 12:30:42.755 DEBUG 28436 --- [http-nio-1080-exec-2] c.example.ct.Mapper.StudyMapper.getCTS   : <==      Total: 2
+2021-08-04 12:30:42.842 DEBUG 28436 --- [http-nio-1080-exec-9] c.e.c.M.StudyMapper.getCTSCelltypeList   : <==      Total: 2
+2021-08-04 12:30:42.849 DEBUG 28436 --- [http-nio-1080-exec-10] c.example.ct.Mapper.StudyMapper.getCTS2  : ==>  Preparing: select * from ct.study_merge_cell_specificity where ID=? and Cell_type=? and Tissue=? order by Cell_specific_score desc 
+2021-08-04 12:30:42.849 DEBUG 28436 --- [http-nio-1080-exec-10] c.example.ct.Mapper.StudyMapper.getCTS2  : ==> Parameters: SRA666103_SRS3038427(String), Distal tubule cell(String), Kidney(String)
+2021-08-04 12:30:42.852 DEBUG 28436 --- [http-nio-1080-exec-4] c.e.c.M.StudyMapper.getCMECelltypeList   : ==>  Preparing: select distinct cell_type_tmp from ct.study_merge_findmarkers where ID=? limit 0,100 
+2021-08-04 12:30:42.853 DEBUG 28436 --- [http-nio-1080-exec-4] c.e.c.M.StudyMapper.getCMECelltypeList   : ==> Parameters: SRA666103_SRS3038427(String)
+2021-08-04 12:30:42.879 DEBUG 28436 --- [http-nio-1080-exec-4] c.e.c.M.StudyMapper.getCMECelltypeList   : <==      Total: 2
+2021-08-04 12:30:42.890 DEBUG 28436 --- [http-nio-1080-exec-3] c.example.ct.Mapper.StudyMapper.getCME   : ==>  Preparing: select * from ct.study_merge_findmarkers where ID=? and cell_type_tmp=? and Tissue_tmp=? order by avg_log2FC desc 
+2021-08-04 12:30:42.890 DEBUG 28436 --- [http-nio-1080-exec-3] c.example.ct.Mapper.StudyMapper.getCME   : ==> Parameters: SRA666103_SRS3038427(String), Distal tubule cell(String), (String)
+2021-08-04 12:30:42.892 DEBUG 28436 --- [http-nio-1080-exec-1] c.e.c.M.StudyMapper.getCMETissueList     : ==>  Preparing: select distinct Tissue_tmp from ct.study_merge_findmarkers where ID=? limit 0,100 
+2021-08-04 12:30:42.896 DEBUG 28436 --- [http-nio-1080-exec-1] c.e.c.M.StudyMapper.getCMETissueList     : ==> Parameters: SRA666103_SRS3038427(String)
+2021-08-04 12:30:42.918 DEBUG 28436 --- [http-nio-1080-exec-1] c.e.c.M.StudyMapper.getCMETissueList     : <==      Total: 1
+2021-08-04 12:30:42.927 DEBUG 28436 --- [http-nio-1080-exec-6] c.example.ct.Mapper.StudyMapper.getCME   : ==>  Preparing: select * from ct.study_merge_findmarkers where ID=? and cell_type_tmp=? and Tissue_tmp=? order by avg_log2FC desc 
+2021-08-04 12:30:42.927 DEBUG 28436 --- [http-nio-1080-exec-6] c.example.ct.Mapper.StudyMapper.getCME   : ==> Parameters: SRA666103_SRS3038427(String), Distal tubule cell(String), Kidney(String)
+2021-08-04 12:30:42.949 DEBUG 28436 --- [http-nio-1080-exec-3] c.example.ct.Mapper.StudyMapper.getCME   : <==      Total: 0
+2021-08-04 12:30:43.632 DEBUG 28436 --- [http-nio-1080-exec-6] c.example.ct.Mapper.StudyMapper.getCME   : <==      Total: 3135
+2021-08-04 12:30:44.519 DEBUG 28436 --- [http-nio-1080-exec-10] c.example.ct.Mapper.StudyMapper.getCTS2  : <==      Total: 15272
+2021-08-04 12:34:52.990 DEBUG 28436 --- [http-nio-1080-exec-5] c.example.ct.Mapper.StudyMapper.getMEP   : ==>  Preparing: select * from ct.study_merge_boxplot_long where ID=? and Gene=? 
+2021-08-04 12:34:52.990 DEBUG 28436 --- [http-nio-1080-exec-5] c.example.ct.Mapper.StudyMapper.getMEP   : ==> Parameters: SRA666103_SRS3038427(String), AC102483.1_ENSMUSG00(String)
+2021-08-04 12:34:53.737 DEBUG 28436 --- [http-nio-1080-exec-5] c.example.ct.Mapper.StudyMapper.getMEP   : <==      Total: 2
+2021-08-04 12:35:00.300 DEBUG 28436 --- [http-nio-1080-exec-8] c.example.ct.Mapper.StudyMapper.getMEP   : ==>  Preparing: select * from ct.study_merge_boxplot_long where ID=? and Gene=? 
+2021-08-04 12:35:00.300 DEBUG 28436 --- [http-nio-1080-exec-8] c.example.ct.Mapper.StudyMapper.getMEP   : ==> Parameters: SRA666103_SRS3038427(String), Akr1a1_ENSMUSG000000(String)
+2021-08-04 12:35:14.681 DEBUG 28436 --- [http-nio-1080-exec-8] c.example.ct.Mapper.StudyMapper.getMEP   : <==      Total: 2
+2021-08-04 12:40:06.895  INFO 29620 --- [restartedMain] com.example.ct.CtApplication             : Starting CtApplication on 123-PC with PID 29620 (D:\Zeno\琐事\Cell Taxonomy\ct\target\classes started by 123 in D:\Zeno\琐事\Cell Taxonomy\ct)
+2021-08-04 12:40:06.898  INFO 29620 --- [restartedMain] com.example.ct.CtApplication             : No active profile set, falling back to default profiles: default
+2021-08-04 12:40:08.206  INFO 29620 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2021-08-04 12:40:08.207  INFO 29620 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.50]
+2021-08-04 12:40:08.425  INFO 29620 --- [restartedMain] org.apache.jasper.servlet.TldScanner     : At least one JAR was scanned for TLDs yet contained no TLDs. Enable debug logging for this logger for a complete list of JARs that were scanned but no TLDs were found in them. Skipping unneeded JARs during scanning can improve startup time and JSP compilation time.
+2021-08-04 12:40:08.429  INFO 29620 --- [restartedMain] o.a.c.c.C.[.[localhost].[/celltaxonomy]  : Initializing Spring embedded WebApplicationContext
+2021-08-04 12:40:08.635  INFO 29620 --- [restartedMain] c.n.z.x.MyXssFilter                      : Rich text field: textName, textName2
+2021-08-04 12:40:08.636  INFO 29620 --- [restartedMain] c.n.z.x.MyXssFilter                      : Exclude url: /static/*
+2021-08-04 12:40:08.636  INFO 29620 --- [restartedMain] c.n.z.x.HttpHostFilter                   : host=localhost
+2021-08-04 12:40:08.636  INFO 29620 --- [restartedMain] c.n.z.x.HttpHostFilter                   : host=ngdc.cncb.ac.cn
+2021-08-04 12:40:08.636  INFO 29620 --- [restartedMain] c.n.z.x.HttpHostFilter                   : host=bigd.big.ac.cn
+2021-08-04 12:40:08.637  INFO 29620 --- [restartedMain] c.n.z.x.HttpHostFilter                   : host=192.168.74.27
+2021-08-04 12:40:08.637  INFO 29620 --- [restartedMain] c.n.z.x.HttpHostFilter                   : host=192.168.164.83
+2021-08-04 12:40:09.410  INFO 29620 --- [restartedMain] com.example.ct.CtApplication             : Started CtApplication in 2.903 seconds (JVM running for 3.94)
+2021-08-04 12:40:09.693  INFO 29620 --- [RMI TCP Connection(1)-192.168.18.1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2021-08-04 12:40:09.852  INFO 29620 --- [RMI TCP Connection(1)-192.168.18.1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2021-08-04 12:40:10.086  INFO 29620 --- [RMI TCP Connection(3)-192.168.18.1] o.a.c.c.C.[.[localhost].[/celltaxonomy]  : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2021-08-04 12:40:13.574 DEBUG 29620 --- [http-nio-1080-exec-10] c.e.ct.Mapper.StudyMapper.getStudy       : ==>  Preparing: select * from study where PubmedID=? 
+2021-08-04 12:40:13.591 DEBUG 29620 --- [http-nio-1080-exec-10] c.e.ct.Mapper.StudyMapper.getStudy       : ==> Parameters: 33922959(String)
+2021-08-04 12:40:13.612 DEBUG 29620 --- [http-nio-1080-exec-10] c.e.ct.Mapper.StudyMapper.getStudy       : <==      Total: 4
+2021-08-04 12:40:13.630 DEBUG 29620 --- [http-nio-1080-exec-9] c.e.ct.Mapper.StudyMapper.getDataset     : ==>  Preparing: select * from ct.study where PubmedID=? 
+2021-08-04 12:40:13.630 DEBUG 29620 --- [http-nio-1080-exec-9] c.e.ct.Mapper.StudyMapper.getDataset     : ==> Parameters: 33922959(String)
+2021-08-04 12:40:13.641 DEBUG 29620 --- [http-nio-1080-exec-9] c.e.ct.Mapper.StudyMapper.getDataset     : <==      Total: 4
+2021-08-04 12:40:13.839 DEBUG 29620 --- [http-nio-1080-exec-6] c.e.ct.Mapper.StudyMapper.getMetadata    : ==>  Preparing: select * from ct.study_merge_cell_type_number_forthis where ID = ? order by Number_of_cells 
+2021-08-04 12:40:13.840 DEBUG 29620 --- [http-nio-1080-exec-6] c.e.ct.Mapper.StudyMapper.getMetadata    : ==> Parameters: SRA666103_SRS3038427(String)
+2021-08-04 12:40:13.844 DEBUG 29620 --- [http-nio-1080-exec-6] c.e.ct.Mapper.StudyMapper.getMetadata    : <==      Total: 2
+2021-08-04 12:40:14.093 DEBUG 29620 --- [http-nio-1080-exec-9] c.e.ct.Mapper.StudyMapper.getDimension   : ==>  Preparing: select * from ct.study_merge_cells_df where orig_ident=? 
+2021-08-04 12:40:14.094 DEBUG 29620 --- [http-nio-1080-exec-9] c.e.ct.Mapper.StudyMapper.getDimension   : ==> Parameters: SRA666103_SRS3038427(String)
+2021-08-04 12:40:14.182 DEBUG 29620 --- [http-nio-1080-exec-9] c.e.ct.Mapper.StudyMapper.getDimension   : <==      Total: 315
+2021-08-04 12:40:14.238 DEBUG 29620 --- [http-nio-1080-exec-1] c.e.ct.Mapper.StudyMapper.getHeter       : ==>  Preparing: select * from ct.study_merge_se_score where ID =? 
+2021-08-04 12:40:14.238 DEBUG 29620 --- [http-nio-1080-exec-1] c.e.ct.Mapper.StudyMapper.getHeter       : ==> Parameters: SRA666103_SRS3038427(String)
+2021-08-04 12:40:14.244 DEBUG 29620 --- [http-nio-1080-exec-1] c.e.ct.Mapper.StudyMapper.getHeter       : <==      Total: 2
+2021-08-04 12:40:14.493 DEBUG 29620 --- [http-nio-1080-exec-9] c.e.c.Mapper.StudyMapper.getMEPgenelist  : ==>  Preparing: select distinct Gene,group_concat(Q2) as Q2 from ct.study_merge_boxplot_long where ID=? and Q2!=0 group by Gene order by Gene limit 0,1000 
+2021-08-04 12:40:14.494 DEBUG 29620 --- [http-nio-1080-exec-9] c.e.c.Mapper.StudyMapper.getMEPgenelist  : ==> Parameters: SRA666103_SRS3038427(String)
+2021-08-04 12:40:14.688 DEBUG 29620 --- [http-nio-1080-exec-9] c.e.c.Mapper.StudyMapper.getMEPgenelist  : <==      Total: 567
+2021-08-04 12:40:14.688 DEBUG 29620 --- [http-nio-1080-exec-9] c.example.ct.Mapper.StudyMapper.getMEP   : ==>  Preparing: select * from ct.study_merge_boxplot_long where ID=? and Gene=? 
+2021-08-04 12:40:14.689 DEBUG 29620 --- [http-nio-1080-exec-9] c.example.ct.Mapper.StudyMapper.getMEP   : ==> Parameters: SRA666103_SRS3038427(String), 2410015M20Rik_ENSMUS(String)
+2021-08-04 12:40:14.704 DEBUG 29620 --- [http-nio-1080-exec-9] c.example.ct.Mapper.StudyMapper.getMEP   : <==      Total: 2
+2021-08-04 12:40:14.795 DEBUG 29620 --- [http-nio-1080-exec-3] c.e.c.Mapper.StudyMapper.getCTSGeneList  : ==>  Preparing: select distinct Gene from ct.study_merge_cell_specificity where ID=? limit 0,100 
+2021-08-04 12:40:14.796 DEBUG 29620 --- [http-nio-1080-exec-3] c.e.c.Mapper.StudyMapper.getCTSGeneList  : ==> Parameters: SRA666103_SRS3038427(String)
+2021-08-04 12:40:14.805 DEBUG 29620 --- [http-nio-1080-exec-3] c.e.c.Mapper.StudyMapper.getCTSGeneList  : <==      Total: 100
+2021-08-04 12:40:14.813 DEBUG 29620 --- [http-nio-1080-exec-6] c.example.ct.Mapper.StudyMapper.getCTS   : ==>  Preparing: select * from ct.study_merge_cell_specificity where ID=? and Gene=? and Tissue=? order by Cell_specific_score desc 
+2021-08-04 12:40:14.814 DEBUG 29620 --- [http-nio-1080-exec-6] c.example.ct.Mapper.StudyMapper.getCTS   : ==> Parameters: SRA666103_SRS3038427(String), 0610009O20Rik_ENSMUSG00000024442.5(String), (String)
+2021-08-04 12:40:14.823 DEBUG 29620 --- [http-nio-1080-exec-1] c.e.c.M.StudyMapper.getCMEtable_COUNT    : ==>  Preparing: SELECT count(0) FROM ct.study_merge_findmarkers WHERE ID = ? 
+2021-08-04 12:40:14.823 DEBUG 29620 --- [http-nio-1080-exec-5] c.e.c.M.StudyMapper.getCTStable_COUNT    : ==>  Preparing: SELECT count(0) FROM ct.study_merge_cell_specificity WHERE ID = ? 
+2021-08-04 12:40:14.823 DEBUG 29620 --- [http-nio-1080-exec-5] c.e.c.M.StudyMapper.getCTStable_COUNT    : ==> Parameters: SRA666103_SRS3038427(String)
+2021-08-04 12:40:14.823 DEBUG 29620 --- [http-nio-1080-exec-1] c.e.c.M.StudyMapper.getCMEtable_COUNT    : ==> Parameters: SRA666103_SRS3038427(String)
+2021-08-04 12:40:14.826 DEBUG 29620 --- [http-nio-1080-exec-4] c.e.c.M.StudyMapper.getCTSTissueList     : ==>  Preparing: select distinct Tissue from ct.study_merge_cell_specificity where ID=? limit 0,100 
+2021-08-04 12:40:14.826 DEBUG 29620 --- [http-nio-1080-exec-4] c.e.c.M.StudyMapper.getCTSTissueList     : ==> Parameters: SRA666103_SRS3038427(String)
+2021-08-04 12:40:14.831 DEBUG 29620 --- [http-nio-1080-exec-1] c.e.c.M.StudyMapper.getCMEtable_COUNT    : <==      Total: 1
+2021-08-04 12:40:14.833 DEBUG 29620 --- [http-nio-1080-exec-1] c.e.ct.Mapper.StudyMapper.getCMEtable    : ==>  Preparing: select * from ct.study_merge_findmarkers WHERE ID=? order by Tissue_tmp asc LIMIT 10 
+2021-08-04 12:40:14.833 DEBUG 29620 --- [http-nio-1080-exec-1] c.e.ct.Mapper.StudyMapper.getCMEtable    : ==> Parameters: SRA666103_SRS3038427(String)
+2021-08-04 12:40:14.861 DEBUG 29620 --- [http-nio-1080-exec-1] c.e.ct.Mapper.StudyMapper.getCMEtable    : <==      Total: 10
+2021-08-04 12:40:14.864 DEBUG 29620 --- [http-nio-1080-exec-5] c.e.c.M.StudyMapper.getCTStable_COUNT    : <==      Total: 1
+2021-08-04 12:40:14.865 DEBUG 29620 --- [http-nio-1080-exec-5] c.e.ct.Mapper.StudyMapper.getCTStable    : ==>  Preparing: select * from ct.study_merge_cell_specificity WHERE ID=? order by Cell_specific_score desc LIMIT 10 
+2021-08-04 12:40:14.868 DEBUG 29620 --- [http-nio-1080-exec-5] c.e.ct.Mapper.StudyMapper.getCTStable    : ==> Parameters: SRA666103_SRS3038427(String)
+2021-08-04 12:40:14.973 DEBUG 29620 --- [http-nio-1080-exec-6] c.example.ct.Mapper.StudyMapper.getCTS   : <==      Total: 0
+2021-08-04 12:40:15.071 DEBUG 29620 --- [http-nio-1080-exec-4] c.e.c.M.StudyMapper.getCTSTissueList     : <==      Total: 1
+2021-08-04 12:40:15.077 DEBUG 29620 --- [http-nio-1080-exec-2] c.example.ct.Mapper.StudyMapper.getCTS   : ==>  Preparing: select * from ct.study_merge_cell_specificity where ID=? and Gene=? and Tissue=? order by Cell_specific_score desc 
+2021-08-04 12:40:15.078 DEBUG 29620 --- [http-nio-1080-exec-2] c.example.ct.Mapper.StudyMapper.getCTS   : ==> Parameters: SRA666103_SRS3038427(String), 0610009O20Rik_ENSMUSG00000024442.5(String), Kidney(String)
+2021-08-04 12:40:15.078 DEBUG 29620 --- [http-nio-1080-exec-7] c.example.ct.Mapper.StudyMapper.getCTS2  : ==>  Preparing: select * from ct.study_merge_cell_specificity where ID=? and Cell_type=? and Tissue=? order by Cell_specific_score desc 
+2021-08-04 12:40:15.079 DEBUG 29620 --- [http-nio-1080-exec-7] c.example.ct.Mapper.StudyMapper.getCTS2  : ==> Parameters: SRA666103_SRS3038427(String), (String), (String)
+2021-08-04 12:40:15.081 DEBUG 29620 --- [http-nio-1080-exec-8] c.e.c.M.StudyMapper.getCTSTissueList     : ==>  Preparing: select distinct Tissue from ct.study_merge_cell_specificity where ID=? limit 0,100 
+2021-08-04 12:40:15.081 DEBUG 29620 --- [http-nio-1080-exec-8] c.e.c.M.StudyMapper.getCTSTissueList     : ==> Parameters: SRA666103_SRS3038427(String)
+2021-08-04 12:40:15.091 DEBUG 29620 --- [http-nio-1080-exec-5] c.e.ct.Mapper.StudyMapper.getCTStable    : <==      Total: 10
+2021-08-04 12:40:15.251 DEBUG 29620 --- [http-nio-1080-exec-2] c.example.ct.Mapper.StudyMapper.getCTS   : <==      Total: 2
+2021-08-04 12:40:15.252 DEBUG 29620 --- [http-nio-1080-exec-7] c.example.ct.Mapper.StudyMapper.getCTS2  : <==      Total: 0
+2021-08-04 12:40:15.289 DEBUG 29620 --- [http-nio-1080-exec-8] c.e.c.M.StudyMapper.getCTSTissueList     : <==      Total: 1
+2021-08-04 12:40:15.298 DEBUG 29620 --- [http-nio-1080-exec-10] c.e.c.M.StudyMapper.getCTSCelltypeList   : ==>  Preparing: select distinct Cell_type from ct.study_merge_cell_specificity where ID=? limit 0,100 
+2021-08-04 12:40:15.298 DEBUG 29620 --- [http-nio-1080-exec-10] c.e.c.M.StudyMapper.getCTSCelltypeList   : ==> Parameters: SRA666103_SRS3038427(String)
+2021-08-04 12:40:15.408 DEBUG 29620 --- [http-nio-1080-exec-10] c.e.c.M.StudyMapper.getCTSCelltypeList   : <==      Total: 2
+2021-08-04 12:40:15.415 DEBUG 29620 --- [http-nio-1080-exec-9] c.example.ct.Mapper.StudyMapper.getCTS2  : ==>  Preparing: select * from ct.study_merge_cell_specificity where ID=? and Cell_type=? and Tissue=? order by Cell_specific_score desc 
+2021-08-04 12:40:15.415 DEBUG 29620 --- [http-nio-1080-exec-9] c.example.ct.Mapper.StudyMapper.getCTS2  : ==> Parameters: SRA666103_SRS3038427(String), Distal tubule cell(String), Kidney(String)
+2021-08-04 12:40:15.418 DEBUG 29620 --- [http-nio-1080-exec-3] c.e.c.M.StudyMapper.getCMECelltypeList   : ==>  Preparing: select distinct cell_type_tmp from ct.study_merge_findmarkers where ID=? limit 0,100 
+2021-08-04 12:40:15.419 DEBUG 29620 --- [http-nio-1080-exec-3] c.e.c.M.StudyMapper.getCMECelltypeList   : ==> Parameters: SRA666103_SRS3038427(String)
+2021-08-04 12:40:15.443 DEBUG 29620 --- [http-nio-1080-exec-3] c.e.c.M.StudyMapper.getCMECelltypeList   : <==      Total: 2
+2021-08-04 12:40:15.452 DEBUG 29620 --- [http-nio-1080-exec-1] c.example.ct.Mapper.StudyMapper.getCME   : ==>  Preparing: select * from ct.study_merge_findmarkers where ID=? and cell_type_tmp=? and Tissue_tmp=? order by avg_log2FC desc 
+2021-08-04 12:40:15.452 DEBUG 29620 --- [http-nio-1080-exec-1] c.example.ct.Mapper.StudyMapper.getCME   : ==> Parameters: SRA666103_SRS3038427(String), Distal tubule cell(String), (String)
+2021-08-04 12:40:15.454 DEBUG 29620 --- [http-nio-1080-exec-6] c.e.c.M.StudyMapper.getCMETissueList     : ==>  Preparing: select distinct Tissue_tmp from ct.study_merge_findmarkers where ID=? limit 0,100 
+2021-08-04 12:40:15.454 DEBUG 29620 --- [http-nio-1080-exec-6] c.e.c.M.StudyMapper.getCMETissueList     : ==> Parameters: SRA666103_SRS3038427(String)
+2021-08-04 12:40:15.481 DEBUG 29620 --- [http-nio-1080-exec-6] c.e.c.M.StudyMapper.getCMETissueList     : <==      Total: 1
+2021-08-04 12:40:15.482 DEBUG 29620 --- [http-nio-1080-exec-1] c.example.ct.Mapper.StudyMapper.getCME   : <==      Total: 0
+2021-08-04 12:40:15.489 DEBUG 29620 --- [http-nio-1080-exec-4] c.example.ct.Mapper.StudyMapper.getCME   : ==>  Preparing: select * from ct.study_merge_findmarkers where ID=? and cell_type_tmp=? and Tissue_tmp=? order by avg_log2FC desc 
+2021-08-04 12:40:15.489 DEBUG 29620 --- [http-nio-1080-exec-4] c.example.ct.Mapper.StudyMapper.getCME   : ==> Parameters: SRA666103_SRS3038427(String), Distal tubule cell(String), Kidney(String)
+2021-08-04 12:40:16.186 DEBUG 29620 --- [http-nio-1080-exec-4] c.example.ct.Mapper.StudyMapper.getCME   : <==      Total: 3135
+2021-08-04 12:40:17.068 DEBUG 29620 --- [http-nio-1080-exec-9] c.example.ct.Mapper.StudyMapper.getCTS2  : <==      Total: 15272
+2021-08-04 12:40:24.161 DEBUG 29620 --- [http-nio-1080-exec-1] c.example.ct.Mapper.StudyMapper.getMEP   : ==>  Preparing: select * from ct.study_merge_boxplot_long where ID=? and Gene=? 
+2021-08-04 12:40:24.162 DEBUG 29620 --- [http-nio-1080-exec-1] c.example.ct.Mapper.StudyMapper.getMEP   : ==> Parameters: SRA666103_SRS3038427(String), Abcg2_ENSMUSG0000002(String)
+2021-08-04 12:40:24.181 DEBUG 29620 --- [http-nio-1080-exec-1] c.example.ct.Mapper.StudyMapper.getMEP   : <==      Total: 2
+2021-08-04 12:40:26.009 DEBUG 29620 --- [http-nio-1080-exec-5] c.example.ct.Mapper.StudyMapper.getMEP   : ==>  Preparing: select * from ct.study_merge_boxplot_long where ID=? and Gene=? 
+2021-08-04 12:40:26.010 DEBUG 29620 --- [http-nio-1080-exec-5] c.example.ct.Mapper.StudyMapper.getMEP   : ==> Parameters: SRA666103_SRS3038427(String), AC141643.2_ENSMUSG00(String)
+2021-08-04 12:40:26.309 DEBUG 29620 --- [http-nio-1080-exec-5] c.example.ct.Mapper.StudyMapper.getMEP   : <==      Total: 2
+2021-08-04 12:40:28.229 DEBUG 29620 --- [http-nio-1080-exec-2] c.example.ct.Mapper.StudyMapper.getMEP   : ==>  Preparing: select * from ct.study_merge_boxplot_long where ID=? and Gene=? 
+2021-08-04 12:40:28.230 DEBUG 29620 --- [http-nio-1080-exec-2] c.example.ct.Mapper.StudyMapper.getMEP   : ==> Parameters: SRA666103_SRS3038427(String), Aldh2_ENSMUSG0000002(String)
+2021-08-04 12:40:38.578 DEBUG 29620 --- [http-nio-1080-exec-2] c.example.ct.Mapper.StudyMapper.getMEP   : <==      Total: 2
+2021-08-04 12:40:48.573  INFO 7560 --- [restartedMain] com.example.ct.CtApplication             : Starting CtApplication on 123-PC with PID 7560 (D:\Zeno\琐事\Cell Taxonomy\ct\target\classes started by 123 in D:\Zeno\琐事\Cell Taxonomy\ct)
+2021-08-04 12:40:48.576  INFO 7560 --- [restartedMain] com.example.ct.CtApplication             : No active profile set, falling back to default profiles: default
+2021-08-04 12:40:49.855  INFO 7560 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2021-08-04 12:40:49.855  INFO 7560 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.50]
+2021-08-04 12:40:50.061  INFO 7560 --- [restartedMain] org.apache.jasper.servlet.TldScanner     : At least one JAR was scanned for TLDs yet contained no TLDs. Enable debug logging for this logger for a complete list of JARs that were scanned but no TLDs were found in them. Skipping unneeded JARs during scanning can improve startup time and JSP compilation time.
+2021-08-04 12:40:50.063  INFO 7560 --- [restartedMain] o.a.c.c.C.[.[localhost].[/celltaxonomy]  : Initializing Spring embedded WebApplicationContext
+2021-08-04 12:40:50.266  INFO 7560 --- [restartedMain] c.n.z.x.MyXssFilter                      : Rich text field: textName, textName2
+2021-08-04 12:40:50.266  INFO 7560 --- [restartedMain] c.n.z.x.MyXssFilter                      : Exclude url: /static/*
+2021-08-04 12:40:50.267  INFO 7560 --- [restartedMain] c.n.z.x.HttpHostFilter                   : host=localhost
+2021-08-04 12:40:50.267  INFO 7560 --- [restartedMain] c.n.z.x.HttpHostFilter                   : host=ngdc.cncb.ac.cn
+2021-08-04 12:40:50.267  INFO 7560 --- [restartedMain] c.n.z.x.HttpHostFilter                   : host=bigd.big.ac.cn
+2021-08-04 12:40:50.267  INFO 7560 --- [restartedMain] c.n.z.x.HttpHostFilter                   : host=192.168.74.27
+2021-08-04 12:40:50.267  INFO 7560 --- [restartedMain] c.n.z.x.HttpHostFilter                   : host=192.168.164.83
+2021-08-04 12:40:51.041  INFO 7560 --- [restartedMain] com.example.ct.CtApplication             : Started CtApplication in 2.846 seconds (JVM running for 3.801)
+2021-08-04 12:40:51.435  INFO 7560 --- [RMI TCP Connection(1)-192.168.18.1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2021-08-04 12:40:51.598  INFO 7560 --- [RMI TCP Connection(1)-192.168.18.1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2021-08-04 12:40:51.833  INFO 7560 --- [RMI TCP Connection(3)-192.168.18.1] o.a.c.c.C.[.[localhost].[/celltaxonomy]  : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2021-08-04 12:40:55.518 DEBUG 7560 --- [http-nio-1080-exec-9] c.e.ct.Mapper.StudyMapper.getStudy       : ==>  Preparing: select * from study where PubmedID=? 
+2021-08-04 12:40:55.538 DEBUG 7560 --- [http-nio-1080-exec-9] c.e.ct.Mapper.StudyMapper.getStudy       : ==> Parameters: 33922959(String)
+2021-08-04 12:40:55.559 DEBUG 7560 --- [http-nio-1080-exec-9] c.e.ct.Mapper.StudyMapper.getStudy       : <==      Total: 4
+2021-08-04 12:40:55.578 DEBUG 7560 --- [http-nio-1080-exec-10] c.e.ct.Mapper.StudyMapper.getDataset     : ==>  Preparing: select * from ct.study where PubmedID=? 
+2021-08-04 12:40:55.578 DEBUG 7560 --- [http-nio-1080-exec-10] c.e.ct.Mapper.StudyMapper.getDataset     : ==> Parameters: 33922959(String)
+2021-08-04 12:40:55.592 DEBUG 7560 --- [http-nio-1080-exec-10] c.e.ct.Mapper.StudyMapper.getDataset     : <==      Total: 4
+2021-08-04 12:40:55.799 DEBUG 7560 --- [http-nio-1080-exec-4] c.e.ct.Mapper.StudyMapper.getMetadata    : ==>  Preparing: select * from ct.study_merge_cell_type_number_forthis where ID = ? order by Number_of_cells 
+2021-08-04 12:40:55.799 DEBUG 7560 --- [http-nio-1080-exec-4] c.e.ct.Mapper.StudyMapper.getMetadata    : ==> Parameters: SRA666103_SRS3038427(String)
+2021-08-04 12:40:55.803 DEBUG 7560 --- [http-nio-1080-exec-4] c.e.ct.Mapper.StudyMapper.getMetadata    : <==      Total: 2
+2021-08-04 12:40:56.059 DEBUG 7560 --- [http-nio-1080-exec-10] c.e.ct.Mapper.StudyMapper.getDimension   : ==>  Preparing: select * from ct.study_merge_cells_df where orig_ident=? 
+2021-08-04 12:40:56.060 DEBUG 7560 --- [http-nio-1080-exec-10] c.e.ct.Mapper.StudyMapper.getDimension   : ==> Parameters: SRA666103_SRS3038427(String)
+2021-08-04 12:40:56.164 DEBUG 7560 --- [http-nio-1080-exec-10] c.e.ct.Mapper.StudyMapper.getDimension   : <==      Total: 315
+2021-08-04 12:40:56.215 DEBUG 7560 --- [http-nio-1080-exec-5] c.e.ct.Mapper.StudyMapper.getHeter       : ==>  Preparing: select * from ct.study_merge_se_score where ID =? 
+2021-08-04 12:40:56.215 DEBUG 7560 --- [http-nio-1080-exec-5] c.e.ct.Mapper.StudyMapper.getHeter       : ==> Parameters: SRA666103_SRS3038427(String)
+2021-08-04 12:40:56.219 DEBUG 7560 --- [http-nio-1080-exec-5] c.e.ct.Mapper.StudyMapper.getHeter       : <==      Total: 2
+2021-08-04 12:40:56.497 DEBUG 7560 --- [http-nio-1080-exec-10] c.e.c.Mapper.StudyMapper.getMEPgenelist  : ==>  Preparing: select distinct Gene,group_concat(Q2) as Q2 from ct.study_merge_boxplot_long where ID=? and Q2!=0 group by Gene order by Gene limit 0,1000 
+2021-08-04 12:40:56.497 DEBUG 7560 --- [http-nio-1080-exec-10] c.e.c.Mapper.StudyMapper.getMEPgenelist  : ==> Parameters: SRA666103_SRS3038427(String)
+2021-08-04 12:40:56.661 DEBUG 7560 --- [http-nio-1080-exec-10] c.e.c.Mapper.StudyMapper.getMEPgenelist  : <==      Total: 567
+2021-08-04 12:40:56.662 DEBUG 7560 --- [http-nio-1080-exec-10] c.example.ct.Mapper.StudyMapper.getMEP   : ==>  Preparing: select * from ct.study_merge_boxplot_long where ID=? and Gene=? 
+2021-08-04 12:40:56.662 DEBUG 7560 --- [http-nio-1080-exec-10] c.example.ct.Mapper.StudyMapper.getMEP   : ==> Parameters: SRA666103_SRS3038427(String), 2410015M20Rik_ENSMUS(String)
+2021-08-04 12:40:56.675 DEBUG 7560 --- [http-nio-1080-exec-10] c.example.ct.Mapper.StudyMapper.getMEP   : <==      Total: 2
+2021-08-04 12:40:56.762 DEBUG 7560 --- [http-nio-1080-exec-1] c.e.c.Mapper.StudyMapper.getCTSGeneList  : ==>  Preparing: select distinct Gene from ct.study_merge_cell_specificity where ID=? limit 0,100 
+2021-08-04 12:40:56.762 DEBUG 7560 --- [http-nio-1080-exec-1] c.e.c.Mapper.StudyMapper.getCTSGeneList  : ==> Parameters: SRA666103_SRS3038427(String)
+2021-08-04 12:40:56.772 DEBUG 7560 --- [http-nio-1080-exec-1] c.e.c.Mapper.StudyMapper.getCTSGeneList  : <==      Total: 100
+2021-08-04 12:40:56.779 DEBUG 7560 --- [http-nio-1080-exec-4] c.example.ct.Mapper.StudyMapper.getCTS   : ==>  Preparing: select * from ct.study_merge_cell_specificity where ID=? and Gene=? and Tissue=? order by Cell_specific_score desc 
+2021-08-04 12:40:56.780 DEBUG 7560 --- [http-nio-1080-exec-4] c.example.ct.Mapper.StudyMapper.getCTS   : ==> Parameters: SRA666103_SRS3038427(String), 0610009O20Rik_ENSMUSG00000024442.5(String), (String)
+2021-08-04 12:40:56.786 DEBUG 7560 --- [http-nio-1080-exec-6] c.e.c.M.StudyMapper.getCTSTissueList     : ==>  Preparing: select distinct Tissue from ct.study_merge_cell_specificity where ID=? limit 0,100 
+2021-08-04 12:40:56.787 DEBUG 7560 --- [http-nio-1080-exec-6] c.e.c.M.StudyMapper.getCTSTissueList     : ==> Parameters: SRA666103_SRS3038427(String)
+2021-08-04 12:40:56.787 DEBUG 7560 --- [http-nio-1080-exec-5] c.e.c.M.StudyMapper.getCMEtable_COUNT    : ==>  Preparing: SELECT count(0) FROM ct.study_merge_findmarkers WHERE ID = ? 
+2021-08-04 12:40:56.788 DEBUG 7560 --- [http-nio-1080-exec-5] c.e.c.M.StudyMapper.getCMEtable_COUNT    : ==> Parameters: SRA666103_SRS3038427(String)
+2021-08-04 12:40:56.788 DEBUG 7560 --- [http-nio-1080-exec-3] c.e.c.M.StudyMapper.getCTStable_COUNT    : ==>  Preparing: SELECT count(0) FROM ct.study_merge_cell_specificity WHERE ID = ? 
+2021-08-04 12:40:56.788 DEBUG 7560 --- [http-nio-1080-exec-3] c.e.c.M.StudyMapper.getCTStable_COUNT    : ==> Parameters: SRA666103_SRS3038427(String)
+2021-08-04 12:40:56.801 DEBUG 7560 --- [http-nio-1080-exec-5] c.e.c.M.StudyMapper.getCMEtable_COUNT    : <==      Total: 1
+2021-08-04 12:40:56.802 DEBUG 7560 --- [http-nio-1080-exec-5] c.e.ct.Mapper.StudyMapper.getCMEtable    : ==>  Preparing: select * from ct.study_merge_findmarkers WHERE ID=? order by Tissue_tmp asc LIMIT 10 
+2021-08-04 12:40:56.803 DEBUG 7560 --- [http-nio-1080-exec-5] c.e.ct.Mapper.StudyMapper.getCMEtable    : ==> Parameters: SRA666103_SRS3038427(String)
+2021-08-04 12:40:56.813 DEBUG 7560 --- [http-nio-1080-exec-3] c.e.c.M.StudyMapper.getCTStable_COUNT    : <==      Total: 1
+2021-08-04 12:40:56.813 DEBUG 7560 --- [http-nio-1080-exec-3] c.e.ct.Mapper.StudyMapper.getCTStable    : ==>  Preparing: select * from ct.study_merge_cell_specificity WHERE ID=? order by Cell_specific_score desc LIMIT 10 
+2021-08-04 12:40:56.813 DEBUG 7560 --- [http-nio-1080-exec-3] c.e.ct.Mapper.StudyMapper.getCTStable    : ==> Parameters: SRA666103_SRS3038427(String)
+2021-08-04 12:40:56.846 DEBUG 7560 --- [http-nio-1080-exec-5] c.e.ct.Mapper.StudyMapper.getCMEtable    : <==      Total: 10
+2021-08-04 12:40:56.960 DEBUG 7560 --- [http-nio-1080-exec-6] c.e.c.M.StudyMapper.getCTSTissueList     : <==      Total: 1
+2021-08-04 12:40:56.967 DEBUG 7560 --- [http-nio-1080-exec-7] c.example.ct.Mapper.StudyMapper.getCTS2  : ==>  Preparing: select * from ct.study_merge_cell_specificity where ID=? and Cell_type=? and Tissue=? order by Cell_specific_score desc 
+2021-08-04 12:40:56.967 DEBUG 7560 --- [http-nio-1080-exec-2] c.example.ct.Mapper.StudyMapper.getCTS   : ==>  Preparing: select * from ct.study_merge_cell_specificity where ID=? and Gene=? and Tissue=? order by Cell_specific_score desc 
+2021-08-04 12:40:56.967 DEBUG 7560 --- [http-nio-1080-exec-7] c.example.ct.Mapper.StudyMapper.getCTS2  : ==> Parameters: SRA666103_SRS3038427(String), (String), (String)
+2021-08-04 12:40:56.967 DEBUG 7560 --- [http-nio-1080-exec-2] c.example.ct.Mapper.StudyMapper.getCTS   : ==> Parameters: SRA666103_SRS3038427(String), 0610009O20Rik_ENSMUSG00000024442.5(String), Kidney(String)
+2021-08-04 12:40:56.971 DEBUG 7560 --- [http-nio-1080-exec-4] c.example.ct.Mapper.StudyMapper.getCTS   : <==      Total: 0
+2021-08-04 12:40:56.977 DEBUG 7560 --- [http-nio-1080-exec-8] c.e.c.M.StudyMapper.getCTSTissueList     : ==>  Preparing: select distinct Tissue from ct.study_merge_cell_specificity where ID=? limit 0,100 
+2021-08-04 12:40:56.978 DEBUG 7560 --- [http-nio-1080-exec-8] c.e.c.M.StudyMapper.getCTSTissueList     : ==> Parameters: SRA666103_SRS3038427(String)
+2021-08-04 12:40:56.978 DEBUG 7560 --- [http-nio-1080-exec-3] c.e.ct.Mapper.StudyMapper.getCTStable    : <==      Total: 10
+2021-08-04 12:40:57.158 DEBUG 7560 --- [http-nio-1080-exec-2] c.example.ct.Mapper.StudyMapper.getCTS   : <==      Total: 2
+2021-08-04 12:40:57.163 DEBUG 7560 --- [http-nio-1080-exec-8] c.e.c.M.StudyMapper.getCTSTissueList     : <==      Total: 1
+2021-08-04 12:40:57.165 DEBUG 7560 --- [http-nio-1080-exec-7] c.example.ct.Mapper.StudyMapper.getCTS2  : <==      Total: 0
+2021-08-04 12:40:57.171 DEBUG 7560 --- [http-nio-1080-exec-9] c.e.c.M.StudyMapper.getCTSCelltypeList   : ==>  Preparing: select distinct Cell_type from ct.study_merge_cell_specificity where ID=? limit 0,100 
+2021-08-04 12:40:57.171 DEBUG 7560 --- [http-nio-1080-exec-9] c.e.c.M.StudyMapper.getCTSCelltypeList   : ==> Parameters: SRA666103_SRS3038427(String)
+2021-08-04 12:40:57.282 DEBUG 7560 --- [http-nio-1080-exec-9] c.e.c.M.StudyMapper.getCTSCelltypeList   : <==      Total: 2
+2021-08-04 12:40:57.290 DEBUG 7560 --- [http-nio-1080-exec-10] c.example.ct.Mapper.StudyMapper.getCTS2  : ==>  Preparing: select * from ct.study_merge_cell_specificity where ID=? and Cell_type=? and Tissue=? order by Cell_specific_score desc 
+2021-08-04 12:40:57.291 DEBUG 7560 --- [http-nio-1080-exec-10] c.example.ct.Mapper.StudyMapper.getCTS2  : ==> Parameters: SRA666103_SRS3038427(String), Distal tubule cell(String), Kidney(String)
+2021-08-04 12:40:57.294 DEBUG 7560 --- [http-nio-1080-exec-1] c.e.c.M.StudyMapper.getCMECelltypeList   : ==>  Preparing: select distinct cell_type_tmp from ct.study_merge_findmarkers where ID=? limit 0,100 
+2021-08-04 12:40:57.294 DEBUG 7560 --- [http-nio-1080-exec-1] c.e.c.M.StudyMapper.getCMECelltypeList   : ==> Parameters: SRA666103_SRS3038427(String)
+2021-08-04 12:40:57.321 DEBUG 7560 --- [http-nio-1080-exec-1] c.e.c.M.StudyMapper.getCMECelltypeList   : <==      Total: 2
+2021-08-04 12:40:57.333 DEBUG 7560 --- [http-nio-1080-exec-5] c.example.ct.Mapper.StudyMapper.getCME   : ==>  Preparing: select * from ct.study_merge_findmarkers where ID=? and cell_type_tmp=? and Tissue_tmp=? order by avg_log2FC desc 
+2021-08-04 12:40:57.334 DEBUG 7560 --- [http-nio-1080-exec-5] c.example.ct.Mapper.StudyMapper.getCME   : ==> Parameters: SRA666103_SRS3038427(String), Distal tubule cell(String), (String)
+2021-08-04 12:40:57.335 DEBUG 7560 --- [http-nio-1080-exec-6] c.e.c.M.StudyMapper.getCMETissueList     : ==>  Preparing: select distinct Tissue_tmp from ct.study_merge_findmarkers where ID=? limit 0,100 
+2021-08-04 12:40:57.335 DEBUG 7560 --- [http-nio-1080-exec-6] c.e.c.M.StudyMapper.getCMETissueList     : ==> Parameters: SRA666103_SRS3038427(String)
+2021-08-04 12:40:57.360 DEBUG 7560 --- [http-nio-1080-exec-6] c.e.c.M.StudyMapper.getCMETissueList     : <==      Total: 1
+2021-08-04 12:40:57.362 DEBUG 7560 --- [http-nio-1080-exec-5] c.example.ct.Mapper.StudyMapper.getCME   : <==      Total: 0
+2021-08-04 12:40:57.370 DEBUG 7560 --- [http-nio-1080-exec-4] c.example.ct.Mapper.StudyMapper.getCME   : ==>  Preparing: select * from ct.study_merge_findmarkers where ID=? and cell_type_tmp=? and Tissue_tmp=? order by avg_log2FC desc 
+2021-08-04 12:40:57.371 DEBUG 7560 --- [http-nio-1080-exec-4] c.example.ct.Mapper.StudyMapper.getCME   : ==> Parameters: SRA666103_SRS3038427(String), Distal tubule cell(String), Kidney(String)
+2021-08-04 12:40:58.110 DEBUG 7560 --- [http-nio-1080-exec-4] c.example.ct.Mapper.StudyMapper.getCME   : <==      Total: 3135
+2021-08-04 12:40:58.937 DEBUG 7560 --- [http-nio-1080-exec-10] c.example.ct.Mapper.StudyMapper.getCTS2  : <==      Total: 15272
+2021-08-04 12:41:05.603 DEBUG 7560 --- [http-nio-1080-exec-3] c.example.ct.Mapper.StudyMapper.getMEP   : ==>  Preparing: select * from ct.study_merge_boxplot_long where ID=? and Gene=? 
+2021-08-04 12:41:05.603 DEBUG 7560 --- [http-nio-1080-exec-3] c.example.ct.Mapper.StudyMapper.getMEP   : ==> Parameters: SRA666103_SRS3038427(String), Arpc2_ENSMUSG0000000(String)
+2021-08-04 12:41:12.533 DEBUG 7560 --- [http-nio-1080-exec-3] c.example.ct.Mapper.StudyMapper.getMEP   : <==      Total: 2
+2021-08-04 12:41:21.371  INFO 27152 --- [restartedMain] com.example.ct.CtApplication             : Starting CtApplication on 123-PC with PID 27152 (D:\Zeno\琐事\Cell Taxonomy\ct\target\classes started by 123 in D:\Zeno\琐事\Cell Taxonomy\ct)
+2021-08-04 12:41:21.376  INFO 27152 --- [restartedMain] com.example.ct.CtApplication             : No active profile set, falling back to default profiles: default
+2021-08-04 12:41:22.602  INFO 27152 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2021-08-04 12:41:22.603  INFO 27152 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.50]
+2021-08-04 12:41:22.819  INFO 27152 --- [restartedMain] org.apache.jasper.servlet.TldScanner     : At least one JAR was scanned for TLDs yet contained no TLDs. Enable debug logging for this logger for a complete list of JARs that were scanned but no TLDs were found in them. Skipping unneeded JARs during scanning can improve startup time and JSP compilation time.
+2021-08-04 12:41:22.821  INFO 27152 --- [restartedMain] o.a.c.c.C.[.[localhost].[/celltaxonomy]  : Initializing Spring embedded WebApplicationContext
+2021-08-04 12:41:23.026  INFO 27152 --- [restartedMain] c.n.z.x.MyXssFilter                      : Rich text field: textName, textName2
+2021-08-04 12:41:23.026  INFO 27152 --- [restartedMain] c.n.z.x.MyXssFilter                      : Exclude url: /static/*
+2021-08-04 12:41:23.026  INFO 27152 --- [restartedMain] c.n.z.x.HttpHostFilter                   : host=localhost
+2021-08-04 12:41:23.026  INFO 27152 --- [restartedMain] c.n.z.x.HttpHostFilter                   : host=ngdc.cncb.ac.cn
+2021-08-04 12:41:23.026  INFO 27152 --- [restartedMain] c.n.z.x.HttpHostFilter                   : host=bigd.big.ac.cn
+2021-08-04 12:41:23.026  INFO 27152 --- [restartedMain] c.n.z.x.HttpHostFilter                   : host=192.168.74.27
+2021-08-04 12:41:23.026  INFO 27152 --- [restartedMain] c.n.z.x.HttpHostFilter                   : host=192.168.164.83
+2021-08-04 12:41:23.739  INFO 27152 --- [restartedMain] com.example.ct.CtApplication             : Started CtApplication in 2.781 seconds (JVM running for 3.718)
+2021-08-04 12:41:24.303  INFO 27152 --- [RMI TCP Connection(2)-192.168.18.1] o.a.c.c.C.[.[localhost].[/celltaxonomy]  : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2021-08-04 12:41:24.307  INFO 27152 --- [RMI TCP Connection(1)-192.168.18.1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2021-08-04 12:41:24.468  INFO 27152 --- [RMI TCP Connection(1)-192.168.18.1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2021-08-04 12:41:29.497 DEBUG 27152 --- [http-nio-1080-exec-9] c.e.ct.Mapper.StudyMapper.getStudy       : ==>  Preparing: select * from study where PubmedID=? 
+2021-08-04 12:41:29.514 DEBUG 27152 --- [http-nio-1080-exec-9] c.e.ct.Mapper.StudyMapper.getStudy       : ==> Parameters: 33922959(String)
+2021-08-04 12:41:29.536 DEBUG 27152 --- [http-nio-1080-exec-9] c.e.ct.Mapper.StudyMapper.getStudy       : <==      Total: 4
+2021-08-04 12:41:29.555 DEBUG 27152 --- [http-nio-1080-exec-10] c.e.ct.Mapper.StudyMapper.getDataset     : ==>  Preparing: select * from ct.study where PubmedID=? 
+2021-08-04 12:41:29.555 DEBUG 27152 --- [http-nio-1080-exec-10] c.e.ct.Mapper.StudyMapper.getDataset     : ==> Parameters: 33922959(String)
+2021-08-04 12:41:29.567 DEBUG 27152 --- [http-nio-1080-exec-10] c.e.ct.Mapper.StudyMapper.getDataset     : <==      Total: 4
+2021-08-04 12:41:29.754 DEBUG 27152 --- [http-nio-1080-exec-4] c.e.ct.Mapper.StudyMapper.getMetadata    : ==>  Preparing: select * from ct.study_merge_cell_type_number_forthis where ID = ? order by Number_of_cells 
+2021-08-04 12:41:29.755 DEBUG 27152 --- [http-nio-1080-exec-4] c.e.ct.Mapper.StudyMapper.getMetadata    : ==> Parameters: SRA666103_SRS3038427(String)
+2021-08-04 12:41:29.759 DEBUG 27152 --- [http-nio-1080-exec-4] c.e.ct.Mapper.StudyMapper.getMetadata    : <==      Total: 2
+2021-08-04 12:41:30.012 DEBUG 27152 --- [http-nio-1080-exec-10] c.e.ct.Mapper.StudyMapper.getDimension   : ==>  Preparing: select * from ct.study_merge_cells_df where orig_ident=? 
+2021-08-04 12:41:30.013 DEBUG 27152 --- [http-nio-1080-exec-10] c.e.ct.Mapper.StudyMapper.getDimension   : ==> Parameters: SRA666103_SRS3038427(String)
+2021-08-04 12:41:30.103 DEBUG 27152 --- [http-nio-1080-exec-10] c.e.ct.Mapper.StudyMapper.getDimension   : <==      Total: 315
+2021-08-04 12:41:30.151 DEBUG 27152 --- [http-nio-1080-exec-1] c.e.ct.Mapper.StudyMapper.getHeter       : ==>  Preparing: select * from ct.study_merge_se_score where ID =? 
+2021-08-04 12:41:30.152 DEBUG 27152 --- [http-nio-1080-exec-1] c.e.ct.Mapper.StudyMapper.getHeter       : ==> Parameters: SRA666103_SRS3038427(String)
+2021-08-04 12:41:30.158 DEBUG 27152 --- [http-nio-1080-exec-1] c.e.ct.Mapper.StudyMapper.getHeter       : <==      Total: 2
+2021-08-04 12:41:30.460 DEBUG 27152 --- [http-nio-1080-exec-10] c.e.c.Mapper.StudyMapper.getMEPgenelist  : ==>  Preparing: select distinct Gene,group_concat(Q2) as Q2 from ct.study_merge_boxplot_long where ID=? and Q2!=0 group by Gene order by Gene limit 0,1000 
+2021-08-04 12:41:30.460 DEBUG 27152 --- [http-nio-1080-exec-10] c.e.c.Mapper.StudyMapper.getMEPgenelist  : ==> Parameters: SRA666103_SRS3038427(String)
+2021-08-04 12:41:30.579 DEBUG 27152 --- [http-nio-1080-exec-10] c.e.c.Mapper.StudyMapper.getMEPgenelist  : <==      Total: 567
+2021-08-04 12:41:30.580 DEBUG 27152 --- [http-nio-1080-exec-10] c.example.ct.Mapper.StudyMapper.getMEP   : ==>  Preparing: select * from ct.study_merge_boxplot_long where ID=? and Gene=? 
+2021-08-04 12:41:30.580 DEBUG 27152 --- [http-nio-1080-exec-10] c.example.ct.Mapper.StudyMapper.getMEP   : ==> Parameters: SRA666103_SRS3038427(String), 2410015M20Rik_ENSMUS(String)
+2021-08-04 12:41:30.594 DEBUG 27152 --- [http-nio-1080-exec-10] c.example.ct.Mapper.StudyMapper.getMEP   : <==      Total: 2
+2021-08-04 12:41:30.682 DEBUG 27152 --- [http-nio-1080-exec-5] c.e.c.Mapper.StudyMapper.getCTSGeneList  : ==>  Preparing: select distinct Gene from ct.study_merge_cell_specificity where ID=? limit 0,100 
+2021-08-04 12:41:30.683 DEBUG 27152 --- [http-nio-1080-exec-5] c.e.c.Mapper.StudyMapper.getCTSGeneList  : ==> Parameters: SRA666103_SRS3038427(String)
+2021-08-04 12:41:30.694 DEBUG 27152 --- [http-nio-1080-exec-5] c.e.c.Mapper.StudyMapper.getCTSGeneList  : <==      Total: 100
+2021-08-04 12:41:30.702 DEBUG 27152 --- [http-nio-1080-exec-4] c.example.ct.Mapper.StudyMapper.getCTS   : ==>  Preparing: select * from ct.study_merge_cell_specificity where ID=? and Gene=? and Tissue=? order by Cell_specific_score desc 
+2021-08-04 12:41:30.702 DEBUG 27152 --- [http-nio-1080-exec-4] c.example.ct.Mapper.StudyMapper.getCTS   : ==> Parameters: SRA666103_SRS3038427(String), 0610009O20Rik_ENSMUSG00000024442.5(String), (String)
+2021-08-04 12:41:30.715 DEBUG 27152 --- [http-nio-1080-exec-6] c.e.c.M.StudyMapper.getCTSTissueList     : ==>  Preparing: select distinct Tissue from ct.study_merge_cell_specificity where ID=? limit 0,100 
+2021-08-04 12:41:30.716 DEBUG 27152 --- [http-nio-1080-exec-6] c.e.c.M.StudyMapper.getCTSTissueList     : ==> Parameters: SRA666103_SRS3038427(String)
+2021-08-04 12:41:30.721 DEBUG 27152 --- [http-nio-1080-exec-2] c.e.c.M.StudyMapper.getCTStable_COUNT    : ==>  Preparing: SELECT count(0) FROM ct.study_merge_cell_specificity WHERE ID = ? 
+2021-08-04 12:41:30.721 DEBUG 27152 --- [http-nio-1080-exec-2] c.e.c.M.StudyMapper.getCTStable_COUNT    : ==> Parameters: SRA666103_SRS3038427(String)
+2021-08-04 12:41:30.724 DEBUG 27152 --- [http-nio-1080-exec-1] c.e.c.M.StudyMapper.getCMEtable_COUNT    : ==>  Preparing: SELECT count(0) FROM ct.study_merge_findmarkers WHERE ID = ? 
+2021-08-04 12:41:30.725 DEBUG 27152 --- [http-nio-1080-exec-1] c.e.c.M.StudyMapper.getCMEtable_COUNT    : ==> Parameters: SRA666103_SRS3038427(String)
+2021-08-04 12:41:30.747 DEBUG 27152 --- [http-nio-1080-exec-1] c.e.c.M.StudyMapper.getCMEtable_COUNT    : <==      Total: 1
+2021-08-04 12:41:30.748 DEBUG 27152 --- [http-nio-1080-exec-1] c.e.ct.Mapper.StudyMapper.getCMEtable    : ==>  Preparing: select * from ct.study_merge_findmarkers WHERE ID=? order by Tissue_tmp asc LIMIT 10 
+2021-08-04 12:41:30.748 DEBUG 27152 --- [http-nio-1080-exec-1] c.e.ct.Mapper.StudyMapper.getCMEtable    : ==> Parameters: SRA666103_SRS3038427(String)
+2021-08-04 12:41:30.777 DEBUG 27152 --- [http-nio-1080-exec-2] c.e.c.M.StudyMapper.getCTStable_COUNT    : <==      Total: 1
+2021-08-04 12:41:30.778 DEBUG 27152 --- [http-nio-1080-exec-2] c.e.ct.Mapper.StudyMapper.getCTStable    : ==>  Preparing: select * from ct.study_merge_cell_specificity WHERE ID=? order by Cell_specific_score desc LIMIT 10 
+2021-08-04 12:41:30.778 DEBUG 27152 --- [http-nio-1080-exec-2] c.e.ct.Mapper.StudyMapper.getCTStable    : ==> Parameters: SRA666103_SRS3038427(String)
+2021-08-04 12:41:30.797 DEBUG 27152 --- [http-nio-1080-exec-1] c.e.ct.Mapper.StudyMapper.getCMEtable    : <==      Total: 10
+2021-08-04 12:41:30.859 DEBUG 27152 --- [http-nio-1080-exec-4] c.example.ct.Mapper.StudyMapper.getCTS   : <==      Total: 0
+2021-08-04 12:41:30.967 DEBUG 27152 --- [http-nio-1080-exec-2] c.e.ct.Mapper.StudyMapper.getCTStable    : <==      Total: 10
+2021-08-04 12:41:30.973 DEBUG 27152 --- [http-nio-1080-exec-6] c.e.c.M.StudyMapper.getCTSTissueList     : <==      Total: 1
+2021-08-04 12:41:30.981 DEBUG 27152 --- [http-nio-1080-exec-3] c.example.ct.Mapper.StudyMapper.getCTS   : ==>  Preparing: select * from ct.study_merge_cell_specificity where ID=? and Gene=? and Tissue=? order by Cell_specific_score desc 
+2021-08-04 12:41:30.981 DEBUG 27152 --- [http-nio-1080-exec-7] c.example.ct.Mapper.StudyMapper.getCTS2  : ==>  Preparing: select * from ct.study_merge_cell_specificity where ID=? and Cell_type=? and Tissue=? order by Cell_specific_score desc 
+2021-08-04 12:41:30.981 DEBUG 27152 --- [http-nio-1080-exec-3] c.example.ct.Mapper.StudyMapper.getCTS   : ==> Parameters: SRA666103_SRS3038427(String), 0610009O20Rik_ENSMUSG00000024442.5(String), Kidney(String)
+2021-08-04 12:41:30.982 DEBUG 27152 --- [http-nio-1080-exec-7] c.example.ct.Mapper.StudyMapper.getCTS2  : ==> Parameters: SRA666103_SRS3038427(String), (String), (String)
+2021-08-04 12:41:30.985 DEBUG 27152 --- [http-nio-1080-exec-8] c.e.c.M.StudyMapper.getCTSTissueList     : ==>  Preparing: select distinct Tissue from ct.study_merge_cell_specificity where ID=? limit 0,100 
+2021-08-04 12:41:30.985 DEBUG 27152 --- [http-nio-1080-exec-8] c.e.c.M.StudyMapper.getCTSTissueList     : ==> Parameters: SRA666103_SRS3038427(String)
+2021-08-04 12:41:31.105 DEBUG 27152 --- [http-nio-1080-exec-3] c.example.ct.Mapper.StudyMapper.getCTS   : <==      Total: 2
+2021-08-04 12:41:31.117 DEBUG 27152 --- [http-nio-1080-exec-8] c.e.c.M.StudyMapper.getCTSTissueList     : <==      Total: 1
+2021-08-04 12:41:31.137 DEBUG 27152 --- [http-nio-1080-exec-9] c.e.c.M.StudyMapper.getCTSCelltypeList   : ==>  Preparing: select distinct Cell_type from ct.study_merge_cell_specificity where ID=? limit 0,100 
+2021-08-04 12:41:31.137 DEBUG 27152 --- [http-nio-1080-exec-9] c.e.c.M.StudyMapper.getCTSCelltypeList   : ==> Parameters: SRA666103_SRS3038427(String)
+2021-08-04 12:41:31.150 DEBUG 27152 --- [http-nio-1080-exec-7] c.example.ct.Mapper.StudyMapper.getCTS2  : <==      Total: 0
+2021-08-04 12:41:31.246 DEBUG 27152 --- [http-nio-1080-exec-9] c.e.c.M.StudyMapper.getCTSCelltypeList   : <==      Total: 2
+2021-08-04 12:41:31.256 DEBUG 27152 --- [http-nio-1080-exec-10] c.example.ct.Mapper.StudyMapper.getCTS2  : ==>  Preparing: select * from ct.study_merge_cell_specificity where ID=? and Cell_type=? and Tissue=? order by Cell_specific_score desc 
+2021-08-04 12:41:31.256 DEBUG 27152 --- [http-nio-1080-exec-5] c.e.c.M.StudyMapper.getCMECelltypeList   : ==>  Preparing: select distinct cell_type_tmp from ct.study_merge_findmarkers where ID=? limit 0,100 
+2021-08-04 12:41:31.256 DEBUG 27152 --- [http-nio-1080-exec-5] c.e.c.M.StudyMapper.getCMECelltypeList   : ==> Parameters: SRA666103_SRS3038427(String)
+2021-08-04 12:41:31.256 DEBUG 27152 --- [http-nio-1080-exec-10] c.example.ct.Mapper.StudyMapper.getCTS2  : ==> Parameters: SRA666103_SRS3038427(String), Distal tubule cell(String), Kidney(String)
+2021-08-04 12:41:31.319 DEBUG 27152 --- [http-nio-1080-exec-5] c.e.c.M.StudyMapper.getCMECelltypeList   : <==      Total: 2
+2021-08-04 12:41:31.331 DEBUG 27152 --- [http-nio-1080-exec-4] c.e.c.M.StudyMapper.getCMETissueList     : ==>  Preparing: select distinct Tissue_tmp from ct.study_merge_findmarkers where ID=? limit 0,100 
+2021-08-04 12:41:31.331 DEBUG 27152 --- [http-nio-1080-exec-1] c.example.ct.Mapper.StudyMapper.getCME   : ==>  Preparing: select * from ct.study_merge_findmarkers where ID=? and cell_type_tmp=? and Tissue_tmp=? order by avg_log2FC desc 
+2021-08-04 12:41:31.331 DEBUG 27152 --- [http-nio-1080-exec-4] c.e.c.M.StudyMapper.getCMETissueList     : ==> Parameters: SRA666103_SRS3038427(String)
+2021-08-04 12:41:31.331 DEBUG 27152 --- [http-nio-1080-exec-1] c.example.ct.Mapper.StudyMapper.getCME   : ==> Parameters: SRA666103_SRS3038427(String), Distal tubule cell(String), (String)
+2021-08-04 12:41:31.353 DEBUG 27152 --- [http-nio-1080-exec-4] c.e.c.M.StudyMapper.getCMETissueList     : <==      Total: 1
+2021-08-04 12:41:31.360 DEBUG 27152 --- [http-nio-1080-exec-2] c.example.ct.Mapper.StudyMapper.getCME   : ==>  Preparing: select * from ct.study_merge_findmarkers where ID=? and cell_type_tmp=? and Tissue_tmp=? order by avg_log2FC desc 
+2021-08-04 12:41:31.360 DEBUG 27152 --- [http-nio-1080-exec-2] c.example.ct.Mapper.StudyMapper.getCME   : ==> Parameters: SRA666103_SRS3038427(String), Distal tubule cell(String), Kidney(String)
+2021-08-04 12:41:31.402 DEBUG 27152 --- [http-nio-1080-exec-1] c.example.ct.Mapper.StudyMapper.getCME   : <==      Total: 0
+2021-08-04 12:41:32.257 DEBUG 27152 --- [http-nio-1080-exec-2] c.example.ct.Mapper.StudyMapper.getCME   : <==      Total: 3135
+2021-08-04 12:41:32.899 DEBUG 27152 --- [http-nio-1080-exec-10] c.example.ct.Mapper.StudyMapper.getCTS2  : <==      Total: 15272
+2021-08-04 12:41:39.122 DEBUG 27152 --- [http-nio-1080-exec-10] c.example.ct.Mapper.StudyMapper.getMEP   : ==>  Preparing: select * from ct.study_merge_boxplot_long where ID=? and Gene=? 
+2021-08-04 12:41:39.122 DEBUG 27152 --- [http-nio-1080-exec-10] c.example.ct.Mapper.StudyMapper.getMEP   : ==> Parameters: SRA666103_SRS3038427(String), Cd63-ps_ENSMUSG00000(String)
+2021-08-04 12:41:52.638 DEBUG 27152 --- [http-nio-1080-exec-10] c.example.ct.Mapper.StudyMapper.getMEP   : <==      Total: 2
+2021-08-04 12:42:08.048  INFO 16468 --- [restartedMain] com.example.ct.CtApplication             : Starting CtApplication on 123-PC with PID 16468 (D:\Zeno\琐事\Cell Taxonomy\ct\target\classes started by 123 in D:\Zeno\琐事\Cell Taxonomy\ct)
+2021-08-04 12:42:08.050  INFO 16468 --- [restartedMain] com.example.ct.CtApplication             : No active profile set, falling back to default profiles: default
+2021-08-04 12:42:09.347  INFO 16468 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2021-08-04 12:42:09.347  INFO 16468 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.50]
+2021-08-04 12:42:09.547  INFO 16468 --- [restartedMain] org.apache.jasper.servlet.TldScanner     : At least one JAR was scanned for TLDs yet contained no TLDs. Enable debug logging for this logger for a complete list of JARs that were scanned but no TLDs were found in them. Skipping unneeded JARs during scanning can improve startup time and JSP compilation time.
+2021-08-04 12:42:09.551  INFO 16468 --- [restartedMain] o.a.c.c.C.[.[localhost].[/celltaxonomy]  : Initializing Spring embedded WebApplicationContext
+2021-08-04 12:42:09.762  INFO 16468 --- [restartedMain] c.n.z.x.MyXssFilter                      : Rich text field: textName, textName2
+2021-08-04 12:42:09.762  INFO 16468 --- [restartedMain] c.n.z.x.MyXssFilter                      : Exclude url: /static/*
+2021-08-04 12:42:09.763  INFO 16468 --- [restartedMain] c.n.z.x.HttpHostFilter                   : host=localhost
+2021-08-04 12:42:09.763  INFO 16468 --- [restartedMain] c.n.z.x.HttpHostFilter                   : host=ngdc.cncb.ac.cn
+2021-08-04 12:42:09.763  INFO 16468 --- [restartedMain] c.n.z.x.HttpHostFilter                   : host=bigd.big.ac.cn
+2021-08-04 12:42:09.763  INFO 16468 --- [restartedMain] c.n.z.x.HttpHostFilter                   : host=192.168.74.27
+2021-08-04 12:42:09.763  INFO 16468 --- [restartedMain] c.n.z.x.HttpHostFilter                   : host=192.168.164.83
+2021-08-04 12:42:10.480  INFO 16468 --- [restartedMain] com.example.ct.CtApplication             : Started CtApplication in 2.85 seconds (JVM running for 3.818)
+2021-08-04 12:42:11.315  INFO 16468 --- [RMI TCP Connection(3)-192.168.18.1] o.a.c.c.C.[.[localhost].[/celltaxonomy]  : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2021-08-04 12:42:11.317  INFO 16468 --- [RMI TCP Connection(2)-192.168.18.1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2021-08-04 12:42:11.483  INFO 16468 --- [RMI TCP Connection(2)-192.168.18.1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2021-08-04 14:38:43.419  INFO 22768 --- [restartedMain] com.example.ct.CtApplication             : Starting CtApplication on 123-PC with PID 22768 (D:\Zeno\琐事\Cell Taxonomy\ct\target\classes started by 123 in D:\Zeno\琐事\Cell Taxonomy\ct)
+2021-08-04 14:38:43.422  INFO 22768 --- [restartedMain] com.example.ct.CtApplication             : No active profile set, falling back to default profiles: default
+2021-08-04 14:38:44.750  INFO 22768 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2021-08-04 14:38:44.751  INFO 22768 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.50]
+2021-08-04 14:38:44.990  INFO 22768 --- [restartedMain] org.apache.jasper.servlet.TldScanner     : At least one JAR was scanned for TLDs yet contained no TLDs. Enable debug logging for this logger for a complete list of JARs that were scanned but no TLDs were found in them. Skipping unneeded JARs during scanning can improve startup time and JSP compilation time.
+2021-08-04 14:38:44.992  INFO 22768 --- [restartedMain] o.a.c.c.C.[.[localhost].[/celltaxonomy]  : Initializing Spring embedded WebApplicationContext
+2021-08-04 14:38:45.233  INFO 22768 --- [restartedMain] c.n.z.x.MyXssFilter                      : Rich text field: textName, textName2
+2021-08-04 14:38:45.234  INFO 22768 --- [restartedMain] c.n.z.x.MyXssFilter                      : Exclude url: /static/*
+2021-08-04 14:38:45.234  INFO 22768 --- [restartedMain] c.n.z.x.HttpHostFilter                   : host=localhost
+2021-08-04 14:38:45.234  INFO 22768 --- [restartedMain] c.n.z.x.HttpHostFilter                   : host=ngdc.cncb.ac.cn
+2021-08-04 14:38:45.234  INFO 22768 --- [restartedMain] c.n.z.x.HttpHostFilter                   : host=bigd.big.ac.cn
+2021-08-04 14:38:45.234  INFO 22768 --- [restartedMain] c.n.z.x.HttpHostFilter                   : host=192.168.74.27
+2021-08-04 14:38:45.234  INFO 22768 --- [restartedMain] c.n.z.x.HttpHostFilter                   : host=192.168.164.83
+2021-08-04 14:38:46.027  INFO 22768 --- [restartedMain] com.example.ct.CtApplication             : Started CtApplication in 3.046 seconds (JVM running for 3.991)
+2021-08-04 14:38:46.668  INFO 22768 --- [RMI TCP Connection(4)-192.168.18.1] o.a.c.c.C.[.[localhost].[/celltaxonomy]  : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2021-08-04 14:38:46.670  INFO 22768 --- [RMI TCP Connection(3)-192.168.18.1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2021-08-04 14:38:46.845  INFO 22768 --- [RMI TCP Connection(3)-192.168.18.1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.

@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.ct.Mapper.StudyMapper" >
+
+    <select id="getTissueName" resultType="HashMap">
+        select * from ct.tissue_name where names like concat(#{index},'%')
+        limit #{pagenumber},#{pagelength}
+    </select>
+    <select id="getStudy" resultType="HashMap">
+        select * from study where PubmedID=#{pmid} or GEOID=#{pmid}
+
+    </select>
+    <select id="getStudies" resultType="HashMap">
+        select distinct Title,Years,Journal,PubmedID,
+        GROUP_CONCAT(DISTINCT Species SEPARATOR ";") as Species,
+        GROUP_CONCAT(DISTINCT Library SEPARATOR "; ") as Library,
+        GROUP_CONCAT(DISTINCT Tissue,"|",Tissue_ID order by Tissue SEPARATOR ";") as Tissue,
+        GROUP_CONCAT(DISTINCT Cell_standard,"|",CT_ID order by Cell_standard SEPARATOR ";") as Cell,
+        GROUP_CONCAT(DISTINCT GEOID) as GEOID
+        --         count(Tissue) as counts
+        from study_cell
+        <where>
+            <if test="query!=null">
+                and (PubmedID like concat('%',#{query},'%')
+                or Title like concat('%',#{query},'%'))
+            </if>
+            <if test="tissue!=null and tissue.size()>0">
+                and Replace(Replace(Tissue,"(",""),")","") in
+                <foreach collection="tissue" item="name" index="index" open="(" close=")" separator=",">
+                    #{name}
+                </foreach>
+            </if>
+            <if test="journal!=null and journal.size()>0">
+                and Journal in
+                <foreach collection="journal" item="name" index="index" open="(" close=")" separator=",">
+                    #{name}
+                </foreach>
+            </if>
+            <if test="species!=null and species.size()>0">
+                and Species in
+                <foreach collection="species" item="name" index="index" open="(" close=")" separator=",">
+                    #{name}
+                </foreach>
+            </if>
+            <if test="celltype!=null and celltype.size()>0">
+                and CT_ID in
+                <foreach collection="celltype" item="name" index="index" open="(" close=")" separator=",">
+                    #{name}
+                </foreach>
+
+
+            </if>
+
+        </where>
+        group by Title,Years,Journal,PubmedID
+        --         having counts =1
+        order by PubmedID desc
+        Limit #{pagenumber},10
+    </select>
+    <select id="getFilterStudiesPMID" resultType="HashMap">
+        select distinct PubmedID from study_cell
+        <where>
+            <if test="query!=null">
+                and (PubmedID like concat('%',#{query},'%')
+                or GEOID like concat('%',#{query},'%')
+                or DatasetsID like concat('%',#{query},'%'))
+            </if>
+            <if test="tissue!=null and tissue.size()>0">
+                and Tissue in
+                <foreach collection="tissue" item="name" index="index" open="(" close=")" separator=",">
+                    #{name}
+                </foreach>
+            </if>
+            <if test="journal!=null and journal.size()>0">
+                and Journal in
+                <foreach collection="journal" item="name" index="index" open="(" close=")" separator=",">
+                    #{name}
+                </foreach>
+            </if>
+            <if test="species!=null and species.size()>0">
+                and Species in
+                <foreach collection="species" item="name" index="index" open="(" close=")" separator=",">
+                    #{name}
+                </foreach>
+            </if>
+            <if test="celltype!=null and celltype.size()>0">
+                and
+                <foreach collection="celltype" item="name" index="index" open="(" close=")" separator=",">
+                    find_in_set(#{name},CT_ID)
+                </foreach>
+
+
+            </if>
+
+        </where>
+        group by Title,Years,Journal,PubmedID
+        --         having counts =1
+        order by PubmedID desc
+        Limit #{pagenumber},10
+    </select>
+    <select id="getTissueList" resultType="HashMap">
+        select distinct Tissue from ct.study_cell
+        <where>
+            Tissue is not null
+            <if test="term!=null">
+                and Tissue like concat('%',#{term},'%')
+            </if>
+            <if test="journal.size()>0 and journal !=null">
+                and Journal in
+                <foreach collection="journal" item="name" index="index" open="(" close=")" separator=",">
+                    #{name}
+                </foreach>
+            </if>
+            <if test="species.size()>0 and species !=null">
+                and Species in
+                <foreach collection="species" item="name" index="index" open="(" close=")" separator=",">
+                    #{name}
+                </foreach>
+            </if>
+            <if test="celltype.size()>0 and celltype !=null">
+                and CT_ID in
+                <foreach collection="celltype" item="name" index="index" open="(" close=")" separator=",">
+                    #{name}
+                </foreach>
+            </if>
+        </where>
+        order by Tissue
+    </select>
+    <select id="getJournalList" resultType="HashMap">
+        select distinct Journal from ct.study left join ct.cell_id_ref on PubmedID=PMID
+        <where>
+            <if test="term!=null">
+                and Journal like concat('%',#{term},'%')
+            </if>
+            <if test="tissue.size()>0 and tissue !=null">
+                and Tissue in
+                <foreach collection="tissue" item="name" index="index" open="(" close=")" separator=",">
+                    #{name}
+                </foreach>
+            </if>
+            <if test="species.size()>0 and species !=null">
+                and Species in
+                <foreach collection="species" item="name" index="index" open="(" close=")" separator=",">
+                    #{name}
+                </foreach>
+            </if>
+            <if test="celltype.size()>0 and celltype !=null">
+                and Cell_ID in
+                <foreach collection="celltype" item="name" index="index" open="(" close=")" separator=",">
+                    #{name}
+                </foreach>
+            </if>
+        </where>
+        order by Journal
+    </select>
+    <select id="getSpeciesList" resultType="HashMap">
+        select distinct Species from ct.study_cell
+        <where>
+            <if test="tissue.size()>0 and tissue !=null">
+                and Replace(Replace(Tissue,"(",""),")","") in
+                <foreach collection="tissue" item="name" index="index" open="(" close=")" separator=",">
+                    #{name}
+                </foreach>
+            </if>
+            <if test="celltype.size()>0 and celltype !=null">
+                and CT_ID in
+                <foreach collection="celltype" item="name" index="index" open="(" close=")" separator=",">
+                    #{name}
+                </foreach>
+            </if>
+        </where>
+        order by Species asc
+    </select>
+    <select id="getCellList" resultType="HashMap">
+        select distinct CT_ID,Cell_standard from ct.study_cell
+        <where>
+            Cell_standard is not null
+            <if test="term!=null">
+                and Cell_standard like concat('%',#{term},'%')
+            </if>
+            <if test="tissue.size()>0 and tissue !=null">
+                and Replace(Replace(Tissue,"(",""),")","") in
+                <foreach collection="tissue" item="name" index="index" open="(" close=")" separator=",">
+                    #{name}
+                </foreach>
+            </if>
+            <if test="journal.size()>0 and journal !=null">
+                and Journal in
+                <foreach collection="journal" item="name" index="index" open="(" close=")" separator=",">
+                    #{name}
+                </foreach>
+            </if>
+            <if test="species.size()>0 and species !=null">
+                and Species in
+                <foreach collection="species" item="name" index="index" open="(" close=")" separator=",">
+                    #{name}
+                </foreach>
+            </if>
+        </where>
+        order by Cell_standard asc
+    </select>
+    <select id="getMetadata" resultType="HashMap">
+        select distinct * from ${databasename}
+        where Replace(Replace(ID,"(",""),")","") = #{geo}
+    </select>
+    <select id="getDimension" resultType="HashMap">
+        select distinct Cell_standard,${term} from ${databasename} where Replace(Replace(ID,"(",""),")","")=#{geo} and Cell_standard != ""
+    </select>
+    <select id="getHeter" resultType="HashMap">
+        select ID,cell_id_x,Cell_standard,Max(Score) as Score ,CT_ID  from ${databasename}
+        where Replace(Replace(ID,"(",""),")","") =#{geo}
+        group by ID,cell_id_x,Cell_standard,CT_ID
+    </select>
+    <select id="getSilhouette" resultType="HashMap">
+        select mean_silhouette,cell_type_id2,Cell_standard,Dataset,CT_ID from ${databasename}
+        where Dataset =#{geo}
+        order by mean_silhouette desc limit 0,20
+    </select>
+    <select id="getMEP"  resultType="HashMap">
+        SELECT distinct * FROM ${databasename} WHERE ID=#{geo} AND Gene=#{gene}
+    </select>
+    <select id="getMEPgenelist" resultType="HashMap">
+        select distinct Gene from ${databasename}
+        where ID=#{geo} and Max !=0
+        <if test="term!=null">
+            and Gene like concat('%',#{term},'%')
+        </if>
+
+        limit 0,100
+    </select>
+    <select id="getDataset" resultType="HashMap">
+        select distinct DatasetsID,Species,Cell_number,Tissue,Tissue_ID from ct.study
+        where PubmedID=#{pmid} or GEOID=#{pmid}
+    </select>
+    <select id="getCMEtable" resultType="HashMap">
+        select * from ${databasename}
+        <where>
+            and Replace(Replace(ID,"(",""),")","")=#{geo} and markers=#{marker}
+        </where>
+    </select>
+    <select id="getCME" resultType="HashMap">
+        select distinct * from ${databasename}
+        where
+        <choose>
+            <when test="databasename=='MCA_findmarkers'">
+                Replace(Replace(ID,"(",""),")","")=#{geo}
+            </when>
+            <otherwise>
+                ID=#{geo}
+            </otherwise>
+        </choose>
+        and Replace(Replace(Cell_standard,"(",""),")","")=#{celltype}
+        order by avg_log2FC desc
+    </select>
+    <select id="getCME2" resultType="HashMap">
+        select ID,avg_log2FC,Cell_standard,cell_id,markers,p_val,
+        pct_1,pct_2,p_val_adj from ${databasename}
+        where
+        <choose>
+            <when test="databasename=='MCA_findmarkers'">
+                Replace(Replace(ID,"(",""),")","")=#{geo}
+            </when>
+            <otherwise>
+                ID=#{geo}
+            </otherwise>
+        </choose>
+         and markers=#{marker}
+    </select>
+    <select id="getCTS" resultType="HashMap">
+        select Cell_specific_score,Cell_standard,Cell_type_id from ${databasename}
+        where
+        <choose>
+            <when test="databasename=='MCA_findmarkers'">
+                Replace(Replace(ID,"(",""),")","")=#{geo}
+            </when>
+            <otherwise>
+                ID=#{geo}
+            </otherwise>
+        </choose>
+        and Gene=#{gene} and Cell_specific_score!="-"
+        order by Cell_specific_score desc
+
+    </select>
+    <select id="getCTS2" resultType="HashMap">
+        select distinct * from ${databasename}
+        where ID=#{geo} and Cell_standard=#{celltype} and Tissue=#{tissue} and Cell_specific_score>0.4
+        order by Cell_specific_score desc
+
+    </select>
+    <select id="getCTStable" resultType="HashMap">
+        select distinct * from ${databasename}
+        <where>
+        and ID=#{geo}
+        and Cell_specific_score>0.4
+            <if test="search!=''">
+                and (Gene like concat('%',#{search},'%')
+                or Tissue like concat('%',#{search},'%')
+                or Cell_type like concat('%',#{search},'%'))
+            </if>
+
+        </where>
+        order by ${order} ${orderDir}
+    </select>
+    <select id="getCTSGeneList" resultType="HashMap">
+        select distinct Gene from ${databasename}
+        where ID=#{geo}
+        <choose>
+            <when test="term!=null">
+                and Gene like concat('%',#{term},'%')
+                order by length(Gene)
+            </when>
+            <otherwise>
+                order by IF(Gene RLIKE '^[a-z]', 1, 2)
+            </otherwise>
+        </choose>
+        limit 0,100
+    </select>
+    <select id="getCTSTissueList" resultType="HashMap">
+        select distinct Tissue from ${databasename}
+        where ID=#{geo}
+        <if test="term!=null">
+            and Tissue like concat('%',#{term},'%')
+        </if>
+        limit 0,100
+    </select>
+    <select id="getCTSCelltypeList" resultType="HashMap">
+        select distinct Cell_standard from ${databasename}
+        where ID=#{geo}
+        <if test="term!=null">
+            and Cell_standard like concat('%',#{term},'%')
+        </if>
+        limit 0,100
+    </select>
+    <select id="getCMETissueList" resultType="HashMap">
+        select distinct Tissue_tmp from ${databasename}
+        where ID=#{geo}
+        <if test="term!=null">
+            and Tissue_tmp like concat('%',#{term},'%')
+        </if>
+        limit 0,100
+    </select>
+    <select id="getCMECelltypeList" resultType="HashMap">
+        select distinct Cell_standard from ${databasename}
+        where
+        <choose>
+            <when test="databasename=='MCA_findmarkers'">
+                Replace(Replace(ID,"(",""),")","")=#{geo}
+            </when>
+            <otherwise>
+                ID=#{geo}
+            </otherwise>
+        </choose>
+
+        <if test="term!=null">
+            and Cell_standard like concat('%',#{term},'%')
+        </if>
+        limit 0,100
+    </select>
+    <select id="getCMEGeneList" resultType="HashMap">
+        select distinct markers from ${databasename}
+        where
+        <choose>
+            <when test="databasename=='MCA_findmarkers'">
+                Replace(Replace(ID,"(",""),")","")=#{geo}
+            </when>
+            <otherwise>
+                ID=#{geo}
+            </otherwise>
+        </choose>
+        <if test="term!=null">
+            and markers like concat('%',#{term},'%')
+        </if>
+        limit 0,100
+    </select>
+</mapper>

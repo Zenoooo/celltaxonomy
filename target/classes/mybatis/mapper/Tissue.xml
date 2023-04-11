@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.ct.Mapper.TissueMapper">
+    <select id="getDescription" resultType="HashMap">
+        select * from ct.cell_marker_table where Replace(Replace(Tissue_UberonOntology_ID2,"(",""),")","")=#{tissue} and Tissue_UberonOntology_ID2!="-"
+    </select>
+    <select id="getCellEnrichment" resultType="HashMap">
+        select * from ct.cell_taxonomy_tissue_paper_support
+        where Replace(Replace(Tissue_UberonOntology_ID2,"(",""),")","")=#{tissue}
+        order by supported_paper_number desc
+    </select>
+    <select id="getCellTypeCellMarkerHeatmap" resultType="HashMap">
+        select * from ct.cell_taxonomy_paper_support_tissue
+        where Tissue_UberonOntology_ID2=#{id}
+    </select>
+    <select id="getCTGEByOR" resultType="HashMap">
+        select Cell_standard,sum(OR2) as rowsum from ct.tissue_marker_fisher_test_result_for_each_cell
+        where Tissue_UberonOntology_ID2_x=#{id} and Species!="All"
+        group by Cell_standard
+        order by rowsum desc
+        limit 0,30
+    </select>
+    <select id="getCTGEByLS" resultType="HashMap">
+        select Cell_standard,sum(supported_paper_number) as rowsum from ct.cell_taxonomy_paper_support_tissue
+        where Tissue_UberonOntology_ID2=#{id} and Species!="All"
+        group by Cell_standard
+        order by rowsum desc
+        limit 0,30
+    </select>
+    <select id="getTissueStatistic" resultType="HashMap">
+        select * from ct.tissue_browse_statistics
+        order by Marker_num desc
+    </select>
+    <select id="getTissueSummary" resultType="HashMap">
+        select * from ct.tissue_browse_statistics
+        where Replace(Replace(Tissue_UberonOntology_ID2,"(",""),")","")=#{id}
+    </select>
+    <select id="get_description" resultType="HashMap">
+        select * from ct.tissue_description where Tissue_UberonOntology_ID2 = #{id} or Replace(Replace(Tissue_standard,"(",""),")","") =#{id};
+    </select>
+    <select id="getTissueByName" resultType="HashMap">
+        select * from ct.tissue_description where Tissue_standard = #{id};
+    </select>
+    <select id="getTissueCompositionOfCell" parameterType="String" resultType="HashMap">
+        select cell_id,Cell_standard,Number_of_cells/total as ratio from ct.total_cell_number
+        where Tissue_ID=#{tissue}
+    </select>
+    <select id="getTissueStatistic2" resultType="HashMap">
+        select distinct ${item} from all_search_table as a left join publication_for_browse as b on a.PMID=b.PMID
+        where Tissue_UberonOntology_ID2=#{tissueid}
+     </select>
+</mapper>
